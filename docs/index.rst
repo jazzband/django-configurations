@@ -84,6 +84,8 @@ Every ``configurations.Settings`` subclass will automatically contain
 Django's global settings as class attributes, so you can refer to them when
 setting other values, e.g.::
 
+    from configurations import Settings
+
     class Base(Settings):
         TEMPLATE_CONTEXT_PROCESSORS = \
             Settings.TEMPLATE_CONTEXT_PROCESSORS + (
@@ -103,13 +105,35 @@ a few mixin you re-use multiple times::
 
     class FullPageCaching(object):
         USE_ETAGS = True
-         
+
+Then import that mixin class in your site settings module and use it with
+a Settings class::
+
+    from configurations import Settings
+
+    class AcmeProd(Settings, FullPageCaching):
+        DEBUG = False
+        # ...
 
 Thanks
 ------
 
-- Pinax for spearheading the efforts to extend the Django project metaphor
-  with reusable project templates and a flexible configuration environment.
+- The Pinax_ project for spearheading the efforts to extend the Django
+  project metaphor with reusable project templates and a flexible
+  configuration environment.
 
-- django-classbasedsettings by Matthew Tretter for being the immediate
+- `django-classbasedsettings`_ by Matthew Tretter for being the immediate
   inspiration for django-configurations.
+
+.. _Pinax: http://pinaxproject.com
+.. _`django-classbasedsettings`: https://github.com/matthewwithanm/django-classbasedsettings
+
+Bugs and feature requests
+-------------------------
+
+As always you mileage may vary, so please don't hesitate to send in feature
+requests and bug reports at the usual place:
+
+    https://github.com/jezdez/django-configurations/issues
+
+Thanks!
