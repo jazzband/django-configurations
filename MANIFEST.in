@@ -1,0 +1,5 @@
+include README.rst
+include .travis.yml
+include manage.py
+include requirements/tests.txt
+recursive-include docs *
