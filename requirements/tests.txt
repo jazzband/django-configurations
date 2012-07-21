@@ -1,0 +1,4 @@
+flake8
+coverage
+django-discover-runner
+mock
