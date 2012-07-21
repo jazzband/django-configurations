@@ -5,7 +5,7 @@ django-configurations
    :alt: Build Status
    :target: https://secure.travis-ci.org/jezdez/django-configurations
 
-django-configurations eases Django site configuration by relying
+django-configurations eases Django project configuration by relying
 on the composability of Python classes. It extends the notion of
 Django's module based settings loading with well established
 object oriented programming patterns.
