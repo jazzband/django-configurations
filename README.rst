@@ -44,13 +44,13 @@ django-configurations would look like this::
     #!/usr/bin/env python
     import os
     import sys
-   
+
     if __name__ == "__main__":
         os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mysite.settings')
-        os.environ.setdefault('DJANGO_', 'MySettings')
-   
+        os.environ.setdefault('DJANGO_CONFIGURATION', 'MySettings')
+
         from configurations.management import execute_from_command_line
-   
+
         execute_from_command_line(sys.argv)
 
 Notice in line 9 we don't use the common tool
@@ -60,10 +60,10 @@ Notice in line 9 we don't use the common tool
 The same applies to your ``wsgi.py`` file, e.g.::
 
     import os
-  
+
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mysite.settings')
     os.environ.setdefault('DJANGO_CONFIGURATION', 'MySettings')
-    
+
     from configurations.wsgi import get_wsgi_application
 
     application = get_wsgi_application()
