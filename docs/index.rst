@@ -10,7 +10,7 @@ and adapters_ that are useful for non-trivial configuration scenarios.
 
 It allows you to use the native abilities of Python inheritance without the
 side effects of module level namespaces that often lead to the unfortunate
-use of the ``import *`` anti-pattern.
+use of the ``from foo import *`` anti-pattern.
 
 .. _mixins: http://en.wikipedia.org/wiki/Mixin
 .. _facades: http://en.wikipedia.org/wiki/Facade_pattern
@@ -55,7 +55,7 @@ used in, e.g. in production, staging and development.
 Server specific settings
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-For example, imagine you have a base setting class in your ``settings.py``
+For example, imagine you have a base setting class in your **settings.py**
 file::
 
     from configurations import Settings

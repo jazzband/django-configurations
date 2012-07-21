@@ -18,7 +18,7 @@ Install django-configurations::
     pip install django-configurations
 
 Then subclass the included ``configurations.Settings`` class in your
-project's ``settings.py`` or any other module you're using to store the
+project's **settings.py** or any other module you're using to store the
 settings constants, e.g.::
 
     from configurations import Settings
@@ -37,8 +37,8 @@ import path as usual, e.g. in bash::
     export DJANGO_SETTINGS_MODULE=mysite.settings
 
 To enable Django to use your configuration you now have to modify your
-``manage.py`` or ``wsgi.py`` script to use django-configurations's versions
-of the appropriate starter functions, e.g. a typical ``manage.py`` using
+**manage.py** or **wsgi.py** script to use django-configurations's versions
+of the appropriate starter functions, e.g. a typical **manage.py** using
 django-configurations would look like this::
 
     #!/usr/bin/env python
@@ -57,7 +57,7 @@ Notice in line 9 we don't use the common tool
 ``django.core.management.execute_from_command_line`` but instead
 ``configurations.management.execute_from_command_line``.
 
-The same applies to your ``wsgi.py`` file, e.g.::
+The same applies to your **wsgi.py** file, e.g.::
 
     import os
   
@@ -71,5 +71,5 @@ The same applies to your ``wsgi.py`` file, e.g.::
 Here we don't use the default ``django.core.wsgi.get_wsgi_application``
 function but instead ``configurations.wsgi.get_wsgi_application``.
 
-That's it! You can now use your project with ``manage.py`` and your favorite
+That's it! You can now use your project with **manage.py** and your favorite
 WSGI enabled server.
