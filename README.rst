@@ -19,7 +19,11 @@ Install django-configurations::
 
 Then subclass the included ``configurations.Settings`` class in your
 project's **settings.py** or any other module you're using to store the
-settings constants, e.g.::
+settings constants, e.g.:
+
+.. code-block:: python
+
+    # mysite/settings.py
 
     from configurations import Settings
 
@@ -29,7 +33,7 @@ settings constants, e.g.::
 Set the ``DJANGO_CONFIGURATION`` environment variable to the name of the class
 you just created, e.g. in bash::
 
-    export DJANGO_CONFIGURATION=MySettings
+    export DJANGO_CONFIGURATION=MySiteSettings
 
 and the ``DJANGO_SETTINGS_MODULE`` environment variable to the module
 import path as usual, e.g. in bash::
@@ -39,15 +43,18 @@ import path as usual, e.g. in bash::
 To enable Django to use your configuration you now have to modify your
 **manage.py** or **wsgi.py** script to use django-configurations's versions
 of the appropriate starter functions, e.g. a typical **manage.py** using
-django-configurations would look like this::
+django-configurations would look like this:
+
+.. code-block:: python
 
     #!/usr/bin/env python
+
     import os
     import sys
 
     if __name__ == "__main__":
         os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mysite.settings')
-        os.environ.setdefault('DJANGO_CONFIGURATION', 'MySettings')
+        os.environ.setdefault('DJANGO_CONFIGURATION', 'MySiteSettings')
 
         from configurations.management import execute_from_command_line
 
@@ -57,12 +64,14 @@ Notice in line 9 we don't use the common tool
 ``django.core.management.execute_from_command_line`` but instead
 ``configurations.management.execute_from_command_line``.
 
-The same applies to your **wsgi.py** file, e.g.::
+The same applies to your **wsgi.py** file, e.g.:
+
+.. code-block:: python
 
     import os
 
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mysite.settings')
-    os.environ.setdefault('DJANGO_CONFIGURATION', 'MySettings')
+    os.environ.setdefault('DJANGO_CONFIGURATION', 'MySiteSettings')
 
     from configurations.wsgi import get_wsgi_application
 
