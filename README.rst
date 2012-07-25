@@ -13,7 +13,9 @@ object oriented programming patterns.
 Quickstart
 ----------
 
-Install django-configurations::
+Install django-configurations:
+
+.. code-block:: console
 
     pip install django-configurations
 
@@ -31,12 +33,16 @@ settings constants, e.g.:
         DEBUG = True
 
 Set the ``DJANGO_CONFIGURATION`` environment variable to the name of the class
-you just created, e.g. in bash::
+you just created, e.g. in bash:
+
+.. code-block:: console
 
     export DJANGO_CONFIGURATION=MySiteSettings
 
 and the ``DJANGO_SETTINGS_MODULE`` environment variable to the module
-import path as usual, e.g. in bash::
+import path as usual, e.g. in bash:
+
+.. code-block:: console
 
     export DJANGO_SETTINGS_MODULE=mysite.settings
 
