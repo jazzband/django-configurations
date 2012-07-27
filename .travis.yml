@@ -12,4 +12,5 @@ install:
 script:
   - make test
 env:
+  - DJANGO=1.3
   - DJANGO=1.4

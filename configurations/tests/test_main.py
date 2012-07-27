@@ -1,5 +1,6 @@
 import os
 
+from django.conf import global_settings
 from django.test import TestCase
 from django.core.exceptions import ImproperlyConfigured
 
@@ -13,16 +14,10 @@ class MainTests(TestCase):
     def test_simple(self):
         from configurations.tests.settings import main
         self.assertEquals(main.LALA, 1)
-        self.assertEquals(main.TEMPLATE_CONTEXT_PROCESSORS, (
-            'django.contrib.auth.context_processors.auth',
-            'django.core.context_processors.debug',
-            'django.core.context_processors.i18n',
-            'django.core.context_processors.media',
-            'django.core.context_processors.static',
-            'django.core.context_processors.tz',
-            'django.contrib.messages.context_processors.messages',
-            'configurations.tests.settings.base.test_callback',
-        ))
+        self.assertEquals(main.TEMPLATE_CONTEXT_PROCESSORS,
+                          global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
+                              'configurations.tests.settings.base.test_callback',
+                          ))
         self.assertEquals(main.TEST_SETTING, True)
 
     def test_global_arrival(self):
