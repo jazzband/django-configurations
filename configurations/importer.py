@@ -139,11 +139,15 @@ class SettingsLoader(object):
             mod = imp.load_module(fullname, *self.location)
         try:
             cls = getattr(mod, self.name)
-            obj = cls()
         except AttributeError:  # pragma: no cover
             raise ImproperlyConfigured("Couldn't find settings '%s' in "
                                        "module '%s'" %
                                        (self.name, mod.__package__))
+        try:
+            obj = cls()
+        except Exception, err:
+            raise ImproperlyConfigured("Couldn't load settings '%s.%s': %s" %
+                                       (mod.__name__, self.name, err))
         for name, value in uppercase_attributes(obj).items():
             if callable(value):
                 value = value()

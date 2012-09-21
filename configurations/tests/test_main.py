@@ -6,7 +6,7 @@ from django.core.exceptions import ImproperlyConfigured
 
 from mock import patch
 
-from ..importer import SettingsImporter
+from configurations.importer import SettingsImporter
 
 
 class MainTests(TestCase):
