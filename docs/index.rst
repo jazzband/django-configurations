@@ -34,6 +34,15 @@ environment variable) should be used for the process. It then instantiates
 the class defined with ``DJANGO_CONFIGURATION`` and copies the uppercase
 attributes to the module level variables.
 
+.. versionadded:: 0.2
+
+Alternatively you can use the ``--configuration`` command line option that
+django-configurations adds to all Django management commands. Behind the
+scenes it will simply set the ``DJANGO_CONFIGURATION`` environement variable
+so this is purely optional and just there to compliment the default
+``--settings`` option that Django adds if you prefer that instead of setting
+environment variables.
+
 But isn't that magic?
 ---------------------
 
@@ -76,6 +85,13 @@ should be ``Prod``. In bash that would be::
 
     export DJANGO_SETTINGS_MODULE=mysite.settings
     export DJANGO_CONFIGURATION=Prod
+    python manage.py runserver
+
+Alternatively you can use the ``--configuration`` option when using Django
+management commands along the lines of Django's default ``--settings``
+command line option::
+
+    python manage.py runserver --settings=mysite.settings --configuration=Prod
 
 Global settings defaults
 ^^^^^^^^^^^^^^^^^^^^^^^^
