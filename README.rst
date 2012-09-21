@@ -46,6 +46,12 @@ import path as usual, e.g. in bash:
 
     export DJANGO_SETTINGS_MODULE=mysite.settings
 
+*Alternatively* supply the ``--configuration`` option when using Django
+management commands along the lines of Django's default ``--settings``
+command line option, e.g.::
+
+    python manage.py runserver --settings=mysite.settings --configuration=MySiteSettings
+
 To enable Django to use your configuration you now have to modify your
 **manage.py** or **wsgi.py** script to use django-configurations's versions
 of the appropriate starter functions, e.g. a typical **manage.py** using
