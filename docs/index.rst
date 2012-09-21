@@ -89,7 +89,7 @@ should be ``Prod``. In bash that would be::
 
 Alternatively you can use the ``--configuration`` option when using Django
 management commands along the lines of Django's default ``--settings``
-command line option::
+command line option, e.g.::
 
     python manage.py runserver --settings=mysite.settings --configuration=Prod
 
@@ -131,8 +131,10 @@ a Settings class::
         DEBUG = False
         # ...
 
-Thanks
-------
+Alternatives
+------------
+
+Many thanks to those project that have previously solved these problems:
 
 - The Pinax_ project for spearheading the efforts to extend the Django
   project metaphor with reusable project templates and a flexible
@@ -153,3 +155,5 @@ requests and bug reports at the usual place:
     https://github.com/jezdez/django-configurations/issues
 
 Thanks!
+
+.. include:: ../CHANGES.rst

@@ -23,7 +23,7 @@ setup(
     version=find_version('configurations', '__init__.py'),
     description='A helper for organizing Django project settings by relying '
                 'on well established programming patterns.',
-    long_description=read('README.rst'),
+    long_description=read('README.rst') + u'\n\n' + read('CHANGES.rst'),
     author='Jannis Leidel',
     author_email='jannis@leidel.info',
     license='BSD',
