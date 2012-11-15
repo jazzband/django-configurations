@@ -25,7 +25,11 @@ class Klass3(BaseSettings):
             'configurations.tests.settings.base.test_callback3',)
 
 
-class MInheritance(Klass1, Klass2, Klass3):
+class Klass4(BaseSettings):
+    pass
+
+
+class MInheritance(Klass1, Klass4, Klass2, Klass3):
     def TEMPLATE_CONTEXT_PROCESSORS(self):
         return super(MInheritance, self).TEMPLATE_CONTEXT_PROCESSORS() + (
             'configurations.tests.settings.base.test_callback_m',)
