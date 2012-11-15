@@ -28,3 +28,16 @@ class InheritanceTests(TestCase):
                               'configurations.tests.settings.base.test_callback',
                               'configurations.tests.settings.base.test_callback',
                           ))
+
+    @patch.dict(os.environ, clear=True,
+                DJANGO_CONFIGURATION='MInheritance',
+                DJANGO_SETTINGS_MODULE='configurations.tests.settings.multiple_inheritance2')
+    def test_inherited3(self):
+        from configurations.tests.settings import multiple_inheritance2
+        self.assertEquals(multiple_inheritance2.TEMPLATE_CONTEXT_PROCESSORS,
+                          global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
+                              'configurations.tests.settings.base.test_callback3',
+                              'configurations.tests.settings.base.test_callback2',
+                              'configurations.tests.settings.base.test_callback1',
+                              'configurations.tests.settings.base.test_callback_m',
+                          ))
