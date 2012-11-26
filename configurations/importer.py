@@ -160,7 +160,7 @@ class SettingsLoader(object):
                 except Exception, err:
                     raise ImproperlyConfigured(
                         "Couldn't execute callable '%s' in '%s.%s': %s" %
-                        value, mod.__name__, self.name, err))
+                        (value, mod.__name__, self.name, err))
                 setattr(mod, name, value)
         setattr(mod, 'CONFIGURATION', '%s.%s' % (fullname, self.name))
         return mod
