@@ -1,4 +1,5 @@
 .coverage
 docs/_build
 *.egg-info
+*.egg
 test.db
