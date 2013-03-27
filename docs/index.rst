@@ -146,6 +146,21 @@ Many thanks to those project that have previously solved these problems:
 .. _Pinax: http://pinaxproject.com
 .. _`django-classbasedsettings`: https://github.com/matthewwithanm/django-classbasedsettings
 
+Cookbook
+--------
+
+Celery
+^^^^^^
+
+Given Celery's way to load Django settings in worker processes you should
+probably just add the following to the **begin** of your settings module::
+
+    from configurations import importer
+    importer.install()
+
+That has the same effect as using the ``manage.py`` or ``wsgi.py`` utilities
+mentioned above.
+
 Bugs and feature requests
 -------------------------
 
