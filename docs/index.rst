@@ -161,6 +161,31 @@ probably just add the following to the **begin** of your settings module::
 That has the same effect as using the ``manage.py`` or ``wsgi.py`` utilities
 mentioned above.
 
+FastCGI
+^^^^^^^
+
+In case you use FastCGI for deploying Django (you really shouldn't) and aren't
+allowed to us Django's runfcgi_ management command (that would automatically
+handle the setup for your if you've followed the quickstart guide above), make
+sure to use something like the following script::
+
+    #!/usr/bin/env python
+
+    import os
+    import sys
+     
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mysite.settings')
+    os.environ.setdefault('DJANGO_CONFIGURATION', 'MySiteSettings')
+
+    from configurations.fastcgi import runfastcgi
+
+    runfastcgi(method='threaded', daemonize='true')
+
+As you can see django-configurations provides a helper module
+``configurations.fastcgi`` that handles the setup of your configurations.
+
+.. _runfcgi: https://docs.djangoproject.com/en/1.5/howto/deployment/fastcgi/
+
 Bugs and feature requests
 -------------------------
 
