@@ -2,11 +2,9 @@ import imp
 import os
 import sys
 from functools import wraps
-from optparse import make_option
+from optparse import make_option, OptionParser
 
 import django
-from django.core import management
-from django.core.management import base
 from django.core.exceptions import ImproperlyConfigured
 from django.conf import ENVIRONMENT_VARIABLE
 from django.utils.decorators import available_attrs
@@ -16,21 +14,6 @@ from .utils import uppercase_attributes
 
 
 installed = False
-
-
-def patch_handle_default_options(original):
-    @wraps(original, assigned=available_attrs(original))
-    def handle_default_options(options):
-        """
-        Include any default options that all commands should accept here
-        so that ManagementUtility can handle them before searching for
-        user commands.
-
-        """
-        original(options)
-        if options.configuration:
-            os.environ[SettingsImporter.class_varname] = options.configuration
-    return handle_default_options
 
 
 class StdoutWrapper(object):
@@ -61,22 +44,23 @@ def patch_inner_run(original):
         return original(self, *args, **options)
     return inner_run
 
+configuration_options = (
+    make_option('--configuration',
+                help='The name of the settings class to load, e.g. '
+                     '"Development". If this isn\'t provided, the '
+                     'DJANGO_CONFIGURATION environment variable will '
+                     'be used.'),)
+
 
 def install():
     global installed
     if not installed:
 
+        from django.core import management
+        from django.core.management import base
+
         # add the configuration option to all management commands
-        original = base.handle_default_options
-        patched = patch_handle_default_options(original)
-        base.handle_default_options = patched
-        management.handle_default_options = patched
-        base.BaseCommand.option_list += (
-            make_option('-C', '--configuration',
-                        help='The name of the settings class to load, e.g. '
-                             '"Development". If this isn\'t provided, the '
-                             'DJANGO_CONFIGURATION environment variable will '
-                             'be used.'),)
+        base.BaseCommand.option_list += configuration_options
 
         sys.meta_path.append(SettingsImporter())
         installed = True
@@ -100,6 +84,10 @@ class SettingsImporter(object):
     error_msg = "Settings cannot be imported, environment variable %s is undefined."
 
     def __init__(self):
+        parser = OptionParser(option_list=configuration_options, add_help_option=False)
+        options, args = parser.parse_args(sys.argv[2:])
+        if options.configuration:
+            os.environ[self.class_varname] = options.configuration
         self.validate()
 
     def __repr__(self):
