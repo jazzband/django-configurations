@@ -62,7 +62,7 @@ def install():
         # add the configuration option to all management commands
         base.BaseCommand.option_list += configuration_options
 
-        sys.meta_path.append(SettingsImporter())
+        sys.meta_path.insert(0, SettingsImporter())
         installed = True
 
         # now patch the active runserver command to show a nicer output
@@ -133,7 +133,7 @@ class SettingsLoader(object):
                                        (self.name, mod.__package__))
         try:
             obj = cls()
-        except Exception, err:
+        except Exception as err:
             raise ImproperlyConfigured("Couldn't load settings '%s.%s': %s" %
                                        (mod.__name__, self.name, err))
         try:

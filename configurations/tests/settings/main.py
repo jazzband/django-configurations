@@ -1,9 +1,12 @@
 import os
+import uuid
 from configurations import Settings
 
 
 class Test(Settings):
     SITE_ID = 1
+
+    SECRET_KEY = str(uuid.uuid4())
 
     DATABASES = {
         'default': {

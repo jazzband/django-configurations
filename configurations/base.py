@@ -1,3 +1,4 @@
+import six
 from django.conf import global_settings
 from django.core.exceptions import ImproperlyConfigured
 
@@ -15,7 +16,7 @@ install_failure = ("django-configurations settings importer wasn't "
 class SettingsBase(type):
 
     def __new__(cls, name, bases, attrs):
-        if bases != (object,):
+        if bases != (object,) and bases[0].__name__ != 'NewBase':
             # if this is actually a subclass in a settings module
             # we better check if the importer was correctly installed
             from . import importer
@@ -33,7 +34,7 @@ class SettingsBase(type):
         return "<Settings '%s.%s'>" % (self.__module__, self.__name__)
 
 
-class Settings(object):
+class Settings(six.with_metaclass(SettingsBase)):
     """
     The base configuration class to inherit from.
 
@@ -57,4 +58,4 @@ class Settings(object):
     to the name of the class.
 
     """
-    __metaclass__ = SettingsBase
+    pass
