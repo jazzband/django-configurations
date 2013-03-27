@@ -136,9 +136,19 @@ class SettingsLoader(object):
         except Exception, err:
             raise ImproperlyConfigured("Couldn't load settings '%s.%s': %s" %
                                        (mod.__name__, self.name, err))
-        for name, value in uppercase_attributes(obj).items():
+        try:
+            attributes = uppercase_attributes(obj).items()
+        except Exception, err:
+            raise ImproperlyConfigured("Couldn't get items of settings '%s.%s': %s" %
+                                       (mod.__name__, self.name, err))
+        for name, value in attributes:
             if callable(value):
-                value = value()
+                try:
+                    value = value()
+                except Exception, err:
+                    raise ImproperlyConfigured(
+                        "Couldn't execute callable '%s' in '%s.%s': %s" %
+                        (value, mod.__name__, self.name, err))
             setattr(mod, name, value)
         setattr(mod, 'CONFIGURATION', '%s.%s' % (fullname, self.name))
         return mod
