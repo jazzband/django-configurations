@@ -3,7 +3,7 @@ django-configurations
 
 .. image:: https://secure.travis-ci.org/jezdez/django-configurations.png
    :alt: Build Status
-   :target: https://secure.travis-ci.org/jezdez/django-configurations
+   :target: https://travis-ci.org/jezdez/django-configurations
 
 django-configurations eases Django project configuration by relying
 on the composability of Python classes. It extends the notion of
