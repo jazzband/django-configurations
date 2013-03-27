@@ -1,8 +1,9 @@
 language: python
 python:
-  - "2.6"
-  - "2.7"
-  - "3.3"
+  - 2.6
+  - 2.7
+  - 3.2
+  - 3.3
 before_install:
   - export PIP_USE_MIRRORS=true
   - export PIP_INDEX_URL=https://simple.crate.io/
@@ -15,3 +16,13 @@ env:
   - DJANGO=1.3.7
   - DJANGO=1.4.5
   - DJANGO=1.5
+matrix:
+  exclude:
+    - python: 3.2
+      env: DJANGO=1.4.5
+    - python: 3.2
+      env: DJANGO=1.3.7
+    - python: 3.3
+      env: DJANGO=1.4.5
+    - python: 3.3
+      env: DJANGO=1.3.7
