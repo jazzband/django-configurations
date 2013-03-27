@@ -2,5 +2,6 @@ include README.rst
 include CHANGES.rst
 include .travis.yml
 include manage.py
+include Makefile
 include requirements/tests.txt
 recursive-include docs *
