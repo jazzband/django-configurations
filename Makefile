@@ -6,7 +6,7 @@ test:
 	coverage report --omit=configurations/test*
 
 release:
-	python setup.py sdist register upload -s
+	python setup.py sdist bdist_wheel register upload -s
 
 doc:
 	cd docs; make html; cd ..
