@@ -1,3 +1,4 @@
+import argparse
 import imp
 import os
 import sys
@@ -84,10 +85,13 @@ class SettingsImporter(object):
     error_msg = "Settings cannot be imported, environment variable %s is undefined."
 
     def __init__(self):
-        parser = OptionParser(option_list=configuration_options, add_help_option=False)
-        options, args = parser.parse_args(sys.argv[2:])
-        if options.configuration:
-            os.environ[self.class_varname] = options.configuration
+        parser = argparse.ArgumentParser(add_help=False)
+        for option in configuration_options:
+            parser.add_argument(option.get_opt_string())
+        known_options, unknown_options = parser.parse_known_args()
+
+        if known_options.configuration:
+            os.environ[self.class_varname] = known_options.configuration
         self.validate()
 
     def __repr__(self):
