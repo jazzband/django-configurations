@@ -2,11 +2,11 @@ import imp
 import os
 import sys
 from functools import wraps
-from optparse import make_option, OptionParser
+from optparse import make_option
 
-import django
 from django.core.exceptions import ImproperlyConfigured
-from django.conf import ENVIRONMENT_VARIABLE
+from django.core.management import LaxOptionParser
+from django.conf import ENVIRONMENT_VARIABLE as SETTINGS_ENVIRONMENT_VARIABLE
 from django.utils.decorators import available_attrs
 from django.utils.importlib import import_module
 
@@ -14,6 +14,8 @@ from .utils import uppercase_attributes
 
 
 installed = False
+
+CONFIGURATION_ENVIRONMENT_VARIABLE = 'DJANGO_CONFIGURATION'
 
 
 class StdoutWrapper(object):
@@ -27,12 +29,17 @@ class StdoutWrapper(object):
         return getattr(self._out, name)
 
     def write(self, msg, *args, **kwargs):
-        if msg.startswith('Django version'):
-            from django.conf import settings
+        if 'Django version' in msg:
+            new_msg_part = (", configuration %r" %
+                            os.environ.get(CONFIGURATION_ENVIRONMENT_VARIABLE))
             msg_parts = msg.split('\n')
-            msg_parts[0] = ("Django version %s, using settings %r" %
-                            (django.get_version(), settings.CONFIGURATION))
-            msg = '\n'.join(msg_parts)
+            modified_msg_parts = []
+            for msg_part in msg_parts:
+                if msg_part.startswith('Django version'):
+                    modified_msg_parts.append(msg_part + new_msg_part)
+                else:
+                    modified_msg_parts.append(msg_part)
+            msg = '\n'.join(modified_msg_parts)
         return self._out.write(msg, *args, **kwargs)
 
 
@@ -75,19 +82,28 @@ def install():
             except ImportError:
                 pass
             else:
-                original_inner_run = runserver_module.Command.inner_run
-                runserver_module.Command.inner_run = patch_inner_run(original_inner_run)
+                inner_run = runserver_module.Command.inner_run
+                runserver_module.Command.inner_run = patch_inner_run(inner_run)
+
+
+def handle_configurations_option(options):
+    if options.configuration:
+        os.environ[CONFIGURATION_ENVIRONMENT_VARIABLE] = options.configuration
 
 
 class SettingsImporter(object):
-    class_varname = 'DJANGO_CONFIGURATION'
-    error_msg = "Settings cannot be imported, environment variable %s is undefined."
+    error_msg = ("Settings cannot be imported, "
+                 "environment variable %s is undefined.")
 
     def __init__(self):
-        parser = OptionParser(option_list=configuration_options, add_help_option=False)
-        options, args = parser.parse_args(sys.argv[2:])
-        if options.configuration:
-            os.environ[self.class_varname] = options.configuration
+        self.argv = sys.argv[:]
+        parser = LaxOptionParser(option_list=configuration_options,
+                                 add_help_option=False)
+        try:
+            options, args = parser.parse_args(self.argv)
+            handle_configurations_option(options)
+        except:
+            pass  # Ignore any option errors at this point.
         self.validate()
 
     def __repr__(self):
@@ -95,17 +111,19 @@ class SettingsImporter(object):
 
     @property
     def module(self):
-        return os.environ.get(ENVIRONMENT_VARIABLE)
+        return os.environ.get(SETTINGS_ENVIRONMENT_VARIABLE)
 
     @property
     def name(self):
-        return os.environ.get(self.class_varname)
+        return os.environ.get(CONFIGURATION_ENVIRONMENT_VARIABLE)
 
     def validate(self):
         if self.name is None:
-            raise ImproperlyConfigured(self.error_msg % self.class_varname)
+            raise ImproperlyConfigured(self.error_msg %
+                                       CONFIGURATION_ENVIRONMENT_VARIABLE)
         if self.module is None:
-            raise ImproperlyConfigured(self.error_msg % ENVIRONMENT_VARIABLE)
+            raise ImproperlyConfigured(self.error_msg %
+                                       SETTINGS_ENVIRONMENT_VARIABLE)
 
     def find_module(self, fullname, path=None):
         if fullname is not None and fullname == self.module:
@@ -139,7 +157,8 @@ class SettingsLoader(object):
         try:
             attributes = uppercase_attributes(obj).items()
         except Exception as err:
-            raise ImproperlyConfigured("Couldn't get items of settings '%s.%s': %s" %
+            raise ImproperlyConfigured("Couldn't get items of settings "
+                                       "'%s.%s': %s" %
                                        (mod.__name__, self.name, err))
         for name, value in attributes:
             if callable(value):
