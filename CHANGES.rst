@@ -3,6 +3,15 @@
 Changelog
 ---------
 
+v0.2.1 (2013-04-11)
+^^^^^^^^^^^^^^^^^^^
+
+- Fixed a regression in parsing the new ``-C``/``--configuration`` management
+  command option.
+
+- Minor fix in showing the configuration in the ``runserver`` management
+  command output.
+
 v0.2 (2013-03-27)
 ^^^^^^^^^^^^^^^^^
 
