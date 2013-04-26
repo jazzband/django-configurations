@@ -41,6 +41,8 @@ class Test(Settings):
     def METHOD_SETTING(self):
         return 2
 
+    LAMBDA_SETTING = lambda self: 3
+
     def TEMPLATE_CONTEXT_PROCESSORS(self):
         return Settings.TEMPLATE_CONTEXT_PROCESSORS + (
             'configurations.tests.settings.base.test_callback',)

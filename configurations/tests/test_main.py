@@ -16,6 +16,7 @@ class MainTests(TestCase):
         self.assertEquals(main.ATTRIBUTE_SETTING, True)
         self.assertEquals(main.PROPERTY_SETTING, 1)
         self.assertEquals(main.METHOD_SETTING, 2)
+        self.assertEquals(main.LAMBDA_SETTING, 3)
         self.assertEquals(main.TEMPLATE_CONTEXT_PROCESSORS,
                           global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
                               'configurations.tests.settings.base.test_callback',
