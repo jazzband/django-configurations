@@ -4,6 +4,8 @@ from configurations import Settings
 
 
 class Test(Settings):
+    DEBUG = True
+
     SITE_ID = 1
 
     SECRET_KEY = str(uuid.uuid4())
@@ -28,18 +30,16 @@ class Test(Settings):
 
     TEST_RUNNER = 'discover_runner.DiscoverRunner'
 
-    TEST_SETTING = True
+    ATTRIBUTE_SETTING = True
 
-    _SOMETHING = 'YEAH'
-
-    DEBUG = True
+    _PRIVATE_SETTING = 'ryan'
 
     @property
-    def LALA(self):
+    def PROPERTY_SETTING(self):
         return 1
 
-    def LALA2(self):
-        return 1
+    def METHOD_SETTING(self):
+        return 2
 
     def TEMPLATE_CONTEXT_PROCESSORS(self):
         return Settings.TEMPLATE_CONTEXT_PROCESSORS + (

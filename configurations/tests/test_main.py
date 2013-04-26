@@ -13,17 +13,18 @@ class MainTests(TestCase):
 
     def test_simple(self):
         from configurations.tests.settings import main
-        self.assertEquals(main.LALA, 1)
+        self.assertEquals(main.ATTRIBUTE_SETTING, True)
+        self.assertEquals(main.PROPERTY_SETTING, 1)
+        self.assertEquals(main.METHOD_SETTING, 2)
         self.assertEquals(main.TEMPLATE_CONTEXT_PROCESSORS,
                           global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
                               'configurations.tests.settings.base.test_callback',
                           ))
-        self.assertEquals(main.TEST_SETTING, True)
 
     def test_global_arrival(self):
         from django.conf import settings
-        self.assertEquals(settings.LALA, 1)
-        self.assertRaises(AttributeError, lambda: settings._SOMETHING)
+        self.assertEquals(settings.PROPERTY_SETTING, 1)
+        self.assertRaises(AttributeError, lambda: settings._PRIVATE_SETTING)
 
     @patch.dict(os.environ, clear=True, DJANGO_CONFIGURATION='Test')
     def test_empty_module_var(self):
