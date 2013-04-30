@@ -17,6 +17,10 @@ class MainTests(TestCase):
         self.assertEqual(main.PROPERTY_SETTING, 1)
         self.assertEqual(main.METHOD_SETTING, 2)
         self.assertEqual(main.LAMBDA_SETTING, 3)
+        self.assertNotEqual(main.PRISTINE_LAMBDA_SETTING, 4)
+        self.assertTrue(lambda: callable(main.PRISTINE_LAMBDA_SETTING))
+        self.assertNotEqual(main.PRISTINE_FUNCTION_SETTING, 5)
+        self.assertTrue(lambda: callable(main.PRISTINE_FUNCTION_SETTING))
         self.assertEqual(main.TEMPLATE_CONTEXT_PROCESSORS,
                          global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
                              'configurations.tests.settings.base.test_callback',
@@ -26,6 +30,10 @@ class MainTests(TestCase):
         from django.conf import settings
         self.assertEqual(settings.PROPERTY_SETTING, 1)
         self.assertRaises(AttributeError, lambda: settings._PRIVATE_SETTING)
+        self.assertNotEqual(settings.PRISTINE_LAMBDA_SETTING, 4)
+        self.assertTrue(lambda: callable(settings.PRISTINE_LAMBDA_SETTING))
+        self.assertNotEqual(settings.PRISTINE_FUNCTION_SETTING, 5)
+        self.assertTrue(lambda: callable(settings.PRISTINE_FUNCTION_SETTING))
 
     @patch.dict(os.environ, clear=True, DJANGO_CONFIGURATION='Test')
     def test_empty_module_var(self):

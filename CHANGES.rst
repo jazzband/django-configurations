@@ -3,6 +3,11 @@
 Changelog
 ---------
 
+v0.3 (unreleased)
+^^^^^^^^^^^^^^^^^
+
+- Added ``pristine`` decorator to be able to have callables as settings.
+
 v0.2.1 (2013-04-11)
 ^^^^^^^^^^^^^^^^^^^
 

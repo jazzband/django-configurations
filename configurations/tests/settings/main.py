@@ -1,6 +1,6 @@
 import os
 import uuid
-from configurations import Settings
+from configurations import Settings, pristine
 
 
 class Test(Settings):
@@ -42,6 +42,12 @@ class Test(Settings):
         return 2
 
     LAMBDA_SETTING = lambda self: 3
+
+    PRISTINE_LAMBDA_SETTING = pristine(lambda: 4)
+
+    @pristine
+    def PRISTINE_FUNCTION_SETTING():
+        return 5
 
     def TEMPLATE_CONTEXT_PROCESSORS(self):
         return Settings.TEMPLATE_CONTEXT_PROCESSORS + (

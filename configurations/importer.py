@@ -161,12 +161,12 @@ class SettingsLoader(object):
                                        "'%s.%s': %s" %
                                        (mod.__name__, self.name, err))
         for name, value in attributes:
-            if callable(value):
+            if callable(value) and not getattr(value, 'pristine', False):
                 try:
                     value = value()
                 except Exception as err:
                     raise ImproperlyConfigured(
-                        "Couldn't execute callable '%s' in '%s.%s': %s" %
+                        "Couldn't call '%s' in '%s.%s': %s" %
                         (value, mod.__name__, self.name, err))
             setattr(mod, name, value)
         setattr(mod, 'CONFIGURATION', '%s.%s' % (fullname, self.name))
