@@ -29,7 +29,7 @@ settings constants, e.g.:
 
     from configurations import Settings
 
-    class MySiteSettings(Settings):
+    class Prod(Settings):
         DEBUG = True
 
 Set the ``DJANGO_CONFIGURATION`` environment variable to the name of the class
@@ -37,7 +37,7 @@ you just created, e.g. in bash:
 
 .. code-block:: console
 
-    export DJANGO_CONFIGURATION=MySiteSettings
+    export DJANGO_CONFIGURATION=Prod
 
 and the ``DJANGO_SETTINGS_MODULE`` environment variable to the module
 import path as usual, e.g. in bash:
@@ -50,7 +50,7 @@ import path as usual, e.g. in bash:
 management commands along the lines of Django's default ``--settings``
 command line option, e.g.::
 
-    python manage.py runserver --settings=mysite.settings --configuration=MySiteSettings
+    python manage.py runserver --settings=mysite.settings --configuration=Prod
 
 To enable Django to use your configuration you now have to modify your
 **manage.py** or **wsgi.py** script to use django-configurations's versions
@@ -66,7 +66,7 @@ django-configurations would look like this:
 
     if __name__ == "__main__":
         os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mysite.settings')
-        os.environ.setdefault('DJANGO_CONFIGURATION', 'MySiteSettings')
+        os.environ.setdefault('DJANGO_CONFIGURATION', 'Prod')
 
         from configurations.management import execute_from_command_line
 
@@ -83,7 +83,7 @@ The same applies to your **wsgi.py** file, e.g.:
     import os
 
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mysite.settings')
-    os.environ.setdefault('DJANGO_CONFIGURATION', 'MySiteSettings')
+    os.environ.setdefault('DJANGO_CONFIGURATION', 'Prod')
 
     from configurations.wsgi import get_wsgi_application
 

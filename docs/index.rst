@@ -102,7 +102,7 @@ setting other values, e.g.::
 
     from configurations import Settings
 
-    class Base(Settings):
+    class Prod(Settings):
         TEMPLATE_CONTEXT_PROCESSORS = \
             Settings.TEMPLATE_CONTEXT_PROCESSORS + (
                 'django.core.context_processors.request',
@@ -127,7 +127,7 @@ a Settings class::
 
     from configurations import Settings
 
-    class AcmeProd(Settings, FullPageCaching):
+    class Prod(Settings, FullPageCaching):
         DEBUG = False
         # ...
 
