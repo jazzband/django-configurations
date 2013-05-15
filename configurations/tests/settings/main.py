@@ -1,6 +1,6 @@
 import os
 import uuid
-from configurations import Settings, pristine
+from configurations import Settings, pristinemethod
 
 
 class Test(Settings):
@@ -47,9 +47,9 @@ class Test(Settings):
 
     LAMBDA_SETTING = lambda self: 3
 
-    PRISTINE_LAMBDA_SETTING = pristine(lambda: 4)
+    PRISTINE_LAMBDA_SETTING = pristinemethod(lambda: 4)
 
-    @pristine
+    @pristinemethod
     def PRISTINE_FUNCTION_SETTING():
         return 5
 

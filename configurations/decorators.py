@@ -1,18 +1,18 @@
-def pristine(func):
+def pristinemethod(func):
     """
     A decorator for handling pristine settings like callables.
 
     Use it like this::
 
-        from configurations import pristine
+        from configurations import pristinemethod
 
         class Develop(Settings):
 
-            @pristine
+            @pristinemethod
             USER_CHECK(user):
                 return user.check_perms()
 
-            GROUP_CHECK = pristine(lambda user: user.has_group_access())
+            GROUP_CHECK = pristinemethod(lambda user: user.has_group_access())
 
     """
     func.pristine = True

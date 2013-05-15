@@ -131,29 +131,29 @@ a Settings class::
         DEBUG = False
         # ...
 
-Pristines
-^^^^^^^^^
+Pristine methods
+^^^^^^^^^^^^^^^^
 
 .. versionadded:: 0.3
 
 In case one of your settings itself need to be a callable, you need to
-tell that django-configurations by using the ``pristine`` decorator,
+tell that django-configurations by using the ``pristinemethod`` decorator,
 e.g.::
 
-    from configurations import Settings, pristine
+    from configurations import Settings, pristinemethod
 
     class Prod(Settings):
 
-        @pristine
+        @pristinemethod
         def ACCESS_FUNCTION(user):
             return user.is_staff
 
 Lambdas work, too::
 
-    from configurations import Settings, pristine
+    from configurations import Settings, pristinemethod
 
     class Prod(Settings):
-        ACCESS_FUNCTION = pristine(lamda user: user.is_staff)
+        ACCESS_FUNCTION = pristinemethod(lamda user: user.is_staff)
 
 Setup methods
 ^^^^^^^^^^^^^
