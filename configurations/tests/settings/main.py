@@ -30,6 +30,10 @@ class Test(Settings):
 
     TEST_RUNNER = 'discover_runner.DiscoverRunner'
 
+    def TEMPLATE_CONTEXT_PROCESSORS(self):
+        return Settings.TEMPLATE_CONTEXT_PROCESSORS + (
+            'configurations.tests.settings.base.test_callback',)
+
     ATTRIBUTE_SETTING = True
 
     _PRIVATE_SETTING = 'ryan'
@@ -49,6 +53,6 @@ class Test(Settings):
     def PRISTINE_FUNCTION_SETTING():
         return 5
 
-    def TEMPLATE_CONTEXT_PROCESSORS(self):
-        return Settings.TEMPLATE_CONTEXT_PROCESSORS + (
-            'configurations.tests.settings.base.test_callback',)
+    @classmethod
+    def setup(cls):
+        cls.SETUP_TEST_SETTING = 6

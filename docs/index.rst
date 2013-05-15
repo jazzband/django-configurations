@@ -155,6 +155,36 @@ Lambdas work, too::
     class Prod(Settings):
         ACCESS_FUNCTION = pristine(lamda user: user.is_staff)
 
+Setup methods
+^^^^^^^^^^^^^
+
+.. versionadded:: 0.3
+
+If there is something required to be set up after all the settings have been
+loaded please override the ``setup`` class method like so (don't forget
+to apply the Python ``@classmethod`` decorator::
+
+    from configurations import Settings
+
+    class Prod(Settings):
+        # ...
+
+        @classmethod
+        def setup(cls):
+            if something.completely.different():
+                cls.DEBUG = True
+
+Or do something unrelated to your settings, like connecting to a database::
+
+    from configurations import Settings
+
+    class Prod(Settings):
+        # ...
+
+        @classmethod
+        def setup(cls):
+            import mango
+            mango.connect('enterprise')
 
 Alternatives
 ------------

@@ -58,4 +58,6 @@ class Settings(six.with_metaclass(SettingsBase)):
     to the name of the class.
 
     """
-    pass
+    @classmethod
+    def setup(cls):
+        pass

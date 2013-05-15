@@ -132,6 +132,22 @@ class SettingsImporter(object):
         return None
 
 
+def reraise(exc, prefix=None, suffix=None):
+    args = exc.args
+    if not args:
+        args = ('',)
+    if prefix is None:
+        prefix = ''
+    elif not prefix.endswith((':', ': ')):
+        prefix = prefix + ': '
+    if suffix is None:
+        suffix = ''
+    elif not (suffix.startswith('(') and suffix.endswith(')')):
+        suffix = '(' + suffix + ')'
+    exc.args = ('%s %s %s' % (prefix, exc.args[0], suffix),) + args[1:]
+    raise
+
+
 class SettingsLoader(object):
 
     def __init__(self, name, location):
@@ -143,31 +159,38 @@ class SettingsLoader(object):
             mod = sys.modules[fullname]  # pragma: no cover
         else:
             mod = imp.load_module(fullname, *self.location)
+        cls_path = '%s.%s' % (mod.__name__, self.name)
         try:
             cls = getattr(mod, self.name)
-        except AttributeError:  # pragma: no cover
-            raise ImproperlyConfigured("Couldn't find settings '%s' in "
-                                       "module '%s'" %
-                                       (self.name, mod.__package__))
+        except AttributeError as err:  # pragma: no cover
+            reraise(err,
+                    "While trying to find the '%s' settings in module '%s'" %
+                    (self.name, mod.__package__))
+        try:
+            cls.setup()
+        except Exception as err:
+            reraise(err, "While calling '%s.setup()'" % cls_path)
         try:
             obj = cls()
         except Exception as err:
-            raise ImproperlyConfigured("Couldn't load settings '%s.%s': %s" %
-                                       (mod.__name__, self.name, err))
+            reraise(err,
+                    "While loading the '%s' settings" % cls_path)
+
         try:
             attributes = uppercase_attributes(obj).items()
         except Exception as err:
-            raise ImproperlyConfigured("Couldn't get items of settings "
-                                       "'%s.%s': %s" %
-                                       (mod.__name__, self.name, err))
+            reraise(err,
+                    "While getting the items of the '%s' settings" %
+                    cls_path)
+
         for name, value in attributes:
             if callable(value) and not getattr(value, 'pristine', False):
                 try:
                     value = value()
                 except Exception as err:
-                    raise ImproperlyConfigured(
-                        "Couldn't call '%s' in '%s.%s': %s" %
-                        (value, mod.__name__, self.name, err))
+                    reraise(err,
+                            "While calling '%s.%s'" % (cls_path, value))
             setattr(mod, name, value)
+
         setattr(mod, 'CONFIGURATION', '%s.%s' % (fullname, self.name))
         return mod
