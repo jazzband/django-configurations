@@ -25,7 +25,8 @@ class MainTests(TestCase):
                          global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
                              'configurations.tests.settings.base.test_callback',
                          ))
-        self.assertEqual(main.SETUP_TEST_SETTING, 6)
+        self.assertEqual(main.PRE_SETUP_TEST_SETTING, 6)
+        self.assertRaises(AttributeError, lambda: main.POST_SETUP_TEST_SETTING)
 
     def test_global_arrival(self):
         from django.conf import settings
@@ -35,7 +36,8 @@ class MainTests(TestCase):
         self.assertTrue(lambda: callable(settings.PRISTINE_LAMBDA_SETTING))
         self.assertNotEqual(settings.PRISTINE_FUNCTION_SETTING, 5)
         self.assertTrue(lambda: callable(settings.PRISTINE_FUNCTION_SETTING))
-        self.assertEqual(settings.SETUP_TEST_SETTING, 6)
+        self.assertEqual(settings.PRE_SETUP_TEST_SETTING, 6)
+        self.assertEqual(settings.POST_SETUP_TEST_SETTING, 8)
 
     @patch.dict(os.environ, clear=True, DJANGO_CONFIGURATION='Test')
     def test_empty_module_var(self):

@@ -160,9 +160,10 @@ Setup methods
 
 .. versionadded:: 0.3
 
-If there is something required to be set up after all the settings have been
-loaded please override the ``setup`` class method like so (don't forget
-to apply the Python ``@classmethod`` decorator::
+If there is something required to be set up before or after the settings
+loading happens, please override the ``pre_setup`` or ``post_setup``
+class methods like so (don't forget to apply the Python ``@classmethod``
+decorator::
 
     from configurations import Settings
 
@@ -170,11 +171,22 @@ to apply the Python ``@classmethod`` decorator::
         # ...
 
         @classmethod
-        def setup(cls):
+        def pre_setup(cls):
             if something.completely.different():
                 cls.DEBUG = True
 
-Or do something unrelated to your settings, like connecting to a database::
+        @classmethod
+        def post_setup(cls):
+            print("done setting up! \o/")
+
+As you can see above the ``pre_setup`` method can also be used to
+programmatically change a class attribute of the settings class and it
+will be taken into account when doing the rest of the settings setup.
+Of course that won't work for ``post_setup`` since that's when the
+settings setup is already done.
+
+In fact you can easily do something unrelated to settings, like
+connecting to a database::
 
     from configurations import Settings
 
@@ -182,9 +194,21 @@ Or do something unrelated to your settings, like connecting to a database::
         # ...
 
         @classmethod
-        def setup(cls):
+        def post_setup(cls):
             import mango
             mango.connect('enterprise')
+
+
+.. warning::
+
+    You could do the same by overriding the ``__init__`` method of your
+    settings class but this may cause hard to debug errors because
+    at the time the ``__init__`` method is called (during Django startup)
+    the Django setting system isn't fully loaded yet.
+
+    So anything you do in ``__init__`` that may require
+    ``django.conf.settings`` or Django models there is a good chance it
+    won't work. Use the ``post_setup`` method for that instead.
 
 Alternatives
 ------------

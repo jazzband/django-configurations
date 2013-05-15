@@ -160,6 +160,7 @@ class SettingsLoader(object):
         else:
             mod = imp.load_module(fullname, *self.location)
         cls_path = '%s.%s' % (mod.__name__, self.name)
+
         try:
             cls = getattr(mod, self.name)
         except AttributeError as err:  # pragma: no cover
@@ -167,9 +168,10 @@ class SettingsLoader(object):
                     "While trying to find the '%s' settings in module '%s'" %
                     (self.name, mod.__package__))
         try:
-            cls.setup()
+            cls.pre_setup()
         except Exception as err:
-            reraise(err, "While calling '%s.setup()'" % cls_path)
+            reraise(err, "While calling '%s.pre_setup()'" % cls_path)
+
         try:
             obj = cls()
         except Exception as err:
@@ -193,4 +195,10 @@ class SettingsLoader(object):
             setattr(mod, name, value)
 
         setattr(mod, 'CONFIGURATION', '%s.%s' % (fullname, self.name))
+
+        try:
+            cls.post_setup()
+        except Exception as err:
+            reraise(err, "While calling '%s.post_setup()'" % cls_path)
+
         return mod

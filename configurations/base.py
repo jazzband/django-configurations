@@ -59,5 +59,9 @@ class Settings(six.with_metaclass(SettingsBase)):
 
     """
     @classmethod
-    def setup(cls):
+    def pre_setup(cls):
+        pass
+
+    @classmethod
+    def post_setup(cls):
         pass
