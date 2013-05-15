@@ -152,7 +152,7 @@ Lambdas work, too::
     from configurations import Settings, pristinemethod
 
     class Prod(Settings):
-        ACCESS_FUNCTION = pristinemethod(lamda user: user.is_staff)
+        ACCESS_FUNCTION = pristinemethod(lambda user: user.is_staff)
 
 Setup methods
 ^^^^^^^^^^^^^
