@@ -60,5 +60,3 @@ class Test(Settings):
     @classmethod
     def post_setup(cls):
         cls.POST_SETUP_TEST_SETTING = 7
-        from django.conf import settings
-        settings.POST_SETUP_TEST_SETTING = 8
