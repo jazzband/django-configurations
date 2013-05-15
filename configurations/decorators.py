@@ -9,7 +9,7 @@ def pristinemethod(func):
         class Develop(Settings):
 
             @pristinemethod
-            USER_CHECK(user):
+            def USER_CHECK(user):
                 return user.check_perms()
 
             GROUP_CHECK = pristinemethod(lambda user: user.has_group_access())
