@@ -103,8 +103,7 @@ setting other values, e.g.::
     from configurations import Settings
 
     class Prod(Settings):
-        TEMPLATE_CONTEXT_PROCESSORS = \
-            Settings.TEMPLATE_CONTEXT_PROCESSORS + (
+        TEMPLATE_CONTEXT_PROCESSORS = Settings.TEMPLATE_CONTEXT_PROCESSORS + (
                 'django.core.context_processors.request',
             )
 
