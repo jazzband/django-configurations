@@ -92,5 +92,19 @@ The same applies to your **wsgi.py** file, e.g.:
 Here we don't use the default ``django.core.wsgi.get_wsgi_application``
 function but instead ``configurations.wsgi.get_wsgi_application``.
 
-That's it! You can now use your project with **manage.py** and your favorite
+That's it! You can now use your project with ``manage.py`` and your favorite
 WSGI enabled server.
+
+**Alternatively** you can use a special Django project template that is a copy
+of the one included in Django 1.5.x. The following example assumes you're using
+pip_ to install dependencies.::
+
+    # first install Django and django-configurations
+    pip install -r https://raw.github.com/jezdez/django-configurations/templates/1.5.x/requirements.txt
+    # then create your new Django project with the provided template
+    django-admin.py startproject mysite -v2 --template https://github.com/jezdez/django-configurations/archive/templates/1.5.x.zip
+
+Now you have a default Django 1.5.x project in the ``mysite`` directory that uses
+django-configurations.
+
+.. _pip: http://pip-installer.org/
