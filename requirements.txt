@@ -1,0 +1,2 @@
+django-configurations>=0.3
+Django<1.6
