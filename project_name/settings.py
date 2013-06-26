@@ -178,5 +178,5 @@ class Prod(Common):
     DEBUG = False
     TEMPLATE_DEBUG = DEBUG
 
-    # Make this unique, and don't share it with anybody.
-    SECRET_KEY = '{{ secret_key }}'
+    # Empty by design to trigger a warning to fill it with something sensible.
+    SECRET_KEY = ''
