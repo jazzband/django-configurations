@@ -79,8 +79,8 @@ class BooleanValue(Value):
     def __init__(self, *args, **kwargs):
         super(BooleanValue, self).__init__(*args, **kwargs)
         if self.default not in (True, False):
-            raise ValueError('Default value {!r} is '
-                             'not a boolean value'.format(self.default))
+            raise ImproperlyConfigured('Default value {!r} is not a '
+                                       'boolean value'.format(self.default))
 
     def to_python(self, value):
         normalized_value = value.strip().lower()
@@ -89,8 +89,8 @@ class BooleanValue(Value):
         elif normalized_value in self.false_values:
             return False
         else:
-            raise ValueError('Cannot interpret '
-                             'boolean value {!r}'.format(value))
+            raise ImproperlyConfigured('Cannot interpret '
+                                       'boolean value {!r}'.format(value))
 
 
 class CastingMixin(object):
@@ -112,7 +112,7 @@ class CastingMixin(object):
         try:
             return self._caster(value)
         except self.exception:
-            raise ValueError(self.message.format(value))
+            raise ImproperlyConfigured(self.message.format(value))
 
 
 class IntegerValue(CastingMixin, Value):
@@ -157,7 +157,8 @@ class ListValue(Value):
             try:
                 converted_values.append(self.converter(list_value))
             except (TypeError, ValueError):
-                raise ValueError(self.message.format(list_value, value))
+                raise ImproperlyConfigured(self.message.format(list_value,
+                                                               value))
         return converted_values
 
 
@@ -197,6 +198,7 @@ class SetValue(ListValue):
 
 
 class DictValue(Value):
+    message = 'Cannot interpret dict value {!s}'
 
     def __init__(self, *args, **kwargs):
         super(DictValue, self).__init__(*args, **kwargs)
@@ -209,9 +211,12 @@ class DictValue(Value):
         value = super(DictValue, self).to_python(value)
         if not value:
             return {}
-        evaled_value = ast.literal_eval(value)
+        try:
+            evaled_value = ast.literal_eval(value)
+        except ValueError:
+            raise ImproperlyConfigured(self.message.format(value))
         if not isinstance(evaled_value, dict):
-            raise ValueError('Cannot interpret dict value {!s}'.format(value))
+            raise ImproperlyConfigured(self.message.format(value))
         return evaled_value
 
 
@@ -233,7 +238,7 @@ class ValidationMixin(object):
         try:
             self._validator(value)
         except ValidationError:
-            raise ValueError(self.message.format(value))
+            raise ImproperlyConfigured(self.message.format(value))
         else:
             return value
 
@@ -271,7 +276,8 @@ class PathValue(Value):
         value = super(PathValue, self).setup(name)
         value = os.path.expanduser(value)
         if self.check_exists and not os.path.exists(value):
-            raise ValueError('Path {!r} does not exist.'.format(value))
+            raise ImproperlyConfigured('Path {!r} does '
+                                       'not exist.'.format(value))
         return os.path.abspath(value)
 
 
@@ -281,13 +287,14 @@ class SecretValue(Value):
         kwargs['environ'] = True
         super(SecretValue, self).__init__(*args, **kwargs)
         if self.default is not None:
-            raise ValueError('Secret values are only allowed to be '
-                             'set as environment variables')
+            raise ImproperlyConfigured('Secret values are only allowed to '
+                                       'be set as environment variables')
 
     def setup(self, name):
         value = super(SecretValue, self).setup(name)
         if not value:
-            raise ValueError('Secret value {!r} is not set'.format(name))
+            raise ImproperlyConfigured('Secret value {!r} '
+                                       'is not set'.format(name))
         return value
 
 
