@@ -1,5 +1,12 @@
 .. include:: ../README.rst
 
+Project templates
+^^^^^^^^^^^^^^^^^
+
+Don't miss the Django :ref:`project templates pre-configured with 
+django-configurations<project-templates>` to simplify getting started
+with new Django projects.
+
 Wait, what?
 -----------
 

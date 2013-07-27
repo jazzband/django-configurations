@@ -1,6 +1,50 @@
 Cookbook
 ========
 
+.. _project-templates:
+
+Project templates
+-----------------
+
+You can use a special Django project template that is a copy of the one
+included in Django 1.5.x and 1.6.x. The following examples assumes you're
+using pip_ to install packages.
+
+Django 1.5.x
+^^^^^^^^^^^^
+
+First install Django 1.5.x and django-configurations::
+
+    pip install -r https://raw.github.com/jezdez/django-configurations/templates/1.5.x/requirements.txt
+
+Then create your new Django project with the provided template::
+
+    django-admin.py startproject mysite -v2 --template https://github.com/jezdez/django-configurations/archive/templates/1.5.x.zip
+
+See the repository of the template for more information:
+
+    https://github.com/jezdez/django-configurations/tree/templates/1.5.x
+
+Django 1.6.x
+^^^^^^^^^^^^
+
+First install Django 1.6.x and django-configurations::
+
+    pip install -r https://raw.github.com/jezdez/django-configurations/templates/1.6.x/requirements.txt
+
+Or Django 1.6::
+
+    django-admin.py startproject mysite -v2 --template https://github.com/jezdez/django-configurations/archive/templates/1.6.x.zip
+
+Now you have a default Django 1.5.x or 1.6.x project in the ``mysite``
+directory that uses django-configurations.
+
+See the repository of the template for more information:
+
+    https://github.com/jezdez/django-configurations/tree/templates/1.6.x
+
+.. _pip: http://pip-installer.org/
+
 Celery
 ------
 

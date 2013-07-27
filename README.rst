@@ -96,27 +96,3 @@ function but instead ``configurations.wsgi.get_wsgi_application``.
 
 That's it! You can now use your project with ``manage.py`` and your favorite
 WSGI enabled server.
-
-Project templates
------------------
-
-You can use a special Django project template that is a copy of the one
-included in Django 1.5.x. The following examples assumes you're using pip_
-to install packages.
-
-First install Django and django-configurations::
-
-    pip install -r https://raw.github.com/jezdez/django-configurations/templates/1.5.x/requirements.txt
-
-Then create your new Django project with the provided template::
-
-    django-admin.py startproject mysite -v2 --template https://github.com/jezdez/django-configurations/archive/templates/1.5.x.zip
-
-Now you have a default Django 1.5.x project in the ``mysite`` directory that uses
-django-configurations.
-
-See the repository of the template for more information:
-
-    https://github.com/jezdez/django-configurations/tree/templates/1.5.x
-
-.. _pip: http://pip-installer.org/
