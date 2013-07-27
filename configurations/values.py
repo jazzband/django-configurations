@@ -79,7 +79,7 @@ class BooleanValue(Value):
     def __init__(self, *args, **kwargs):
         super(BooleanValue, self).__init__(*args, **kwargs)
         if self.default not in (True, False):
-            raise ImproperlyConfigured('Default value {!r} is not a '
+            raise ImproperlyConfigured('Default value {0!r} is not a '
                                        'boolean value'.format(self.default))
 
     def to_python(self, value):
@@ -90,12 +90,12 @@ class BooleanValue(Value):
             return False
         else:
             raise ImproperlyConfigured('Cannot interpret '
-                                       'boolean value {!r}'.format(value))
+                                       'boolean value {0!r}'.format(value))
 
 
 class CastingMixin(object):
     exception = (TypeError, ValueError)
-    message = 'Cannot interpret value {!r}'
+    message = 'Cannot interpret value {0!r}'
 
     def __init__(self, *args, **kwargs):
         super(CastingMixin, self).__init__(*args, **kwargs)
@@ -130,7 +130,7 @@ class DecimalValue(CastingMixin, Value):
 
 class ListValue(Value):
     converter = None
-    message = 'Cannot interpret list item {!r} in list {!r}'
+    message = 'Cannot interpret list item {0!r} in list {1!r}'
 
     def __init__(self, *args, **kwargs):
         self.separator = kwargs.pop('separator', ',')
@@ -170,7 +170,7 @@ class BackendsValue(ListValue):
 
 
 class TupleValue(ListValue):
-    message = 'Cannot interpret tuple item {!r} in tuple {!r}'
+    message = 'Cannot interpret tuple item {0!r} in tuple {1!r}'
 
     def __init__(self, *args, **kwargs):
         super(TupleValue, self).__init__(*args, **kwargs)
@@ -184,7 +184,7 @@ class TupleValue(ListValue):
 
 
 class SetValue(ListValue):
-    message = 'Cannot interpret set item {!r} in set {!r}'
+    message = 'Cannot interpret set item {0!r} in set {1!r}'
 
     def __init__(self, *args, **kwargs):
         super(SetValue, self).__init__(*args, **kwargs)
@@ -244,22 +244,22 @@ class ValidationMixin(object):
 
 
 class EmailValue(ValidationMixin, Value):
-    message = 'Cannot interpret email value {!r}'
+    message = 'Cannot interpret email value {0!r}'
     validator = 'django.core.validators.validate_email'
 
 
 class URLValue(ValidationMixin, Value):
-    message = 'Cannot interpret URL value {!r}'
+    message = 'Cannot interpret URL value {0!r}'
     validator = validators.URLValidator()
 
 
 class IPValue(ValidationMixin, Value):
-    message = 'Cannot interpret IP value {!r}'
+    message = 'Cannot interpret IP value {0!r}'
     validator = 'django.core.validators.validate_ipv46_address'
 
 
 class RegexValue(ValidationMixin, Value):
-    message = "Regex doesn't match value {!r}"
+    message = "Regex doesn't match value {0!r}"
 
     def __init__(self, *args, **kwargs):
         regex = kwargs.pop('regex', None)
@@ -276,7 +276,7 @@ class PathValue(Value):
         value = super(PathValue, self).setup(name)
         value = os.path.expanduser(value)
         if self.check_exists and not os.path.exists(value):
-            raise ImproperlyConfigured('Path {!r} does '
+            raise ImproperlyConfigured('Path {0!r} does '
                                        'not exist.'.format(value))
         return os.path.abspath(value)
 
@@ -293,14 +293,14 @@ class SecretValue(Value):
     def setup(self, name):
         value = super(SecretValue, self).setup(name)
         if not value:
-            raise ImproperlyConfigured('Secret value {!r} '
+            raise ImproperlyConfigured('Secret value {0!r} '
                                        'is not set'.format(name))
         return value
 
 
 class DatabaseURLValue(CastingMixin, Value):
     caster = 'dj_database_url.parse'
-    message = 'Cannot interpret database URL value {!r}'
+    message = 'Cannot interpret database URL value {0!r}'
 
     def __init__(self, *args, **kwargs):
         self.alias = kwargs.pop('alias', 'default')
@@ -320,7 +320,7 @@ class DatabaseURLValue(CastingMixin, Value):
 
 class EmailURLValue(CastingMixin, MultipleMixin, Value):
     caster = 'dj_email_url.parse'
-    message = 'Cannot interpret email URL value {!r}'
+    message = 'Cannot interpret email URL value {0!r}'
 
     def __init__(self, *args, **kwargs):
         kwargs.setdefault('environ', True)
@@ -335,7 +335,7 @@ class EmailURLValue(CastingMixin, MultipleMixin, Value):
 
 class CacheURLValue(CastingMixin, Value):
     caster = 'django_cache_url.parse'
-    message = 'Cannot interpret cache URL value {!r}'
+    message = 'Cannot interpret cache URL value {0!r}'
 
     def __init__(self, name='default', *args, **kwargs):
         self.alias = kwargs.pop('alias', 'default')

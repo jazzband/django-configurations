@@ -30,7 +30,7 @@ class StdoutWrapper(object):
 
     def write(self, msg, *args, **kwargs):
         if 'Django version' in msg:
-            new_msg_part = (", configuration {!r}".format(
+            new_msg_part = (", configuration {0!r}".format(
                             os.environ.get(CONFIGURATION_ENVIRONMENT_VARIABLE)))
             msg_parts = msg.split('\n')
             modified_msg_parts = []
