@@ -198,7 +198,7 @@ class SetValue(ListValue):
 
 
 class DictValue(Value):
-    message = 'Cannot interpret dict value {!s}'
+    message = 'Cannot interpret dict value {0!r}'
 
     def __init__(self, *args, **kwargs):
         super(DictValue, self).__init__(*args, **kwargs)
