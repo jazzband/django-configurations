@@ -1,0 +1,3 @@
+django-configurations>=0.4
+Django>=1.6
+dj-database-url==0.2.2
