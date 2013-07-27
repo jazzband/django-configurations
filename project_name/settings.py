@@ -96,3 +96,5 @@ class Prod(Common):
     """
     DEBUG = False
     TEMPLATE_DEBUG = DEBUG
+
+    SECRET_KEY = values.SecretValue()
