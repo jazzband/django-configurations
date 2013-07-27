@@ -10,8 +10,8 @@ from django.conf import ENVIRONMENT_VARIABLE as SETTINGS_ENVIRONMENT_VARIABLE
 from django.utils.decorators import available_attrs
 from django.utils.importlib import import_module
 
-from .utils import uppercase_attributes
-
+from .utils import uppercase_attributes, reraise
+from .values import Value, setup_value
 
 installed = False
 
@@ -133,22 +133,6 @@ class ConfigurationImporter(object):
         return None
 
 
-def reraise(exc, prefix=None, suffix=None):
-    args = exc.args
-    if not args:
-        args = ('',)
-    if prefix is None:
-        prefix = ''
-    elif not prefix.endswith((':', ': ')):
-        prefix = prefix + ': '
-    if suffix is None:
-        suffix = ''
-    elif not (suffix.startswith('(') and suffix.endswith(')')):
-        suffix = '(' + suffix + ')'
-    exc.args = ('%s %s %s' % (prefix, exc.args[0], suffix),) + args[1:]
-    raise
-
-
 class ConfigurationLoader(object):
 
     def __init__(self, name, location):
@@ -174,6 +158,11 @@ class ConfigurationLoader(object):
             reraise(err, "While calling '{0}.pre_setup()'".format(cls_path))
 
         try:
+            cls.setup()
+        except Exception as err:
+            reraise(err, "While calling the '{0}.setup()'".format(cls_path))
+
+        try:
             obj = cls()
         except Exception as err:
             reraise(err, "While initializing the '{0}' "
@@ -192,6 +181,11 @@ class ConfigurationLoader(object):
                 except Exception as err:
                     reraise(err, "While calling '{0}.{1}'".format(cls_path,
                                                                   value))
+                # in case a method returns a Value instance we have
+                # to do the same as the Configuration.setup method
+                if isinstance(value, Value):
+                    setup_value(mod, name, value)
+                    continue
             setattr(mod, name, value)
 
         setattr(mod, 'CONFIGURATION', '{0}.{1}'.format(fullname, self.name))

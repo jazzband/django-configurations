@@ -1,15 +1,17 @@
-from configurations import Settings
+from configurations import Configuration, values
 
 
-class Base(Settings):
+class Base(Configuration):
     # Django settings for test_project project.
 
-    DEBUG = True
+    DEBUG = values.BooleanValue(True, environ=True)
     TEMPLATE_DEBUG = DEBUG
 
     ADMINS = (
         # ('Your Name', 'your_email@example.com'),
     )
+
+    EMAIL_URL = values.EmailURLValue('console://', environ=True)
 
     MANAGERS = ADMINS
 

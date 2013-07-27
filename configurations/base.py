@@ -5,6 +5,7 @@ from django.conf import global_settings
 from django.core.exceptions import ImproperlyConfigured
 
 from .utils import uppercase_attributes
+from .values import Value, setup_value
 
 __all__ = ['Configuration']
 
@@ -69,6 +70,12 @@ class Configuration(six.with_metaclass(ConfigurationBase)):
     @classmethod
     def post_setup(cls):
         pass
+
+    @classmethod
+    def setup(cls):
+        for name, value in uppercase_attributes(cls).items():
+            if isinstance(value, Value):
+                setup_value(cls, name, value)
 
 
 class Settings(Configuration):

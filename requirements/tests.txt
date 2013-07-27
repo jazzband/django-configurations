@@ -2,3 +2,6 @@ flake8
 coverage
 django-discover-runner
 mock
+dj-database-url
+dj-email-url
+django-cache-url
