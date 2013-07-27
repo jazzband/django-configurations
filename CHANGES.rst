@@ -3,6 +3,19 @@
 Changelog
 ---------
 
+v0.4 (2013-XX-XX)
+^^^^^^^^^^^^^^^^^
+
+- Added ``Value`` classes and subclasses for easier handling of settings values,
+  including populating them from environment variables.
+
+- Renamed ``configurations.Settings`` class to ``configurations.Configuration``
+  to better describe what the class is all about.
+
+- Added Django project templates for 1.5.x and 1.6.x.
+
+- Reorganized and extended documentation.
+
 v0.3 (2013-05-15)
 ^^^^^^^^^^^^^^^^^
 
