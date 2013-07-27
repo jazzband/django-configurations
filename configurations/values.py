@@ -150,7 +150,7 @@ class ListValue(Value):
         # removing empty items
         value_list = filter(None, split_value)
         if self.converter is None:
-            return value_list
+            return list(value_list)
 
         converted_values = []
         for list_value in value_list:
