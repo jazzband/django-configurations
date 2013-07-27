@@ -4,9 +4,9 @@ def pristinemethod(func):
 
     Use it like this::
 
-        from configurations import pristinemethod
+        from configurations import Configuration, pristinemethod
 
-        class Develop(Settings):
+        class Develop(Configuration):
 
             @pristinemethod
             def USER_CHECK(user):

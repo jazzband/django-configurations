@@ -2,3 +2,10 @@ flake8
 coverage
 django-discover-runner
 mock
+dj-database-url
+dj-email-url
+#django-cache-url
+https://github.com/jezdez/django-cache-url/archive/py3k.zip
+# use a unreleased version of invoke since it's compatible with 3.2
+https://github.com/pyinvoke/invoke/archive/771110190ddb729913e8afc67724b84f42e6176d.zip
+six

@@ -1,9 +1,11 @@
 import os
 import uuid
-from configurations import Settings, pristinemethod
+import django
+
+from configurations import Configuration, pristinemethod
 
 
-class Test(Settings):
+class Test(Configuration):
     DEBUG = True
 
     SITE_ID = 1
@@ -28,10 +30,11 @@ class Test(Settings):
 
     ROOT_URLCONF = 'configurations.tests.urls'
 
-    TEST_RUNNER = 'discover_runner.DiscoverRunner'
+    if django.VERSION[:2] < (1, 6):
+        TEST_RUNNER = 'discover_runner.DiscoverRunner'
 
     def TEMPLATE_CONTEXT_PROCESSORS(self):
-        return Settings.TEMPLATE_CONTEXT_PROCESSORS + (
+        return Configuration.TEMPLATE_CONTEXT_PROCESSORS + (
             'configurations.tests.settings.base.test_callback',)
 
     ATTRIBUTE_SETTING = True

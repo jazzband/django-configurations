@@ -19,7 +19,7 @@ Install django-configurations:
 
     pip install django-configurations
 
-Then subclass the included ``configurations.Settings`` class in your
+Then subclass the included ``configurations.Configuration`` class in your
 project's **settings.py** or any other module you're using to store the
 settings constants, e.g.:
 
@@ -27,9 +27,9 @@ settings constants, e.g.:
 
     # mysite/settings.py
 
-    from configurations import Settings
+    from configurations import Configuration
 
-    class Dev(Settings):
+    class Dev(Configuration):
         DEBUG = True
 
 Set the ``DJANGO_CONFIGURATION`` environment variable to the name of the class
@@ -58,6 +58,7 @@ of the appropriate starter functions, e.g. a typical **manage.py** using
 django-configurations would look like this:
 
 .. code-block:: python
+   :emphasize-lines: 10
 
     #!/usr/bin/env python
 
@@ -72,13 +73,14 @@ django-configurations would look like this:
 
         execute_from_command_line(sys.argv)
 
-Notice in line 9 we don't use the common tool
+Notice in line 10 we don't use the common tool
 ``django.core.management.execute_from_command_line`` but instead
 ``configurations.management.execute_from_command_line``.
 
 The same applies to your **wsgi.py** file, e.g.:
 
 .. code-block:: python
+   :emphasize-lines: 6
 
     import os
 
@@ -95,16 +97,26 @@ function but instead ``configurations.wsgi.get_wsgi_application``.
 That's it! You can now use your project with ``manage.py`` and your favorite
 WSGI enabled server.
 
-**Alternatively** you can use a special Django project template that is a copy
-of the one included in Django 1.5.x. The following example assumes you're using
-pip_ to install dependencies.::
+Project templates
+-----------------
 
-    # first install Django and django-configurations
+You can use a special Django project template that is a copy of the one
+included in Django 1.5.x. The following examples assumes you're using pip_
+to install packages.
+
+First install Django and django-configurations::
+
     pip install -r https://raw.github.com/jezdez/django-configurations/templates/1.5.x/requirements.txt
-    # then create your new Django project with the provided template
+
+Then create your new Django project with the provided template::
+
     django-admin.py startproject mysite -v2 --template https://github.com/jezdez/django-configurations/archive/templates/1.5.x.zip
 
 Now you have a default Django 1.5.x project in the ``mysite`` directory that uses
 django-configurations.
+
+See the repository of the template for more information:
+
+    https://github.com/jezdez/django-configurations/tree/templates/1.5.x
 
 .. _pip: http://pip-installer.org/
