@@ -6,7 +6,8 @@ python:
   - 3.3
 install:
   - pip install -e .
-  - pip install -r requirements/tests.txt Django==$DJANGO
+  - pip install -r requirements/tests.txt
+  - pip install https://github.com/django/django/archive/${DJANGO}.zip#egg=django
 script:
   - inv test
 env:
