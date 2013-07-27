@@ -1,8 +1,8 @@
 # Django settings for {{ project_name }} project.
-from configurations import Settings
+from configurations import Configuration
 
 
-class Common(Settings):
+class Common(Configuration):
     DEBUG = True
     TEMPLATE_DEBUG = DEBUG
 
@@ -12,22 +12,7 @@ class Common(Settings):
 
     MANAGERS = ADMINS
 
-    DATABASES = {
-        'default': {
-            # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-            'ENGINE': 'django.db.backends.',
-            # Name of database or path to database file if using sqlite3.
-            'NAME': '',
-            # The following settings are not used with sqlite3:
-            'USER': '',
-            'PASSWORD': '',
-            # Empty for localhost through domain sockets or '127.0.0.1' for
-            # localhost through TCP.
-            'HOST': '',
-            # Set to empty string for default.
-            'PORT': '',
-        }
-    }
+    DATABASES = values.DatabaseURLValue('sqlite://', environ=True)
 
     # Hosts/domain names that are valid for this site; required if DEBUG is False
     # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
@@ -179,4 +164,4 @@ class Prod(Common):
     TEMPLATE_DEBUG = DEBUG
 
     # Empty by design to trigger a warning to fill it with something sensible.
-    SECRET_KEY = ''
+    SECRET_KEY = values.SecretValue()
