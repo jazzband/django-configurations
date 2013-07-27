@@ -1,4 +1,4 @@
-from configurations import Settings
+from configurations import Configuration
 
 
 class Mixin1(object):
@@ -17,7 +17,7 @@ class Mixin2(object):
             'some_app.context_processors.processor2',)
 
 
-class Inheritance(Mixin2, Mixin1, Settings):
+class Inheritance(Mixin2, Mixin1, Configuration):
 
     @property
     def TEMPLATE_CONTEXT_PROCESSORS(self):

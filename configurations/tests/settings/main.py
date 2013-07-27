@@ -1,9 +1,9 @@
 import os
 import uuid
-from configurations import Settings, pristinemethod
+from configurations import Configuration, pristinemethod
 
 
-class Test(Settings):
+class Test(Configuration):
     DEBUG = True
 
     SITE_ID = 1
@@ -31,7 +31,7 @@ class Test(Settings):
     TEST_RUNNER = 'discover_runner.DiscoverRunner'
 
     def TEMPLATE_CONTEXT_PROCESSORS(self):
-        return Settings.TEMPLATE_CONTEXT_PROCESSORS + (
+        return Configuration.TEMPLATE_CONTEXT_PROCESSORS + (
             'configurations.tests.settings.base.test_callback',)
 
     ATTRIBUTE_SETTING = True

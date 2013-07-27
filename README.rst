@@ -19,7 +19,7 @@ Install django-configurations:
 
     pip install django-configurations
 
-Then subclass the included ``configurations.Settings`` class in your
+Then subclass the included ``configurations.Configuration`` class in your
 project's **settings.py** or any other module you're using to store the
 settings constants, e.g.:
 
@@ -27,9 +27,9 @@ settings constants, e.g.:
 
     # mysite/settings.py
 
-    from configurations import Settings
+    from configurations import Configuration
 
-    class Dev(Settings):
+    class Dev(Configuration):
         DEBUG = True
 
 Set the ``DJANGO_CONFIGURATION`` environment variable to the name of the class

@@ -30,8 +30,8 @@ class StdoutWrapper(object):
 
     def write(self, msg, *args, **kwargs):
         if 'Django version' in msg:
-            new_msg_part = (", configuration %r" %
-                            os.environ.get(CONFIGURATION_ENVIRONMENT_VARIABLE))
+            new_msg_part = (", configuration {!r}".format(
+                            os.environ.get(CONFIGURATION_ENVIRONMENT_VARIABLE)))
             msg_parts = msg.split('\n')
             modified_msg_parts = []
             for msg_part in msg_parts:
@@ -53,7 +53,7 @@ def patch_inner_run(original):
 
 configuration_options = (
     make_option('--configuration',
-                help='The name of the settings class to load, e.g. '
+                help='The name of the configuration class to load, e.g. '
                      '"Development". If this isn\'t provided, the '
                      'DJANGO_CONFIGURATION environment variable will '
                      'be used.'),)
@@ -69,16 +69,16 @@ def install():
         # add the configuration option to all management commands
         base.BaseCommand.option_list += configuration_options
 
-        sys.meta_path.insert(0, SettingsImporter())
+        sys.meta_path.insert(0, ConfigurationImporter())
         installed = True
 
         # now patch the active runserver command to show a nicer output
         commands = management.get_commands()
-        runserver_path = commands.get('runserver', None)
-        if runserver_path is not None:
-            full_path = '%s.management.commands.runserver' % runserver_path
+        runserver = commands.get('runserver', None)
+        if runserver is not None:
+            path = '{0}.management.commands.runserver'.format(runserver)
             try:
-                runserver_module = import_module(full_path)
+                runserver_module = import_module(path)
             except ImportError:
                 pass
             else:
@@ -91,9 +91,9 @@ def handle_configurations_option(options):
         os.environ[CONFIGURATION_ENVIRONMENT_VARIABLE] = options.configuration
 
 
-class SettingsImporter(object):
-    error_msg = ("Settings cannot be imported, "
-                 "environment variable %s is undefined.")
+class ConfigurationImporter(object):
+    error_msg = ("Configuration cannot be imported, "
+                 "environment variable {0} is undefined.")
 
     def __init__(self):
         self.argv = sys.argv[:]
@@ -107,7 +107,8 @@ class SettingsImporter(object):
         self.validate()
 
     def __repr__(self):
-        return "<SettingsImporter for '%s.%s'>" % (self.module, self.name)
+        return "<ConfigurationImporter for '{0}.{1}'>".format(self.module,
+                                                              self.name)
 
     @property
     def module(self):
@@ -119,16 +120,16 @@ class SettingsImporter(object):
 
     def validate(self):
         if self.name is None:
-            raise ImproperlyConfigured(self.error_msg %
-                                       CONFIGURATION_ENVIRONMENT_VARIABLE)
+            raise ImproperlyConfigured(self.error_msg.format(
+                                       CONFIGURATION_ENVIRONMENT_VARIABLE))
         if self.module is None:
-            raise ImproperlyConfigured(self.error_msg %
-                                       SETTINGS_ENVIRONMENT_VARIABLE)
+            raise ImproperlyConfigured(self.error_msg.format(
+                                       SETTINGS_ENVIRONMENT_VARIABLE))
 
     def find_module(self, fullname, path=None):
         if fullname is not None and fullname == self.module:
             module = fullname.rsplit('.', 1)[-1]
-            return SettingsLoader(self.name, imp.find_module(module, path))
+            return ConfigurationLoader(self.name, imp.find_module(module, path))
         return None
 
 
@@ -148,7 +149,7 @@ def reraise(exc, prefix=None, suffix=None):
     raise
 
 
-class SettingsLoader(object):
+class ConfigurationLoader(object):
 
     def __init__(self, name, location):
         self.name = name
@@ -159,46 +160,45 @@ class SettingsLoader(object):
             mod = sys.modules[fullname]  # pragma: no cover
         else:
             mod = imp.load_module(fullname, *self.location)
-        cls_path = '%s.%s' % (mod.__name__, self.name)
+        cls_path = '{0}.{1}'.format(mod.__name__, self.name)
 
         try:
             cls = getattr(mod, self.name)
         except AttributeError as err:  # pragma: no cover
-            reraise(err,
-                    "While trying to find the '%s' settings in module '%s'" %
-                    (self.name, mod.__package__))
+            reraise(err, "While trying to find the '{0}' "
+                         "settings in module '{1}'".format(self.name,
+                                                           mod.__package__))
         try:
             cls.pre_setup()
         except Exception as err:
-            reraise(err, "While calling '%s.pre_setup()'" % cls_path)
+            reraise(err, "While calling '{0}.pre_setup()'".format(cls_path))
 
         try:
             obj = cls()
         except Exception as err:
-            reraise(err,
-                    "While loading the '%s' settings" % cls_path)
+            reraise(err, "While initializing the '{0}' "
+                         "configuration".format(cls_path))
 
         try:
             attributes = uppercase_attributes(obj).items()
         except Exception as err:
-            reraise(err,
-                    "While getting the items of the '%s' settings" %
-                    cls_path)
+            reraise(err, "While getting the items "
+                         "of the '{0}' configuration".format(cls_path))
 
         for name, value in attributes:
             if callable(value) and not getattr(value, 'pristine', False):
                 try:
                     value = value()
                 except Exception as err:
-                    reraise(err,
-                            "While calling '%s.%s'" % (cls_path, value))
+                    reraise(err, "While calling '{0}.{1}'".format(cls_path,
+                                                                  value))
             setattr(mod, name, value)
 
-        setattr(mod, 'CONFIGURATION', '%s.%s' % (fullname, self.name))
+        setattr(mod, 'CONFIGURATION', '{0}.{1}'.format(fullname, self.name))
 
         try:
             cls.post_setup()
         except Exception as err:
-            reraise(err, "While calling '%s.post_setup()'" % cls_path)
+            reraise(err, "While calling '{0}.post_setup()'".format(cls_path))
 
         return mod

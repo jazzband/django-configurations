@@ -6,7 +6,7 @@ from django.core.exceptions import ImproperlyConfigured
 
 from mock import patch
 
-from configurations.importer import SettingsImporter
+from configurations.importer import ConfigurationImporter
 
 
 class MainTests(TestCase):
@@ -41,39 +41,39 @@ class MainTests(TestCase):
 
     @patch.dict(os.environ, clear=True, DJANGO_CONFIGURATION='Test')
     def test_empty_module_var(self):
-        self.assertRaises(ImproperlyConfigured, SettingsImporter)
+        self.assertRaises(ImproperlyConfigured, ConfigurationImporter)
 
     @patch.dict(os.environ, clear=True,
                 DJANGO_SETTINGS_MODULE='configurations.tests.settings.main')
     def test_empty_class_var(self):
-        self.assertRaises(ImproperlyConfigured, SettingsImporter)
+        self.assertRaises(ImproperlyConfigured, ConfigurationImporter)
 
     def test_global_settings(self):
-        from configurations.base import Settings
-        self.assertEqual(Settings.LOGGING_CONFIG, 'django.utils.log.dictConfig')
-        self.assertEqual(repr(Settings),
-                         "<Settings 'configurations.base.Settings'>")
+        from configurations.base import Configuration
+        self.assertEqual(Configuration.LOGGING_CONFIG, 'django.utils.log.dictConfig')
+        self.assertEqual(repr(Configuration),
+                         "<Configuration 'configurations.base.Configuration'>")
 
     def test_repr(self):
         from configurations.tests.settings.main import Test
         self.assertEqual(repr(Test),
-                         "<Settings 'configurations.tests.settings.main.Test'>")
+                         "<Configuration 'configurations.tests.settings.main.Test'>")
 
     @patch.dict(os.environ, clear=True,
                 DJANGO_SETTINGS_MODULE='configurations.tests.settings.main',
                 DJANGO_CONFIGURATION='Test')
     def test_initialization(self):
-        importer = SettingsImporter()
+        importer = ConfigurationImporter()
         self.assertEqual(importer.module, 'configurations.tests.settings.main')
         self.assertEqual(importer.name, 'Test')
         self.assertEqual(repr(importer),
-                         "<SettingsImporter for 'configurations.tests.settings.main.Test'>")
+                         "<ConfigurationImporter for 'configurations.tests.settings.main.Test'>")
 
     @patch.dict(os.environ, clear=True,
                 DJANGO_SETTINGS_MODULE='configurations.tests.settings.inheritance',
                 DJANGO_CONFIGURATION='Inheritance')
     def test_initialization_inheritance(self):
-        importer = SettingsImporter()
+        importer = ConfigurationImporter()
         self.assertEqual(importer.module,
                          'configurations.tests.settings.inheritance')
         self.assertEqual(importer.name, 'Inheritance')

@@ -20,7 +20,7 @@ use of the ``from foo import *`` anti-pattern.
 Okay, how does it work?
 -----------------------
 
-Any subclass of the ``configurations.Settings`` class will automatically
+Any subclass of the ``configurations.Configuration`` class will automatically
 use the values of its class and instance attributes (including properties
 and methods) to set module level variables of the same module -- that's
 how Django will interface to the django-configurations based settings during
