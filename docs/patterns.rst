@@ -117,6 +117,7 @@ settings loading happens, please override the ``pre_setup``, ``setup`` or
 
         @classmethod
         def pre_setup(cls):
+            super(Prod, cls).pre_setup()
             if something.completely.different():
                 cls.DEBUG = True
 
@@ -127,6 +128,7 @@ settings loading happens, please override the ``pre_setup``, ``setup`` or
 
         @classmethod
         def post_setup(cls):
+            super(Prod, cls).post_setup()
             logging.debug("done setting up! \o/")
 
 As you can see above the ``pre_setup`` method can also be used to
@@ -163,5 +165,5 @@ connecting to a database::
 .. versionchanged:: 0.4
 
     A new ``setup`` method was added to be able to handle the new
-    :class:`~configurations.values.Value` classes and allow a in-between
+    :class:`~configurations.values.Value` classes and allow an in-between
     modification of the configuration values.

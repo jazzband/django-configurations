@@ -10,7 +10,11 @@ v0.4 (2013-XX-XX)
   including populating them from environment variables.
 
 - Renamed ``configurations.Settings`` class to ``configurations.Configuration``
-  to better describe what the class is all about.
+  to better describe what the class is all about. The old class still exists
+  and is marked as pending deprecation. It'll be removed in version 1.0.
+
+- Added a ``setup`` method to handle the new ``Value`` classes and allow an
+  in-between modification of the configuration values.
 
 - Added Django project templates for 1.5.x and 1.6.x.
 
