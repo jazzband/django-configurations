@@ -6,11 +6,11 @@ Values
 
 .. versionadded:: 0.4
 
-  django-configurations allows you to optionally reduce the amount of validation
-  and setup code in your **settings.py** by using ``Value`` classes. They have
-  the ability to handle values from the process environment of your software
-  (:data:`os.environ`) and work well in projects that follow the
-  `Twelve-Factor methodology`_.
+django-configurations allows you to optionally reduce the amount of validation
+and setup code in your **settings.py** by using ``Value`` classes. They have
+the ability to handle values from the process environment of your software
+(:data:`os.environ`) and work well in projects that follow the
+`Twelve-Factor methodology`_.
 
 Overview
 --------
