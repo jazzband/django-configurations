@@ -3,7 +3,7 @@
 Changelog
 ---------
 
-v0.4 (2013-XX-XX)
+v0.4 (2013-09-03)
 ^^^^^^^^^^^^^^^^^
 
 - Added ``Value`` classes and subclasses for easier handling of settings values,
