@@ -23,3 +23,4 @@ matrix:
 branches:
   except:
     templates/1.5.x
+    templates/1.6.x
