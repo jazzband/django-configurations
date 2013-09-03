@@ -11,15 +11,15 @@ install:
 script:
   - inv test
 env:
-  - DJANGO=1.4.5
-  - DJANGO=1.5.1
+  - DJANGO=1.4.6
+  - DJANGO=1.5.2
   - DJANGO=stable/1.6.x
 matrix:
   exclude:
     - python: 3.2
-      env: DJANGO=1.4.5
+      env: DJANGO=1.4.6
     - python: 3.3
-      env: DJANGO=1.4.5
+      env: DJANGO=1.4.6
 branches:
   except:
     templates/1.5.x
