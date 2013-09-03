@@ -22,8 +22,8 @@ Here is an example (from a **settings.py**)::
     DEBUG = values.BooleanValue(True)
 
 As you can see all you have to do is to wrap your settings value in a call
-to one of the included settings classes. When Django's process starts up
-it will automatically make sure the passed in value validates correctly --
+to one of the included values classes. When Django's process starts up
+it will automatically make sure the passed-in value validates correctly --
 in the above case checks if the value is really a boolean.
 
 You can safely use other :class:`~Value` instances as the default setting
@@ -47,39 +47,67 @@ settings system Django uses.
 Luckily django-configurations' :class:`~Value` subclasses have the ability
 to handle environment variables for the most common use cases.
 
-For example, imagine you'd like to override the ``TEMPLATE_DEBUG`` setting
-on your staging server to be able to debug a problem with your in-development
-code. You're using a web server that passes the environment variables from
-the shell it was started in to your Django WSGI process.
+Default behavior
+^^^^^^^^^^^^^^^^
 
-First make sure you set the ``environ`` option of the :class:`~Value` instance
-to ``True``::
+For example, imagine you'd like to override the ``ROOT_URLCONF`` setting
+on your staging server to be able to debug a problem with your in-development
+code. You're also using a web server that passes the environment variables from
+the shell it was started from into your Django WSGI process.
+
+Each :class:`~Value` class instance has an ``environ`` option, that when set to
+``True`` (default) django-configurations will look for an uppercase
+environment variable named like the :class:`~Value` instance's name, prefixed
+with ``DJANGO_``. So imagine the following example::
 
     from configurations import values
 
     # ..
-    TEMPLATE_DEBUG = values.BooleanValue(True, environ=True)
+    ROOT_URLCONF = values.Value('mysite.urls')
 
-That will tell django-configurations to look for a environment variable
-named ``DJANGO_TEMPLATE_DEBUG`` when deciding which value of the ``DEBUG``
-setting to actually enable.
+django-configurations will try to read the ``DJANGO_ROOT_URLCONF`` environment
+variable when deciding which value the ``ROOT_URLCONF`` setting should have.
 
 When you run your web server simply specify that environment variable
 (e.g. in your init script)::
 
-    DJANGO_TEMPLATE_DEBUG=true gunicorn mysite.wsgi:application
+    DJANGO_ROOT_URLCONF=mysite.debugging_urls gunicorn mysite.wsgi:application
 
-Since environment variables are string based the ``BooleanValue`` supports
-a series of possible formats for a boolean value (``true``, ``yes``,
-``y`` and ``1``, all in capital and lower case, and ``false``, ``no``,
-``n`` and ``0`` of course). So for example this will work, too::
+Disabling environment variables
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-    DJANGO_TEMPLATE_DEBUG=no ./manage.py runserver
+To disable django-configurations' automatic use of environment variables,
+you can specify the ``environ`` parameter of the :class:`~Value` class.
+For example this would disable it for the ``TIME_ZONE`` setting value::
+
+    TIME_ZONE = values.Value('UTC', environ=False)
+
+Custom environment variable names
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+To support legacy systems, integrate with other parts of your sofware stack or
+simply better match your taste in naming public configuration variables,
+django-configurations allows you to use the ``environ_name`` parameter of the
+:class:`~Value` class to change the name of the environment variable it looks
+for. For example this would enforce a specific environment variable name
+instead of using the name of the :class:`~Value` instance.::
+
+    TIME_ZONE = values.Value('UTC', environ_name='MYSITE_TZ')
+
+Custom environment variable prefixes
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+In case you just want to change the default environment variable name prefix
+of ``DJANGO`` to something to your likening, use the ``environ_prefix``
+parameter of the :class:`~Value` instance. Here it'll look for the
+``MYSITE_TIME_ZONE`` environment variable (instead of ``DJANGO_TIME_ZONE``)::
+
+    TIME_ZONE = values.Value('UTC', environ_prefix='MYSITE')
 
 ``Value`` class
 ---------------
 
-.. class:: Value(default, [environ=False, environ_name=None, environ_prefix='DJANGO'])
+.. class:: Value(default, [environ=True, environ_name=None, environ_prefix='DJANGO'])
     
    The ``Value`` class takes one required and several optional parameters.
 
@@ -114,10 +142,10 @@ a series of possible formats for a boolean value (``true``, ``yes``,
                environment      
 
       The ``to_python`` method is only used when the ``environ`` parameter
-      of the :class:`~Value` class is set to ``True`` and an environment
-      variable with the appropriate name was found. It will be used to handle
-      the string based environment variable values and returns the "ready"
-      value to be returned by the ``setup`` method.
+      of the :class:`~Value` class is set to ``True`` (the default) and an
+      environment variable with the appropriate name was found. It will be
+      used to handle the string based environment variable values and returns
+      the "ready" value to be returned by the ``setup`` method.
 
 Built-ins
 ---------
@@ -185,8 +213,7 @@ Type values
             return person
 
         MONTY_PYTHONS = ListValue(['John Cleese', 'Eric Idle'],
-                                  converter=check_monty_python,
-                                  environ=True)
+                                  converter=check_monty_python)
 
     You can override this list with an environment variable like this::
 
@@ -194,8 +221,7 @@ Type values
 
     Use a custom separator::
 
-        EMERGENCY_EMAILS = ListValue(['admin@mysite.net'],
-                                     separator=';', environ=True)
+        EMERGENCY_EMAILS = ListValue(['admin@mysite.net'], separator=';')
 
     And override it::
 
@@ -253,7 +279,7 @@ Validator values
 
         LOADBALANCER_IP = values.IPValue('127.0.0.1')
 
-.. class:: RegexValue(default, regex, [environ=False, environ_name=None, environ_prefix='DJANGO'])
+.. class:: RegexValue(default, regex, [environ=True, environ_name=None, environ_prefix='DJANGO'])
 
     A :class:`~Value` subclass that validates according a regular expression
     and uses the :class:`django:django.core.validators.RegexValidator`.
@@ -264,7 +290,7 @@ Validator values
 
         DEFAULT_SKU = values.RegexValue('000-000-00', regex=r'\d{3}-\d{3}-\d{2}')
 
-.. class:: PathValue(default, [check_exists=True, environ=False, environ_name=None, environ_prefix='DJANGO'])
+.. class:: PathValue(default, [check_exists=True, environ=True, environ_name=None, environ_prefix='DJANGO'])
 
     A :class:`~Value` subclass that normalizes the given path using
     :func:`os.path.expanduser` and validates if it exists on the file system.

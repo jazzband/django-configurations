@@ -28,7 +28,7 @@ class Value(object):
     """
     multiple = False
 
-    def __init__(self, default=None, environ=False, environ_name=None,
+    def __init__(self, default=None, environ=True, environ_name=None,
                  environ_prefix='DJANGO', *args, **kwargs):
         if isinstance(default, Value):
             self.default = copy.copy(default.default)
