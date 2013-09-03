@@ -309,14 +309,13 @@ URL-based values
 
 .. note::
 
-  The following URL-based :class:`~Value` subclasses behave slightly different
-  to the rest of the classes here. They are inspired by the
-  `Twelve-Factor methodology`_ and by default inspect the :data:`os.environ`
-  using a previously established environment variable name, e.g.
-  ``DATABASE_URL``.
+  The following URL-based :class:`~Value` subclasses are inspired by the
+  `Twelve-Factor methodology`_ and use environment variable names that are
+  already established by that methodology, e.g. ``'DATABASE_URL'``.
 
-  Each of them require having an external library installed, e.g. the
+  Each of these classes require external libraries to be installed, e.g. the
   :class:`~DatabaseURLValue` class depends on the package ``dj-database-url``.
+  See the specific class documentation below for which package is needed.
 
 .. class:: DatabaseURLValue(default, [alias='default', environ=True, environ_name='DATABASE_URL', environ_prefix=None])
 
@@ -385,9 +384,9 @@ URL-based values
     .. note::
 
       This is a special value since email settings are divided into many
-      different settings. `dj-email-url`_ supports all options though and
-      simply returns a nested dictionary of settings instead of just one
-      setting.
+      different settings variables. `dj-email-url`_ supports all options
+      though and simply returns a nested dictionary of settings instead of
+      just one setting.
 
     The parameters have the following default values:
 
@@ -397,7 +396,7 @@ URL-based values
 
     ::
 
-        EMAIL_URL = values.EmailURLValue('console://')
+        EMAIL = values.EmailURLValue('console://')
 
     .. _`dj-email-url`: https://pypi.python.org/pypi/dj-email-url/
 
