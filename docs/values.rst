@@ -12,14 +12,24 @@ the ability to handle values from the process environment of your software
 (:data:`os.environ`) and work well in projects that follow the
 `Twelve-Factor methodology`_.
 
+.. note::
+
+  These classes are required to be used as attributes of ``Configuration`` 
+  classes. See the :doc:`main documentation<index>` for more information. 
+
 Overview
 --------
 
-Here is an example (from a **settings.py**)::
+Here is an example (from a **settings.py** file with a ``Configuration``
+subclass):
 
-    from configurations import values
+.. code-block:: python
+   :emphasize-lines: 4
 
-    DEBUG = values.BooleanValue(True)
+    from configurations import Configuration, values
+
+    class Dev(Configuration):
+        DEBUG = values.BooleanValue(True)
 
 As you can see all you have to do is to wrap your settings value in a call
 to one of the included values classes. When Django's process starts up
@@ -27,82 +37,104 @@ it will automatically make sure the passed-in value validates correctly --
 in the above case checks if the value is really a boolean.
 
 You can safely use other :class:`~Value` instances as the default setting
-value::
+value:
 
-    from configurations import values
+.. code-block:: python
+   :emphasize-lines: 5
 
-    DEBUG = values.BooleanValue(True)
-    TEMPLATE_DEBUG = values.BooleanValue(DEBUG)
+    from configurations import Configuration, values
 
-See the list of built-in value classes for more information.
+    class Dev(Configuration):
+        DEBUG = values.BooleanValue(True)
+        TEMPLATE_DEBUG = values.BooleanValue(DEBUG)
+
+See the list of :ref:`built-in value classes<built-ins>` for more information.
 
 Environment variables
 ---------------------
 
-To separate configuration from your application you should use environment
-variables to override settings values if needed. Unfortunately environment
-variables are string based so they are not easily mapped to the Python based
-settings system Django uses.
+To separate the site configuration from your application code you should use 
+environment variables for configuration. Unfortunately environment variables
+are string based so they are not easily mapped to the Python based settings
+system Django uses.
 
 Luckily django-configurations' :class:`~Value` subclasses have the ability
-to handle environment variables for the most common use cases.
+to handle environment variables for the common use cases.
 
 Default behavior
 ^^^^^^^^^^^^^^^^
 
-For example, imagine you'd like to override the ``ROOT_URLCONF`` setting
-on your staging server to be able to debug a problem with your in-development
-code. You're also using a web server that passes the environment variables from
+For example, imagine you want to override the ``ROOT_URLCONF`` setting on your
+staging server to be able to debug a problem with your in-development code.
+You're using a web server that passes the environment variables from
 the shell it was started from into your Django WSGI process.
 
-Each :class:`~Value` class instance has an ``environ`` option, that when set to
-``True`` (default) django-configurations will look for an uppercase
-environment variable named like the :class:`~Value` instance's name, prefixed
-with ``DJANGO_``. So imagine the following example::
+Use the boolean ``environ`` option of the :class:`~Value` class (``True`` by 
+default) to tell django-configurations to look for an environment variable with 
+the same name as the specific :class:`~Value` variable, only uppercased and
+prefixed with ``DJANGO_``. E.g.:
 
-    from configurations import values
+.. code-block:: python
+   :emphasize-lines: 5
 
-    # ..
-    ROOT_URLCONF = values.Value('mysite.urls')
+    from configurations import Configuration, values
+
+    class Stage(Configuration):
+        # ..
+        ROOT_URLCONF = values.Value('mysite.urls')
 
 django-configurations will try to read the ``DJANGO_ROOT_URLCONF`` environment
 variable when deciding which value the ``ROOT_URLCONF`` setting should have.
-
-When you run your web server simply specify that environment variable
+When you run the web server simply specify that environment variable
 (e.g. in your init script)::
 
     DJANGO_ROOT_URLCONF=mysite.debugging_urls gunicorn mysite.wsgi:application
 
+If the environment variable can't be found it'll use the default
+``'mysite.urls'``.
+
 Disabling environment variables
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-To disable django-configurations' automatic use of environment variables,
-you can specify the ``environ`` parameter of the :class:`~Value` class.
-For example this would disable it for the ``TIME_ZONE`` setting value::
+To disable environment variables, specify the ``environ`` parameter of the
+:class:`~Value` class. For example this would disable it for the ``TIME_ZONE`` 
+setting value::
 
-    TIME_ZONE = values.Value('UTC', environ=False)
+    from configurations import Configuration, values
+
+    class Dev(Configuration):
+        TIME_ZONE = values.Value('UTC', environ=False)
 
 Custom environment variable names
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-To support legacy systems, integrate with other parts of your sofware stack or
+To support legacy systems, integrate with other parts of your software stack or
 simply better match your taste in naming public configuration variables,
 django-configurations allows you to use the ``environ_name`` parameter of the
-:class:`~Value` class to change the name of the environment variable it looks
-for. For example this would enforce a specific environment variable name
+:class:`~Value` class to change the base name of the environment variable it
+looks for. For example this would enforce the name ``DJANGO_MYSITE_TZ``
 instead of using the name of the :class:`~Value` instance.::
 
-    TIME_ZONE = values.Value('UTC', environ_name='MYSITE_TZ')
+    from configurations import Configuration, values
+
+    class Dev(Configuration):
+        TIME_ZONE = values.Value('UTC', environ_name='MYSITE_TZ')
 
 Custom environment variable prefixes
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-In case you just want to change the default environment variable name prefix
+In case you want to change the default environment variable name prefix
 of ``DJANGO`` to something to your likening, use the ``environ_prefix``
 parameter of the :class:`~Value` instance. Here it'll look for the
 ``MYSITE_TIME_ZONE`` environment variable (instead of ``DJANGO_TIME_ZONE``)::
 
-    TIME_ZONE = values.Value('UTC', environ_prefix='MYSITE')
+    from configurations import Configuration, values
+
+    class Dev(Configuration):
+        TIME_ZONE = values.Value('UTC', environ_prefix='MYSITE')
+
+The ``environ_prefix`` parameter can also be ``None`` to completely disable
+the prefix.
 
 ``Value`` class
 ---------------
@@ -129,7 +161,7 @@ parameter of the :class:`~Value` instance. Here it'll look for the
 
       The ``setup`` method is called during startup of the Django process and
       implements the ability to check the environment variable. Its purpose is
-      to return a value django-configrations is supposed to use when loading
+      to return a value django-configurations is supposed to use when loading
       the settings. It'll be passed one parameter, the name of the
       :class:`~Value` instance as defined in the ``settings.py``. This is used
       for building the name of the environment variable.
@@ -141,11 +173,18 @@ parameter of the :class:`~Value` instance. Here it'll look for the
       :return: validated and "ready" setting value if found in process
                environment      
 
-      The ``to_python`` method is only used when the ``environ`` parameter
-      of the :class:`~Value` class is set to ``True`` (the default) and an
-      environment variable with the appropriate name was found. It will be
-      used to handle the string based environment variable values and returns
-      the "ready" value to be returned by the ``setup`` method.
+      The ``to_python`` method is used when the ``environ`` parameter of the 
+      :class:`~Value` class is set to ``True`` (the default) and an
+      environment variable with the appropriate name was found.
+
+      It will be used to handle the string based environment variables and 
+      returns the "ready" value of the setting.
+
+      Some :class:`~Value` subclasses also use it during initialization when the 
+      default value has a string-like format like an environment variable which 
+      needs to be converted into a Python data type.
+
+.. _built-ins:
 
 Built-ins
 ---------
@@ -172,7 +211,7 @@ Type values
 
     ::
 
-        MYSITE_CACHE_TIMEOUT = values.BooleanValue(3600)
+        MYSITE_CACHE_TIMEOUT = values.IntegerValue(3600)
 
 .. class:: FloatValue
 
@@ -247,6 +286,14 @@ Type values
 
 .. class:: DictValue
 
+    A :class:`~Value` subclass that handles dicts.
+
+     ::
+
+        DEPARTMENTS = values.DictValue({
+            'it': ['Mike', 'Joe'],
+        })
+        
 Validator values
 ^^^^^^^^^^^^^^^^
 
@@ -291,7 +338,7 @@ Validator values
 .. class:: PathValue(default, [check_exists=True, environ=True, environ_name=None, environ_prefix='DJANGO'])
 
     A :class:`~Value` subclass that normalizes the given path using
-    :func:`os.path.expanduser` and validates if it exists on the file system.
+    :func:`os.path.expanduser` and checks if it exists on the file system.
 
     Takes an optional ``check_exists`` parameter to disable the check with
     :func:`os.path.exists`.
@@ -301,6 +348,7 @@ Validator values
     ::
 
         BASE_DIR = values.PathValue('/opt/mysite/')
+        STATIC_ROOT = values.PathValue('/var/www/static', checks_exists=False)
 
 URL-based values
 ^^^^^^^^^^^^^^^^
