@@ -165,7 +165,7 @@ class BackendsValue(ListValue):
     def converter(self, value):
         try:
             import_by_path(value)
-        except ImproperlyConfigured, err:
+        except ImproperlyConfigured as err:
             six.reraise(ValueError, ValueError(err), sys.exc_info()[2])
         return value
 
