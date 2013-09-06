@@ -68,7 +68,7 @@ class ValueTests(TestCase):
                 self.assertTrue(value.setup('TEST'))
 
     def test_boolean_values_faulty(self):
-        self.assertRaises(ImproperlyConfigured, BooleanValue, 'false')
+        self.assertRaises(ValueError, BooleanValue, 'false')
 
     def test_boolean_values_false(self):
         value = BooleanValue(True)
@@ -79,28 +79,28 @@ class ValueTests(TestCase):
     def test_boolean_values_nonboolean(self):
         value = BooleanValue(True)
         with env(DJANGO_TEST='nonboolean'):
-            self.assertRaises(ImproperlyConfigured, value.setup, 'TEST')
+            self.assertRaises(ValueError, value.setup, 'TEST')
 
     def test_integer_values(self):
         value = IntegerValue(1)
         with env(DJANGO_TEST='2'):
             self.assertEqual(value.setup('TEST'), 2)
         with env(DJANGO_TEST='noninteger'):
-            self.assertRaises(ImproperlyConfigured, value.setup, 'TEST')
+            self.assertRaises(ValueError, value.setup, 'TEST')
 
     def test_float_values(self):
         value = FloatValue(1.0)
         with env(DJANGO_TEST='2.0'):
             self.assertEqual(value.setup('TEST'), 2.0)
         with env(DJANGO_TEST='noninteger'):
-            self.assertRaises(ImproperlyConfigured, value.setup, 'TEST')
+            self.assertRaises(ValueError, value.setup, 'TEST')
 
     def test_decimal_values(self):
         value = DecimalValue(decimal.Decimal(1))
         with env(DJANGO_TEST='2'):
             self.assertEqual(value.setup('TEST'), decimal.Decimal(2))
         with env(DJANGO_TEST='nondecimal'):
-            self.assertRaises(ImproperlyConfigured, value.setup, 'TEST')
+            self.assertRaises(ValueError, value.setup, 'TEST')
 
     def test_failing_caster(self):
         self.assertRaises(ImproperlyConfigured, FailingCasterValue)
@@ -137,7 +137,7 @@ class ValueTests(TestCase):
     def test_list_values_converter_exception(self):
         value = ListValue(converter=int)
         with env(DJANGO_TEST='2,b'):
-            self.assertRaises(ImproperlyConfigured, value.setup, 'TEST')
+            self.assertRaises(ValueError, value.setup, 'TEST')
 
     def test_tuple_values_default(self):
         value = TupleValue()
@@ -173,21 +173,21 @@ class ValueTests(TestCase):
         with env(DJANGO_TEST=''):
             self.assertEqual(value.setup('TEST'), {})
         with env(DJANGO_TEST='spam'):
-            self.assertRaises(ImproperlyConfigured, value.setup, 'TEST')
+            self.assertRaises(ValueError, value.setup, 'TEST')
 
     def test_email_values(self):
         value = EmailValue('spam@eg.gs')
         with env(DJANGO_TEST='spam@sp.am'):
             self.assertEqual(value.setup('TEST'), 'spam@sp.am')
         with env(DJANGO_TEST='spam'):
-            self.assertRaises(ImproperlyConfigured, value.setup, 'TEST')
+            self.assertRaises(ValueError, value.setup, 'TEST')
 
     def test_url_values(self):
         value = URLValue('http://eggs.spam')
         with env(DJANGO_TEST='http://spam.eggs'):
             self.assertEqual(value.setup('TEST'), 'http://spam.eggs')
         with env(DJANGO_TEST='httb://spam.eggs'):
-            self.assertRaises(ImproperlyConfigured, value.setup, 'TEST')
+            self.assertRaises(ValueError, value.setup, 'TEST')
 
     def test_ip_values(self):
         value = IPValue('0.0.0.0')
@@ -196,14 +196,14 @@ class ValueTests(TestCase):
         with env(DJANGO_TEST='::1'):
             self.assertEqual(value.setup('TEST'), '::1')
         with env(DJANGO_TEST='spam.eggs'):
-            self.assertRaises(ImproperlyConfigured, value.setup, 'TEST')
+            self.assertRaises(ValueError, value.setup, 'TEST')
 
     def test_regex_values(self):
         value = RegexValue('000--000', regex=r'\d+--\d+')
         with env(DJANGO_TEST='123--456'):
             self.assertEqual(value.setup('TEST'), '123--456')
         with env(DJANGO_TEST='123456'):
-            self.assertRaises(ImproperlyConfigured, value.setup, 'TEST')
+            self.assertRaises(ValueError, value.setup, 'TEST')
 
     def test_path_values_with_check(self):
         value = PathValue()
@@ -212,7 +212,7 @@ class ValueTests(TestCase):
         with env(DJANGO_TEST='~/'):
             self.assertEqual(value.setup('TEST'), os.path.expanduser('~'))
         with env(DJANGO_TEST='/does/not/exist'):
-            self.assertRaises(ImproperlyConfigured, value.setup, 'TEST')
+            self.assertRaises(ValueError, value.setup, 'TEST')
 
     def test_path_values_no_check(self):
         value = PathValue(check_exists=False)
@@ -226,11 +226,18 @@ class ValueTests(TestCase):
             self.assertEqual(value.setup('TEST'), '/does/not/exist')
 
     def test_secret_value(self):
-        self.assertRaises(ImproperlyConfigured, SecretValue, 'default')
+        self.assertRaises(ValueError, SecretValue, 'default')
+
         value = SecretValue()
-        self.assertRaises(ImproperlyConfigured, value.setup, 'TEST')
+        self.assertRaises(ValueError, value.setup, 'TEST')
         with env(DJANGO_SECRET_KEY='123'):
             self.assertEqual(value.setup('SECRET_KEY'), '123')
+
+        value = SecretValue(environ_name='FACEBOOK_API_SECRET',
+                            environ_prefix=None)
+        self.assertRaises(ValueError, value.setup, 'TEST')
+        with env(FACEBOOK_API_SECRET='123'):
+            self.assertEqual(value.setup('TEST'), '123')
 
     def test_database_url_value(self):
         value = DatabaseURLValue()
@@ -268,7 +275,7 @@ class ValueTests(TestCase):
                 'EMAIL_PORT': None,
                 'EMAIL_USE_TLS': False})
         with env(EMAIL_URL='smtps://user@domain.com:password@smtp.example.com:wrong'):
-            self.assertRaises(ImproperlyConfigured, value.setup, 'TEST')
+            self.assertRaises(ValueError, value.setup, 'TEST')
 
     def test_cache_url_value(self):
         value = CacheURLValue()
@@ -289,4 +296,4 @@ class ValueTests(TestCase):
         self.assertEqual(value.setup('TEST'), backends)
 
         backends = ['non.existing.Backend']
-        self.assertRaises(ImproperlyConfigured, BackendsValue, backends)
+        self.assertRaises(ValueError, BackendsValue, backends)

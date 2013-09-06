@@ -204,12 +204,10 @@ Type values
 
     Use a custom converter to check for the given variables::
 
-        from django.core.exceptions import ImproperlyConfigured
-
         def check_monty_python(person):
             if not is_completely_different(person):
                 error = '{0} is not a Monty Python member'.format(person)
-                raise ImproperlyConfigured(error)
+                raise ValueError(error)
             return person
 
         MONTY_PYTHONS = ListValue(['John Cleese', 'Eric Idle'],
@@ -427,7 +425,7 @@ Other values
     to reduce the risk of accidentally storing secret values in the settings
     file.
 
-    :raises: ``ImproperlyConfigured`` when given a default value
+    :raises: ``ValueError`` when given a default value
 
     ::
 

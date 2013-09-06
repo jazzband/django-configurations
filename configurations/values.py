@@ -2,6 +2,7 @@ import ast
 import copy
 import decimal
 import os
+import sys
 
 from django.core import validators
 from django.core.exceptions import ValidationError, ImproperlyConfigured
@@ -79,8 +80,8 @@ class BooleanValue(Value):
     def __init__(self, *args, **kwargs):
         super(BooleanValue, self).__init__(*args, **kwargs)
         if self.default not in (True, False):
-            raise ImproperlyConfigured('Default value {0!r} is not a '
-                                       'boolean value'.format(self.default))
+            raise ValueError('Default value {0!r} is not a '
+                             'boolean value'.format(self.default))
 
     def to_python(self, value):
         normalized_value = value.strip().lower()
@@ -89,8 +90,8 @@ class BooleanValue(Value):
         elif normalized_value in self.false_values:
             return False
         else:
-            raise ImproperlyConfigured('Cannot interpret '
-                                       'boolean value {0!r}'.format(value))
+            raise ValueError('Cannot interpret '
+                             'boolean value {0!r}'.format(value))
 
 
 class CastingMixin(object):
@@ -106,13 +107,13 @@ class CastingMixin(object):
         else:
             error = 'Cannot use caster of {0} ({1!r})'.format(self,
                                                               self.caster)
-            raise ImproperlyConfigured(error)
+            raise ValueError(error)
 
     def to_python(self, value):
         try:
             return self._caster(value)
         except self.exception:
-            raise ImproperlyConfigured(self.message.format(value))
+            raise ValueError(self.message.format(value))
 
 
 class IntegerValue(CastingMixin, Value):
@@ -157,15 +158,17 @@ class ListValue(Value):
             try:
                 converted_values.append(self.converter(list_value))
             except (TypeError, ValueError):
-                raise ImproperlyConfigured(self.message.format(list_value,
-                                                               value))
+                raise ValueError(self.message.format(list_value, value))
         return converted_values
 
 
 class BackendsValue(ListValue):
 
     def converter(self, value):
-        import_by_path(value)
+        try:
+            import_by_path(value)
+        except ImproperlyConfigured, err:
+            six.reraise(ValueError, ValueError(err), sys.exc_info()[2])
         return value
 
 
@@ -214,9 +217,9 @@ class DictValue(Value):
         try:
             evaled_value = ast.literal_eval(value)
         except ValueError:
-            raise ImproperlyConfigured(self.message.format(value))
+            raise ValueError(self.message.format(value))
         if not isinstance(evaled_value, dict):
-            raise ImproperlyConfigured(self.message.format(value))
+            raise ValueError(self.message.format(value))
         return evaled_value
 
 
@@ -229,16 +232,15 @@ class ValidationMixin(object):
         elif callable(self.validator):
             self._validator = self.validator
         else:
-            error = 'Cannot use validator of {0} ({1!r})'.format(self,
-                                                                 self.validator)
-            raise ImproperlyConfigured(error)
+            raise ValueError('Cannot use validator of '
+                             '{0} ({1!r})'.format(self, self.validator))
         self.to_python(self.default)
 
     def to_python(self, value):
         try:
             self._validator(value)
         except ValidationError:
-            raise ImproperlyConfigured(self.message.format(value))
+            raise ValueError(self.message.format(value))
         else:
             return value
 
@@ -276,8 +278,7 @@ class PathValue(Value):
         value = super(PathValue, self).setup(name)
         value = os.path.expanduser(value)
         if self.check_exists and not os.path.exists(value):
-            raise ImproperlyConfigured('Path {0!r} does '
-                                       'not exist.'.format(value))
+            raise ValueError('Path {0!r} does  not exist.'.format(value))
         return os.path.abspath(value)
 
 
@@ -287,14 +288,13 @@ class SecretValue(Value):
         kwargs['environ'] = True
         super(SecretValue, self).__init__(*args, **kwargs)
         if self.default is not None:
-            raise ImproperlyConfigured('Secret values are only allowed to '
-                                       'be set as environment variables')
+            raise ValueError('Secret values are only allowed to '
+                             'be set as environment variables')
 
     def setup(self, name):
         value = super(SecretValue, self).setup(name)
         if not value:
-            raise ImproperlyConfigured('Secret value {0!r} '
-                                       'is not set'.format(name))
+            raise ValueError('Secret value {0!r} is not set'.format(name))
         return value
 
 
