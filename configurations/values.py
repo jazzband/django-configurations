@@ -13,13 +13,11 @@ from .utils import import_by_path
 
 def setup_value(target, name, value):
     actual_value = value.setup(name)
+    # overwriting the original Value class with the result
+    setattr(target, name, actual_value)
     if value.multiple:
-        # overwriting the original Value class with the result
-        setattr(target, name, actual_value)
         for multiple_name, multiple_value in actual_value.items():
             setattr(target, multiple_name, multiple_value)
-    else:
-        setattr(target, name, actual_value)
 
 
 class Value(object):
