@@ -25,17 +25,18 @@ class Test(Configuration):
         'django.contrib.sites',
         'django.contrib.auth',
         'django.contrib.admin',
-        'configurations.tests',
+        'tests',
     ]
 
-    ROOT_URLCONF = 'configurations.tests.urls'
+    ROOT_URLCONF = 'tests.urls'
 
     if django.VERSION[:2] < (1, 6):
         TEST_RUNNER = 'discover_runner.DiscoverRunner'
 
     def TEMPLATE_CONTEXT_PROCESSORS(self):
         return Configuration.TEMPLATE_CONTEXT_PROCESSORS + (
-            'configurations.tests.settings.base.test_callback',)
+            'tests.settings.base.test_callback',
+        )
 
     ATTRIBUTE_SETTING = True
 

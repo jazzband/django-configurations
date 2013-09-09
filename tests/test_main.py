@@ -12,7 +12,7 @@ from configurations.importer import ConfigurationImporter
 class MainTests(TestCase):
 
     def test_simple(self):
-        from configurations.tests.settings import main
+        from tests.settings import main
         self.assertEqual(main.ATTRIBUTE_SETTING, True)
         self.assertEqual(main.PROPERTY_SETTING, 1)
         self.assertEqual(main.METHOD_SETTING, 2)
@@ -23,7 +23,7 @@ class MainTests(TestCase):
         self.assertTrue(lambda: callable(main.PRISTINE_FUNCTION_SETTING))
         self.assertEqual(main.TEMPLATE_CONTEXT_PROCESSORS,
                          global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
-                             'configurations.tests.settings.base.test_callback',
+                             'tests.settings.base.test_callback',
                          ))
         self.assertEqual(main.PRE_SETUP_TEST_SETTING, 6)
         self.assertRaises(AttributeError, lambda: main.POST_SETUP_TEST_SETTING)
@@ -44,36 +44,37 @@ class MainTests(TestCase):
         self.assertRaises(ImproperlyConfigured, ConfigurationImporter)
 
     @patch.dict(os.environ, clear=True,
-                DJANGO_SETTINGS_MODULE='configurations.tests.settings.main')
+                DJANGO_SETTINGS_MODULE='tests.settings.main')
     def test_empty_class_var(self):
         self.assertRaises(ImproperlyConfigured, ConfigurationImporter)
 
     def test_global_settings(self):
         from configurations.base import Configuration
-        self.assertEqual(Configuration.LOGGING_CONFIG, 'django.utils.log.dictConfig')
+        self.assertEqual(Configuration.LOGGING_CONFIG,
+                         'django.utils.log.dictConfig')
         self.assertEqual(repr(Configuration),
                          "<Configuration 'configurations.base.Configuration'>")
 
     def test_repr(self):
-        from configurations.tests.settings.main import Test
+        from tests.settings.main import Test
         self.assertEqual(repr(Test),
-                         "<Configuration 'configurations.tests.settings.main.Test'>")
+                         "<Configuration 'tests.settings.main.Test'>")
 
     @patch.dict(os.environ, clear=True,
-                DJANGO_SETTINGS_MODULE='configurations.tests.settings.main',
+                DJANGO_SETTINGS_MODULE='tests.settings.main',
                 DJANGO_CONFIGURATION='Test')
     def test_initialization(self):
         importer = ConfigurationImporter()
-        self.assertEqual(importer.module, 'configurations.tests.settings.main')
+        self.assertEqual(importer.module, 'tests.settings.main')
         self.assertEqual(importer.name, 'Test')
         self.assertEqual(repr(importer),
-                         "<ConfigurationImporter for 'configurations.tests.settings.main.Test'>")
+                         "<ConfigurationImporter for 'tests.settings.main.Test'>")
 
     @patch.dict(os.environ, clear=True,
-                DJANGO_SETTINGS_MODULE='configurations.tests.settings.inheritance',
+                DJANGO_SETTINGS_MODULE='tests.settings.inheritance',
                 DJANGO_CONFIGURATION='Inheritance')
     def test_initialization_inheritance(self):
         importer = ConfigurationImporter()
         self.assertEqual(importer.module,
-                         'configurations.tests.settings.inheritance')
+                         'tests.settings.inheritance')
         self.assertEqual(importer.name, 'Inheritance')
