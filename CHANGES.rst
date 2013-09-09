@@ -3,6 +3,20 @@
 Changelog
 ---------
 
+v0.5 (2013-09-09)
+^^^^^^^^^^^^^^^^^
+
+- Switched from raising Django's ``ImproperlyConfigured`` excpetion on errors
+  to standard ``ValueError`` to prevent hiding those errors when Django
+  specially handles the first.
+
+- Switched away from d2to1 as a way to define package metadata since distutils2
+  is dead.
+
+- Extended ``Value`` class documentation and fixed other issues.
+
+- Moved tests out of the ``configurations`` package for easier maintenance.
+
 v0.4 (2013-09-03)
 ^^^^^^^^^^^^^^^^^
 
