@@ -6,7 +6,7 @@ Changelog
 v0.5 (2013-09-09)
 ^^^^^^^^^^^^^^^^^
 
-- Switched from raising Django's ``ImproperlyConfigured`` excpetion on errors
+- Switched from raising Django's ``ImproperlyConfigured`` exception on errors
   to standard ``ValueError`` to prevent hiding those errors when Django
   specially handles the first.
 
