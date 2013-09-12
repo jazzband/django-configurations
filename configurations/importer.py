@@ -59,7 +59,7 @@ configuration_options = (
                      'be used.'),)
 
 
-def install():
+def install(check_options=False):
     global installed
     if not installed:
 
@@ -69,7 +69,8 @@ def install():
         # add the configuration option to all management commands
         base.BaseCommand.option_list += configuration_options
 
-        sys.meta_path.insert(0, ConfigurationImporter())
+        importer = ConfigurationImporter(check_options=check_options)
+        sys.meta_path.insert(0, importer)
         installed = True
 
         # now patch the active runserver command to show a nicer output
@@ -86,25 +87,17 @@ def install():
                 runserver_module.Command.inner_run = patch_inner_run(inner_run)
 
 
-def handle_configurations_option(options):
-    if options.configuration:
-        os.environ[CONFIGURATION_ENVIRONMENT_VARIABLE] = options.configuration
-
-
 class ConfigurationImporter(object):
+    modvar = SETTINGS_ENVIRONMENT_VARIABLE
+    namevar = CONFIGURATION_ENVIRONMENT_VARIABLE
     error_msg = ("Configuration cannot be imported, "
                  "environment variable {0} is undefined.")
 
-    def __init__(self):
+    def __init__(self, check_options=False):
         self.argv = sys.argv[:]
-        parser = LaxOptionParser(option_list=configuration_options,
-                                 add_help_option=False)
-        try:
-            options, args = parser.parse_args(self.argv)
-            handle_configurations_option(options)
-        except:
-            pass  # Ignore any option errors at this point.
         self.validate()
+        if check_options:
+            self.check_options()
 
     def __repr__(self):
         return "<ConfigurationImporter for '{0}.{1}'>".format(self.module,
@@ -112,19 +105,27 @@ class ConfigurationImporter(object):
 
     @property
     def module(self):
-        return os.environ.get(SETTINGS_ENVIRONMENT_VARIABLE)
+        return os.environ.get(self.modvar)
 
     @property
     def name(self):
-        return os.environ.get(CONFIGURATION_ENVIRONMENT_VARIABLE)
+        return os.environ.get(self.namevar)
+
+    def check_options(self):
+        parser = LaxOptionParser(option_list=configuration_options,
+                                 add_help_option=False)
+        try:
+            options, args = parser.parse_args(self.argv)
+            if options.configuration:
+                os.environ[self.namevar] = options.configuration
+        except:
+            pass  # Ignore any option errors at this point.
 
     def validate(self):
         if self.name is None:
-            raise ImproperlyConfigured(self.error_msg.format(
-                                       CONFIGURATION_ENVIRONMENT_VARIABLE))
+            raise ImproperlyConfigured(self.error_msg.format(self.namevar))
         if self.module is None:
-            raise ImproperlyConfigured(self.error_msg.format(
-                                       SETTINGS_ENVIRONMENT_VARIABLE))
+            raise ImproperlyConfigured(self.error_msg.format(self.modvar))
 
     def find_module(self, fullname, path=None):
         if fullname is not None and fullname == self.module:
