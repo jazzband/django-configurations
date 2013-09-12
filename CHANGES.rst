@@ -3,6 +3,14 @@
 Changelog
 ---------
 
+v0.5.1 (2013-09-12)
+^^^^^^^^^^^^^^^^^^^
+
+- Prevented accidentally parsing the command line options to look for the
+  ``--configuration`` option outside of Django's management commands.
+  This should fix a problem with gunicorn's own ``--config`` option.
+  Thanks to Brian Rosner for the report.
+
 v0.5 (2013-09-09)
 ^^^^^^^^^^^^^^^^^
 
