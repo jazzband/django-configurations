@@ -49,7 +49,7 @@ Celery
 ------
 
 Given Celery's way to load Django settings in worker processes you should
-probably just add the following to the **begin** of your settings module::
+probably just add the following to the **beginning** of your settings module::
 
     from configurations import importer
     importer.install()
