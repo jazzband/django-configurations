@@ -92,8 +92,8 @@ probably just add the following to the **beginning** of your settings module::
     from configurations import importer
     importer.install()
 
-That has the same effect as using the ``manage.py`` or ``wsgi.py`` utilities
-mentioned above.
+That has the same effect as using the ``manage.py`` or ``wsgi.py`` utilities.
+
 
 FastCGI
 -------
