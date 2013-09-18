@@ -94,6 +94,43 @@ probably just add the following to the **beginning** of your settings module::
 
 That has the same effect as using the ``manage.py`` or ``wsgi.py`` utilities.
 
+iPython notebooks
+-----------------
+
+.. versionadded:: 0.6
+
+To use django-configurations with IPython_'s great notebooks, you have to
+enable an extension in your IPython configuration. See the IPython
+documentation for how to create and `manage your IPython profile`_ correctly.
+
+Here's a quick how-to in case you don't have a profile yet. Type in your
+command line shell::
+
+    ipython profile create
+
+Then let IPython show you where the configuration file ``ipython_config.py``
+was created::
+
+    ipython locate profile
+
+That should print a directory path where you can find the
+``ipython_config.py`` configuration file. Now open that file and extend the
+``c.InteractiveShellApp.extensions`` configuration value. It may be commented
+out from when IPython created the file or it may not exist in the file at all.
+In either case make sure it's not a Python comment anymore and reads like this::
+
+    # A list of dotted module names of IPython extensions to load.
+    c.InteractiveShellApp.extensions = [
+        # .. your other extensions if available
+        'configurations',
+    ]
+
+That will tell IPython to load django-configurations correctly on startup.
+It also works with django-extensions's shell_plus_ management command.
+
+.. _IPython: http://ipython.org/
+.. _`manage your IPython profile`: http://ipython.org/ipython-doc/dev/config/overview.html#configuration-file-location
+.. _shell_plus: http://django-extensions.readthedocs.org/en/latest/shell_plus.html
 
 FastCGI
 -------
