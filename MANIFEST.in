@@ -1,5 +1,4 @@
 include README.rst
-include CHANGES.rst
 include AUTHORS
 include .travis.yml
 include manage.py
