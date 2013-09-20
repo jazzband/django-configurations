@@ -3,6 +3,12 @@
 Changelog
 ---------
 
+v0.3.1 (2013-09-20)
+^^^^^^^^^^^^^^^^^^^
+
+- Backported a fix from master that makes 0.3.x compatible with newer
+  versions of six.
+
 v0.3 (2013-05-15)
 ^^^^^^^^^^^^^^^^^
 
