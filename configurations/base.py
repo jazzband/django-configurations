@@ -16,7 +16,7 @@ install_failure = ("django-configurations settings importer wasn't "
 class SettingsBase(type):
 
     def __new__(cls, name, bases, attrs):
-        if bases != (object,) and bases[0].__name__ != 'NewBase':
+        if bases not in ((object,), ()) and bases[0].__name__ != 'NewBase':
             # if this is actually a subclass in a settings module
             # we better check if the importer was correctly installed
             from . import importer
