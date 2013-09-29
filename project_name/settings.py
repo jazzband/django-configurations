@@ -1,5 +1,5 @@
 # Django settings for {{ project_name }} project.
-from configurations import Configuration
+from configurations import Configuration, values
 
 
 class Common(Configuration):
