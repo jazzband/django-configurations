@@ -95,9 +95,9 @@ class ConfigurationImporter(object):
 
     def __init__(self, check_options=False):
         self.argv = sys.argv[:]
-        self.validate()
         if check_options:
             self.check_options()
+        self.validate()
 
     def __repr__(self):
         return "<ConfigurationImporter for '{0}.{1}'>".format(self.module,
