@@ -1,4 +1,5 @@
 import os
+import sys
 
 from django.conf import global_settings
 from django.test import TestCase
@@ -78,3 +79,17 @@ class MainTests(TestCase):
         self.assertEqual(importer.module,
                          'tests.settings.inheritance')
         self.assertEqual(importer.name, 'Inheritance')
+
+    @patch.dict(os.environ, clear=True,
+                DJANGO_SETTINGS_MODULE='tests.settings.main',
+                DJANGO_CONFIGURATION='NonExisting')
+    @patch.object(sys, 'argv', ['python', 'manage.py', 'test',
+                                '--settings=tests.settings.main',
+                                '--configuration=Test'])
+    def test_configuration_option(self):
+        importer = ConfigurationImporter(check_options=False)
+        self.assertEqual(importer.module, 'tests.settings.main')
+        self.assertEqual(importer.name, 'NonExisting')
+        importer = ConfigurationImporter(check_options=True)
+        self.assertEqual(importer.module, 'tests.settings.main')
+        self.assertEqual(importer.name, 'Test')
