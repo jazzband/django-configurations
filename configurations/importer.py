@@ -22,6 +22,13 @@ configuration_options = (
                      'be used.'),)
 
 
+def print_if_runserver():
+    if len(sys.argv) > 1 and sys.argv[1] == 'runserver':
+        if os.environ.get("RUN_MAIN") == 'true' or '--noreload' in sys.argv:
+            sys.stdout.write("Django Configuration: {0!r}\n".format(
+                             os.environ.get(CONFIGURATION_ENVIRONMENT_VARIABLE)))
+
+
 def install(check_options=False):
     global installed
     if not installed:
@@ -33,6 +40,8 @@ def install(check_options=False):
         importer = ConfigurationImporter(check_options=check_options)
         sys.meta_path.insert(0, importer)
         installed = True
+
+        print_if_runserver()
 
 
 class ConfigurationImporter(object):
