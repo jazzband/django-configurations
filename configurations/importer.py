@@ -1,14 +1,11 @@
 import imp
 import os
 import sys
-from functools import wraps
 from optparse import make_option
 
 from django.core.exceptions import ImproperlyConfigured
 from django.core.management import LaxOptionParser
 from django.conf import ENVIRONMENT_VARIABLE as SETTINGS_ENVIRONMENT_VARIABLE
-from django.utils.decorators import available_attrs
-from django.utils.importlib import import_module
 
 from .utils import uppercase_attributes, reraise
 from .values import Value, setup_value
@@ -16,40 +13,6 @@ from .values import Value, setup_value
 installed = False
 
 CONFIGURATION_ENVIRONMENT_VARIABLE = 'DJANGO_CONFIGURATION'
-
-
-class StdoutWrapper(object):
-    """
-    Wrap the stdout to patch one line, yup.
-    """
-    def __init__(self, out):
-        self._out = out
-
-    def __getattr__(self, name):
-        return getattr(self._out, name)
-
-    def write(self, msg, *args, **kwargs):
-        if 'Django version' in msg:
-            new_msg_part = (", configuration {0!r}".format(
-                            os.environ.get(CONFIGURATION_ENVIRONMENT_VARIABLE)))
-            msg_parts = msg.split('\n')
-            modified_msg_parts = []
-            for msg_part in msg_parts:
-                if msg_part.startswith('Django version'):
-                    modified_msg_parts.append(msg_part + new_msg_part)
-                else:
-                    modified_msg_parts.append(msg_part)
-            msg = '\n'.join(modified_msg_parts)
-        return self._out.write(msg, *args, **kwargs)
-
-
-def patch_inner_run(original):
-    @wraps(original, assigned=available_attrs(original))
-    def inner_run(self, *args, **options):
-        if hasattr(self, 'stdout'):
-            self.stdout = StdoutWrapper(self.stdout)
-        return original(self, *args, **options)
-    return inner_run
 
 configuration_options = (
     make_option('--configuration',
@@ -59,11 +22,16 @@ configuration_options = (
                      'be used.'),)
 
 
+def print_if_runserver():
+    if len(sys.argv) > 1 and sys.argv[1] == 'runserver':
+        if os.environ.get("RUN_MAIN") == 'true' or '--noreload' in sys.argv:
+            sys.stdout.write("Django Configuration: {0!r}\n".format(
+                             os.environ.get(CONFIGURATION_ENVIRONMENT_VARIABLE)))
+
+
 def install(check_options=False):
     global installed
     if not installed:
-
-        from django.core import management
         from django.core.management import base
 
         # add the configuration option to all management commands
@@ -73,18 +41,7 @@ def install(check_options=False):
         sys.meta_path.insert(0, importer)
         installed = True
 
-        # now patch the active runserver command to show a nicer output
-        commands = management.get_commands()
-        runserver = commands.get('runserver', None)
-        if runserver is not None:
-            path = '{0}.management.commands.runserver'.format(runserver)
-            try:
-                runserver_module = import_module(path)
-            except ImportError:
-                pass
-            else:
-                inner_run = runserver_module.Command.inner_run
-                runserver_module.Command.inner_run = patch_inner_run(inner_run)
+        print_if_runserver()
 
 
 class ConfigurationImporter(object):

@@ -1,4 +1,5 @@
 import os
+import subprocess
 
 from django.conf import global_settings
 from django.test import TestCase
@@ -78,3 +79,17 @@ class MainTests(TestCase):
         self.assertEqual(importer.module,
                          'tests.settings.inheritance')
         self.assertEqual(importer.name, 'Inheritance')
+
+    def test_management_command(self):
+        cmd_params = ['test_project/manage.py', 'diffsettings',
+                '--settings=tests.settings.main',
+                '--configuration=Test']
+        env = dict(os.environ)
+        env.pop('DJANGO_SETTINGS_MODULE')
+        env.pop('DJANGO_CONFIGURATION')
+        p = subprocess.Popen(cmd_params, stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE, env=env)
+        out, err = p.communicate()
+        out = out.decode('utf-8')
+        self.assertEqual(p.returncode, 0)
+        self.assertIn("CONFIGURATION = 'tests.settings.main.Test'", out)
