@@ -90,5 +90,6 @@ class MainTests(TestCase):
         p = subprocess.Popen(cmd_params, stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE, env=env)
         out, err = p.communicate()
+        out = out.decode('utf-8')
         self.assertEqual(p.returncode, 0)
         self.assertIn("CONFIGURATION = 'tests.settings.main.Test'", out)
