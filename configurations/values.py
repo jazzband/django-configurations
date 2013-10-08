@@ -335,7 +335,7 @@ class CacheURLValue(CastingMixin, Value):
     caster = 'django_cache_url.parse'
     message = 'Cannot interpret cache URL value {0!r}'
 
-    def __init__(self, name='default', *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         self.alias = kwargs.pop('alias', 'default')
         kwargs.setdefault('environ', True)
         kwargs.setdefault('environ_prefix', None)
