@@ -1,8 +1,17 @@
 from __future__ import print_function
+import ast
 import os
-import re
 import codecs
 from setuptools import setup
+
+
+class VersionFinder(ast.NodeVisitor):
+    def __init__(self):
+        self.version = None
+
+    def visit_Assign(self, node):
+        if node.targets[0].id == '__version__':
+            self.version = node.value.s
 
 
 def read(*parts):
@@ -11,13 +20,10 @@ def read(*parts):
         return fp.read()
 
 
-def find_version(*file_paths):
-    version_file = read(*file_paths)
-    version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]",
-                              version_file, re.M)
-    if version_match:
-        return version_match.group(1)
-    raise RuntimeError("Unable to find version string.")
+def find_version(*parts):
+    finder = VersionFinder()
+    finder.visit(ast.parse(read(*parts)))
+    return finder.version
 
 
 setup(
