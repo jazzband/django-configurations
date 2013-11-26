@@ -86,6 +86,9 @@ See the repository of the template for more information:
 Celery
 ------
 
+< 3.1
+^^^^^
+
 Given Celery's way to load Django settings in worker processes you should
 probably just add the following to the **beginning** of your settings module::
 
@@ -93,6 +96,44 @@ probably just add the following to the **beginning** of your settings module::
     importer.install()
 
 That has the same effect as using the ``manage.py`` or ``wsgi.py`` utilities.
+
+>= 3.1
+^^^^^^
+
+In Celery 3.1 and later the integration between Django and Celery has been
+simplified to use the standard Celery Python API. Django projects using Celery
+are now advised to add a ``celery.py`` file that instantiates an explicit
+``Celery`` client app.
+
+Here's how to integrate django-configurations following the `example from
+Celery's documentation`_:
+
+.. code-block:: python
+   :emphasize-lines: 9, 11-12
+
+    from __future__ import absolute_import
+
+    import os
+
+    from celery import Celery
+    from django.conf import settings
+
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mysite.settings')
+    os.environ.setdefault('DJANGO_CONFIGURATION', 'MySiteConfiguration')
+
+    from configurations import importer
+    importer.install()
+
+    app = Celery('mysite')
+    app.config_from_object('django.conf:settings')
+    app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
+
+    @app.task(bind=True)
+    def debug_task(self):
+        print('Request: {0!r}'.format(self.request))
+
+.. _`example from Celery's documentation`: http://docs.celeryproject.org/en/latest/django/first-steps-with-django.html
+
 
 iPython notebooks
 -----------------
@@ -143,7 +184,6 @@ sure to use something like the following script::
     #!/usr/bin/env python
 
     import os
-    import sys
      
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mysite.settings')
     os.environ.setdefault('DJANGO_CONFIGURATION', 'MySiteConfiguration')
