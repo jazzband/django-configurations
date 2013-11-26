@@ -1,14 +1,12 @@
 import imp
+import logging
 import os
 import sys
-from functools import wraps
 from optparse import make_option
 
 from django.core.exceptions import ImproperlyConfigured
 from django.core.management import LaxOptionParser
 from django.conf import ENVIRONMENT_VARIABLE as SETTINGS_ENVIRONMENT_VARIABLE
-from django.utils.decorators import available_attrs
-from django.utils.importlib import import_module
 
 from .utils import uppercase_attributes, reraise
 from .values import Value, setup_value
@@ -17,39 +15,6 @@ installed = False
 
 CONFIGURATION_ENVIRONMENT_VARIABLE = 'DJANGO_CONFIGURATION'
 
-
-class StdoutWrapper(object):
-    """
-    Wrap the stdout to patch one line, yup.
-    """
-    def __init__(self, out):
-        self._out = out
-
-    def __getattr__(self, name):
-        return getattr(self._out, name)
-
-    def write(self, msg, *args, **kwargs):
-        if 'Django version' in msg:
-            new_msg_part = (", configuration {0!r}".format(
-                            os.environ.get(CONFIGURATION_ENVIRONMENT_VARIABLE)))
-            msg_parts = msg.split('\n')
-            modified_msg_parts = []
-            for msg_part in msg_parts:
-                if msg_part.startswith('Django version'):
-                    modified_msg_parts.append(msg_part + new_msg_part)
-                else:
-                    modified_msg_parts.append(msg_part)
-            msg = '\n'.join(modified_msg_parts)
-        return self._out.write(msg, *args, **kwargs)
-
-
-def patch_inner_run(original):
-    @wraps(original, assigned=available_attrs(original))
-    def inner_run(self, *args, **options):
-        if hasattr(self, 'stdout'):
-            self.stdout = StdoutWrapper(self.stdout)
-        return original(self, *args, **options)
-    return inner_run
 
 configuration_options = (
     make_option('--configuration',
@@ -62,8 +27,6 @@ configuration_options = (
 def install(check_options=False):
     global installed
     if not installed:
-
-        from django.core import management
         from django.core.management import base
 
         # add the configuration option to all management commands
@@ -72,19 +35,6 @@ def install(check_options=False):
         importer = ConfigurationImporter(check_options=check_options)
         sys.meta_path.insert(0, importer)
         installed = True
-
-        # now patch the active runserver command to show a nicer output
-        commands = management.get_commands()
-        runserver = commands.get('runserver', None)
-        if runserver is not None:
-            path = '{0}.management.commands.runserver'.format(runserver)
-            try:
-                runserver_module = import_module(path)
-            except ImportError:
-                pass
-            else:
-                inner_run = runserver_module.Command.inner_run
-                runserver_module.Command.inner_run = patch_inner_run(inner_run)
 
 
 class ConfigurationImporter(object):
@@ -95,9 +45,15 @@ class ConfigurationImporter(object):
 
     def __init__(self, check_options=False):
         self.argv = sys.argv[:]
+        self.logger = logging.getLogger(__name__)
+        self.logger.setLevel(logging.DEBUG)
+        handler = logging.StreamHandler()
+        self.logger.addHandler(handler)
         if check_options:
             self.check_options()
         self.validate()
+        if check_options:
+            self.announce()
 
     def __repr__(self):
         return "<ConfigurationImporter for '{0}.{1}'>".format(self.module,
@@ -126,6 +82,29 @@ class ConfigurationImporter(object):
             raise ImproperlyConfigured(self.error_msg.format(self.namevar))
         if self.module is None:
             raise ImproperlyConfigured(self.error_msg.format(self.modvar))
+
+    def announce(self):
+        if len(self.argv) > 1:
+            from . import __version__
+            from django.utils.termcolors import colorize
+            # Django >= 1.7 supports hiding the colorization in the shell
+            try:
+                from django.core.management.color import no_style
+            except ImportError:
+                no_style = None
+
+            if no_style is not None and '--no-color' in self.argv:
+                stylize = no_style()
+            else:
+                stylize = lambda text: colorize(text, fg='green')
+
+            if (self.argv[1] == 'runserver' and
+                    os.environ.get('RUN_MAIN') == 'true'):
+
+                message = ("django-configurations version {0}, using "
+                           "configuration '{1}'".format(__version__,
+                                                        self.name))
+                self.logger.debug(stylize(message))
 
     def find_module(self, fullname, path=None):
         if fullname is not None and fullname == self.module:
