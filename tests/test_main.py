@@ -51,8 +51,7 @@ class MainTests(TestCase):
 
     def test_global_settings(self):
         from configurations.base import Configuration
-        self.assertEqual(Configuration.LOGGING_CONFIG,
-                         'django.utils.log.dictConfig')
+        self.assertIn('dictConfig', Configuration.LOGGING_CONFIG)
         self.assertEqual(repr(Configuration),
                          "<Configuration 'configurations.base.Configuration'>")
 
