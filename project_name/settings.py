@@ -15,7 +15,7 @@ from configurations import Configuration, values
 class Common(Configuration):
 
     # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-    BASE_DIR = values.PathValue(os.path.dirname(os.path.dirname(__file__)))
+    BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
     # Quick-start development settings - unsuitable for production
     # See https://docs.djangoproject.com/en/{{ docs_version }}/howto/deployment/checklist/
