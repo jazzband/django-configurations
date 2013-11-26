@@ -1,25 +1,29 @@
 language: python
-python:
-  - 2.6
-  - 2.7
-  - 3.2
-  - 3.3
-install:
-  - pip install -e .
-  - pip install -r tests/requirements.txt
-  - pip install https://github.com/django/django/archive/${DJANGO}.zip#egg=django
-script:
-  - inv test
 env:
-  - DJANGO=1.4.6
-  - DJANGO=1.5.2
-  - DJANGO=stable/1.6.x
-matrix:
-  exclude:
-    - python: 3.2
-      env: DJANGO=1.4.6
-    - python: 3.3
-      env: DJANGO=1.4.6
+  - TOXENV=py26-1.4.x
+  - TOXENV=py26-1.5.x
+  - TOXENV=py26-1.6.x
+  - TOXENV=py26-1.7.x
+  - TOXENV=py27-1.4.x
+  - TOXENV=py27-1.5.x
+  - TOXENV=py27-1.6.x
+  - TOXENV=py27-1.7.x
+  - TOXENV=py32-1.5.x
+  - TOXENV=py32-1.6.x
+  - TOXENV=py32-1.7.x
+  - TOXENV=py33-1.5.x
+  - TOXENV=py33-1.6.x
+  - TOXENV=py33-1.7.x
+  - TOXENV=pypy-1.4.x
+  - TOXENV=pypy-1.5.x
+  - TOXENV=pypy-1.6.x
+  - TOXENV=pypy-1.7.x
+  - TOXENV=flake827
+  - TOXENV=flake833
+install:
+  - pip install tox
+script:
+  - tox
 branches:
   except:
     templates/1.5.x
