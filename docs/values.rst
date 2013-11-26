@@ -14,8 +14,8 @@ the ability to handle values from the process environment of your software
 
 .. note::
 
-  These classes are required to be used as attributes of ``Configuration`` 
-  classes. See the :doc:`main documentation<index>` for more information. 
+  These classes are required to be used as attributes of ``Configuration``
+  classes. See the :doc:`main documentation<index>` for more information.
 
 Overview
 --------
@@ -53,7 +53,7 @@ See the list of :ref:`built-in value classes<built-ins>` for more information.
 Environment variables
 ---------------------
 
-To separate the site configuration from your application code you should use 
+To separate the site configuration from your application code you should use
 environment variables for configuration. Unfortunately environment variables
 are string based so they are not easily mapped to the Python based settings
 system Django uses.
@@ -69,8 +69,8 @@ staging server to be able to debug a problem with your in-development code.
 You're using a web server that passes the environment variables from
 the shell it was started from into your Django WSGI process.
 
-Use the boolean ``environ`` option of the :class:`~Value` class (``True`` by 
-default) to tell django-configurations to look for an environment variable with 
+Use the boolean ``environ`` option of the :class:`~Value` class (``True`` by
+default) to tell django-configurations to look for an environment variable with
 the same name as the specific :class:`~Value` variable, only uppercased and
 prefixed with ``DJANGO_``. E.g.:
 
@@ -97,7 +97,7 @@ Disabling environment variables
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 To disable environment variables, specify the ``environ`` parameter of the
-:class:`~Value` class. For example this would disable it for the ``TIME_ZONE`` 
+:class:`~Value` class. For example this would disable it for the ``TIME_ZONE``
 setting value::
 
     from configurations import Configuration, values
@@ -140,7 +140,7 @@ the prefix.
 ---------------
 
 .. class:: Value(default, [environ=True, environ_name=None, environ_prefix='DJANGO'])
-    
+
    The ``Value`` class takes one required and several optional parameters.
 
    :param default: the default value of the setting
@@ -153,7 +153,7 @@ the prefix.
 
    The ``default`` parameter is effectively the value the setting has
    right now in your ``settings.py``.
- 
+
    .. method:: setup(name)
 
       :param name: the name of the setting
@@ -165,23 +165,23 @@ the prefix.
       the settings. It'll be passed one parameter, the name of the
       :class:`~Value` instance as defined in the ``settings.py``. This is used
       for building the name of the environment variable.
- 
+
    .. method:: to_python(value)
 
       :param value: the value of the setting as found in the process
                     environment (:data:`os.environ`)
       :return: validated and "ready" setting value if found in process
-               environment      
+               environment
 
-      The ``to_python`` method is used when the ``environ`` parameter of the 
+      The ``to_python`` method is used when the ``environ`` parameter of the
       :class:`~Value` class is set to ``True`` (the default) and an
       environment variable with the appropriate name was found.
 
-      It will be used to handle the string based environment variables and 
+      It will be used to handle the string based environment variables and
       returns the "ready" value of the setting.
 
-      Some :class:`~Value` subclasses also use it during initialization when the 
-      default value has a string-like format like an environment variable which 
+      Some :class:`~Value` subclasses also use it during initialization when the
+      default value has a string-like format like an environment variable which
       needs to be converted into a Python data type.
 
 .. _built-ins:
@@ -293,7 +293,7 @@ Type values
         DEPARTMENTS = values.DictValue({
             'it': ['Mike', 'Joe'],
         })
-        
+
 Validator values
 ^^^^^^^^^^^^^^^^
 
