@@ -18,6 +18,8 @@ v0.7 (2013-11-26)
 
 - Added Tox test configuration.
 
+- Fixed an erroneous use of ``PathValue`` in the 1.6.x project template.
+
 v0.6 (2013-09-19)
 ^^^^^^^^^^^^^^^^^
 
