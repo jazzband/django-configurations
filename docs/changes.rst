@@ -3,6 +3,21 @@
 Changelog
 ---------
 
+v0.7 (2013-11-26)
+^^^^^^^^^^^^^^^^^
+
+- Removed the broken stdout wrapper that displayed the currently enabled
+  configuration when using the runserver management command. Added a logging
+  based solution instead.
+
+- Fixed default value of ``CacheURLValue`` class that was shadowed by an
+  unneeded name parameter. Thanks to Stefan Wehrmeyer.
+
+- Fixed command line options checking in the importer to happen before the
+  validation. Thanks to Stefan Wehrmeyer.
+
+- Added Tox test configuration.
+
 v0.6 (2013-09-19)
 ^^^^^^^^^^^^^^^^^
 
