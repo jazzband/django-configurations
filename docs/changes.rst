@@ -3,6 +3,12 @@
 Changelog
 ---------
 
+v0.8 (2014-01-16)
+^^^^^^^^^^^^^^^^^
+
+- Added ``SearchURLValue`` to configure Haystack ``HAYSTACK_CONNECTIONS``
+  settings.
+
 v0.7 (2013-11-26)
 ^^^^^^^^^^^^^^^^^
 

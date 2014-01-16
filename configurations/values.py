@@ -296,26 +296,6 @@ class SecretValue(Value):
         return value
 
 
-class DatabaseURLValue(CastingMixin, Value):
-    caster = 'dj_database_url.parse'
-    message = 'Cannot interpret database URL value {0!r}'
-
-    def __init__(self, *args, **kwargs):
-        self.alias = kwargs.pop('alias', 'default')
-        kwargs.setdefault('environ', True)
-        kwargs.setdefault('environ_prefix', None)
-        kwargs.setdefault('environ_name', 'DATABASE_URL')
-        super(DatabaseURLValue, self).__init__(*args, **kwargs)
-        if self.default is None:
-            self.default = {}
-        else:
-            self.default = self.to_python(self.default)
-
-    def to_python(self, value):
-        value = super(DatabaseURLValue, self).to_python(value)
-        return {self.alias: value}
-
-
 class EmailURLValue(CastingMixin, MultipleMixin, Value):
     caster = 'dj_email_url.parse'
     message = 'Cannot interpret email URL value {0!r}'
@@ -331,21 +311,38 @@ class EmailURLValue(CastingMixin, MultipleMixin, Value):
             self.default = self.to_python(self.default)
 
 
-class CacheURLValue(CastingMixin, Value):
-    caster = 'django_cache_url.parse'
-    message = 'Cannot interpret cache URL value {0!r}'
+class DictBackendMixin(Value):
+    default_alias = 'default'
 
     def __init__(self, *args, **kwargs):
-        self.alias = kwargs.pop('alias', 'default')
+        self.alias = kwargs.pop('alias', self.default_alias)
         kwargs.setdefault('environ', True)
         kwargs.setdefault('environ_prefix', None)
-        kwargs.setdefault('environ_name', 'CACHE_URL')
-        super(CacheURLValue, self).__init__(*args, **kwargs)
+        kwargs.setdefault('environ_name', self.environ_name)
+        super(DictBackendMixin, self).__init__(*args, **kwargs)
         if self.default is None:
             self.default = {}
         else:
             self.default = self.to_python(self.default)
 
     def to_python(self, value):
-        value = super(CacheURLValue, self).to_python(value)
+        value = super(DictBackendMixin, self).to_python(value)
         return {self.alias: value}
+
+
+class DatabaseURLValue(DictBackendMixin, CastingMixin, Value):
+    caster = 'dj_database_url.parse'
+    message = 'Cannot interpret database URL value {0!r}'
+    environ_name = 'DATABASE_URL'
+
+
+class CacheURLValue(DictBackendMixin, CastingMixin, Value):
+    caster = 'django_cache_url.parse'
+    message = 'Cannot interpret cache URL value {0!r}'
+    environ_name = 'CACHE_URL'
+
+
+class SearchURLValue(DictBackendMixin, CastingMixin, Value):
+    caster = 'dj_search_url.parse'
+    message = 'Cannot interpret Search URL value {0!r}'
+    environ_name = 'SEARCH_URL'

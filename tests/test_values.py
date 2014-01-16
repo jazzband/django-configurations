@@ -14,7 +14,7 @@ from configurations.values import (Value, BooleanValue, IntegerValue,
                                    RegexValue, PathValue, SecretValue,
                                    DatabaseURLValue, EmailURLValue,
                                    CacheURLValue, BackendsValue,
-                                   CastingMixin)
+                                   CastingMixin, SearchURLValue)
 
 
 @contextmanager
@@ -294,6 +294,17 @@ class ValueTests(TestCase):
             self.assertEqual(value.setup('CACHE_URL'), cache_setting)
         with env(CACHE_URL='wrong://user@host:port/1'):
             self.assertRaises(KeyError, value.setup, 'TEST')
+
+    def test_search_url_value(self):
+        value = SearchURLValue()
+        self.assertEqual(value.default, {})
+        with env(SEARCH_URL='elasticsearch://127.0.0.1:9200/index'):
+            self.assertEqual(value.setup('SEARCH_URL'), {
+                'default': {
+                    'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
+                    'URL': 'http://127.0.0.1:9200',
+                    'INDEX_NAME': 'index',
+                }})
 
     def test_backend_list_value(self):
         backends = ['django.middleware.common.CommonMiddleware']

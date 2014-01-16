@@ -446,6 +446,36 @@ URL-based values
 
     .. _`dj-email-url`: https://pypi.python.org/pypi/dj-email-url/
 
+.. class:: SearchURLValue(default, [environ=True, environ_name='EMAIL_URL', environ_prefix=None])
+
+    .. versionadded:: 0.8
+
+    A :class:`~Value` subclass that uses the `dj-search-url`_ app to
+    convert a search configuration value stored in the ``SEARCH_URL``
+    environment variable into the appropriate settings for use with Haystack_.
+    It's inspired by the `Twelve-Factor methodology`_.
+
+    By default this :class:`~Value` subclass looks for the ``SEARCH_URL``
+    environment variable.
+
+    Takes an optional ``alias`` parameter to define which search backend alias
+    to use for the ``HAYSTACK_CONNECTIONS`` setting.
+
+    :param alias: which cache alias to use
+
+    The other parameters have the following default values:
+
+    :param environ: ``True``
+    :param environ_name: ``SEARCH_URL``
+    :param environ_prefix: ``None``
+
+    ::
+
+        HAYSTACK_CONNECTIONS = values.SearchURLValue('elasticsearch://127.0.0.1:9200/my-index')
+
+    .. _`dj-search-url`: https://pypi.python.org/pypi/dj-search-url/
+    .. _Haystack: http://haystacksearch.org/
+
 Other values
 ^^^^^^^^^^^^
 
