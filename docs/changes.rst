@@ -65,6 +65,11 @@ v0.4 (2013-09-03)
 
 - Reorganized and extended documentation.
 
+v0.3.2 (2014-01-16)
+^^^^^^^^^^^^^^^^^^^
+
+- Fixed an installation issue.
+
 v0.3.1 (2013-09-20)
 ^^^^^^^^^^^^^^^^^^^
 
