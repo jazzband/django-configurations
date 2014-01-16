@@ -60,7 +60,7 @@ class Common(Configuration):
     # https://docs.djangoproject.com/en/{{ docs_version }}/ref/settings/#databases
     # http://django-configurations.readthedocs.org/en/latest/values/#configurations.values.DatabaseURLValue
 
-    DATABASES = values.DatabaseURLValue('sqlite://%s' % os.path.join(BASE_DIR, 'db.sqlite3'),
+    DATABASES = values.DatabaseURLValue('sqlite:///%s' % os.path.join(BASE_DIR, 'db.sqlite3'),
                                         environ=True)
 
     # Internationalization
