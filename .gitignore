@@ -4,3 +4,4 @@ docs/_build
 *.egg
 test.db
 build/
+.tox/
