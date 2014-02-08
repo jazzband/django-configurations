@@ -417,7 +417,7 @@ URL-based values
 
     .. _`django-cache-url`: https://pypi.python.org/pypi/django-cache-url/
 
-.. class:: EmailURLValue(default, [environ=True, environ_name='SEARCH_URL', environ_prefix=None])
+.. class:: EmailURLValue(default, [environ=True, environ_name='EMAIL_URL', environ_prefix=None])
 
     A :class:`~Value` subclass that uses the `dj-email-url`_ app to
     convert an email configuration value stored in the ``EMAIL_URL``
@@ -446,7 +446,7 @@ URL-based values
 
     .. _`dj-email-url`: https://pypi.python.org/pypi/dj-email-url/
 
-.. class:: SearchURLValue(default, [environ=True, environ_name='EMAIL_URL', environ_prefix=None])
+.. class:: SearchURLValue(default, [environ=True, environ_name='SEARCH_URL', environ_prefix=None])
 
     .. versionadded:: 0.8
 
