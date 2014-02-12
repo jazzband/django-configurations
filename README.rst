@@ -10,6 +10,11 @@ on the composability of Python classes. It extends the notion of
 Django's module based settings loading with well established
 object oriented programming patterns.
 
+Check out the `documentation`__ for more complete examples.
+
+.. __: http://django-configurations.readthedocs.org/en/latest/
+
+
 Quickstart
 ----------
 
