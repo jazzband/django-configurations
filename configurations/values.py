@@ -3,6 +3,7 @@ import copy
 import decimal
 import os
 import sys
+import inspect
 
 from django.core import validators
 from django.core.exceptions import ValidationError, ImproperlyConfigured
@@ -95,6 +96,7 @@ class BooleanValue(Value):
 class CastingMixin(object):
     exception = (TypeError, ValueError)
     message = 'Cannot interpret value {0!r}'
+    kwargs = {}
 
     def __init__(self, *args, **kwargs):
         super(CastingMixin, self).__init__(*args, **kwargs)
@@ -106,10 +108,20 @@ class CastingMixin(object):
             error = 'Cannot use caster of {0} ({1!r})'.format(self,
                                                               self.caster)
             raise ValueError(error)
+        self.process_kwargs(kwargs)
+
+    def process_kwargs(self, kwargs):
+        if kwargs:
+            arg_names = inspect.getargspec(self._caster)[0]
+            self.kwargs = dict((name, kwargs[name]) for name in arg_names \
+                                                        if name in kwargs)
 
     def to_python(self, value):
         try:
-            return self._caster(value)
+            if self.kwargs:
+                return self._caster(value, **self.kwargs)
+            else:
+                return self._caster(value)
         except self.exception:
             raise ValueError(self.message.format(value))
 
