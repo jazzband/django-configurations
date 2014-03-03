@@ -282,7 +282,7 @@ class ValueTests(TestCase):
             'default': {
                 'BACKEND': 'redis_cache.cache.RedisCache',
                 'KEY_PREFIX': '',
-                'LOCATION': 'user@host:port:1'
+                'LOCATION': 'host:port:1'
             }
         }
         cache_url = 'redis://user@host:port/1'
