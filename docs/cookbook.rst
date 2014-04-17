@@ -177,7 +177,7 @@ FastCGI
 -------
 
 In case you use FastCGI for deploying Django (you really shouldn't) and aren't
-allowed to us Django's runfcgi_ management command (that would automatically
+allowed to use Django's runfcgi_ management command (that would automatically
 handle the setup for your if you've followed the quickstart guide above), make
 sure to use something like the following script::
 
