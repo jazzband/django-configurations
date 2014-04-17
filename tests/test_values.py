@@ -246,11 +246,11 @@ class ValueTests(TestCase):
             self.assertEqual(value.setup('DATABASE_URL'), {
                 'default': {
                     'ENGINE': 'django.db.backends.sqlite3',
-                    'HOST': None,
+                    'HOST': '',
                     'NAME': ':memory:',
-                    'PASSWORD': None,
-                    'PORT': None,
-                    'USER': None,
+                    'PASSWORD': '',
+                    'PORT': '',
+                    'USER': '',
                 }})
 
     def test_email_url_value(self):
