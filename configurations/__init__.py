@@ -1,9 +1,9 @@
 # flake8: noqa
-from .base import Settings, Configuration
+from .base import Settings, Configuration, DotConfiguration
 from .decorators import pristinemethod
 
 __version__ = '0.8'
-__all__ = ['Configuration', 'pristinemethod', 'Settings']
+__all__ = ['Configuration', 'DotConfiguration', 'pristinemethod', 'Settings']
 
 
 def load_ipython_extension(ipython):

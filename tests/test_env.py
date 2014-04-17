@@ -1,10 +1,13 @@
 import os
 from django.test import TestCase
-from configurations.values import BooleanValue
 from mock import patch
 
-class EnvValueTests(TestCase):
 
+class DotEnvLoadingTests(TestCase):
+
+    @patch.dict(os.environ, clear=True,
+            DJANGO_CONFIGURATION='DotEnvConfiguration',
+            DJANGO_SETTINGS_MODULE='tests.settings.dot_env')
     def test_env_loaded(self):
-        check_value = BooleanValue(False)
-        self.assertEqual(check_value.setup('ENV_LOADED'), True)
+        from tests.settings import dot_env
+        self.assertTrue(dot_env.DOT_ENV_LOADED)

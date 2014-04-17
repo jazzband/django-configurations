@@ -1,7 +1,7 @@
 from configurations import Configuration, values
 
 
-class Base(Configuration):
+class Base(DotConfiguration):
     # Django settings for test_project project.
 
     DEBUG = values.BooleanValue(True, environ=True)
