@@ -41,6 +41,39 @@ class ConfigurationBase(type):
         return "<Configuration '{0}.{1}'>".format(self.__module__,
                                                   self.__name__)
 
+    @staticmethod
+    def read_env(env_file='.env', **overrides):
+        """
+        Pulled from Honcho code with minor updates, reads local default
+        environment variables from a .env file located in the project root
+        directory.
+
+        http://www.wellfireinteractive.com/blog/easier-12-factor-django/
+        https://gist.github.com/bennylope/2999704
+        """
+        import re
+        import os
+
+        with open(env_file) as f:
+            content = f.read()
+
+            for line in content.splitlines():
+                m1 = re.match(r'\A([A-Za-z_0-9]+)=(.*)\Z', line)
+                if not m1:
+                    continue
+                key, val = m1.group(1), m1.group(2)
+                m2 = re.match(r"\A'(.*)'\Z", val)
+                if m2:
+                    val = m2.group(1)
+                m3 = re.match(r'\A"(.*)"\Z', val)
+                if m3:
+                    val = re.sub(r'\\(.)', r'\1', m3.group(1))
+                os.environ.setdefault(key, val)
+
+        # set defaults
+        for key, value in overrides.items():
+            os.environ.setdefault(key, value)
+
 
 class Configuration(six.with_metaclass(ConfigurationBase)):
     """

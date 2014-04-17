@@ -3,9 +3,13 @@ import uuid
 import django
 
 from configurations import Configuration, pristinemethod
+from configurations.values import BooleanValue
 
 
 class Test(Configuration):
+
+    ENV_LOADED = BooleanValue(False)
+
     DEBUG = True
 
     SITE_ID = 1
@@ -60,6 +64,7 @@ class Test(Configuration):
     @classmethod
     def pre_setup(cls):
         cls.PRE_SETUP_TEST_SETTING = 6
+        cls.read_env('test_project/.env')
 
     @classmethod
     def post_setup(cls):
