@@ -14,10 +14,10 @@ from .utils import import_by_path
 def setup_value(target, name, value):
     actual_value = value.setup(name)
     # overwriting the original Value class with the result
-    setattr(target, name, actual_value)
+    setattr(target, name, value.value)
     if value.multiple:
         for multiple_name, multiple_value in actual_value.items():
-            setattr(target, multiple_name, multiple_value)
+            setattr(target, multiple_name, multiple_value.value)
 
 
 class Value(object):
@@ -26,10 +26,40 @@ class Value(object):
     and implements a simple validation scheme.
     """
     multiple = False
+    late_binding = False
+
+    @property
+    def value(self):
+        value = self.default
+        if not hasattr(self, '_value') and self.environ_name:
+            self.setup(self.environ_name)
+        if hasattr(self, '_value'):
+            value = self._value
+        return value
+
+    @value.setter
+    def value(self, value):
+        self._value = value
+
+    def __new__(cls, *args, **kwargs):
+        """
+        checks if the creation can end up directly in the final value.
+        That is the case whenever environ = False or environ_name is given
+        """
+        instance = object.__new__(cls)
+        instance.__init__(*args, **kwargs)
+        if not instance.late_binding:
+            if (instance.environ and instance.environ_name) \
+                    or (not instance.environ and instance.default):
+                instance = instance.setup(instance.environ_name)
+
+        return instance
 
     def __init__(self, default=None, environ=True, environ_name=None,
                  environ_prefix='DJANGO', *args, **kwargs):
-        if isinstance(default, Value):
+        if 'late_binding' in kwargs:
+            self.late_binding = kwargs.get('late_binding')
+        if isinstance(default, Value) and default.default:
             self.default = copy.copy(default.default)
         else:
             self.default = default
@@ -39,13 +69,16 @@ class Value(object):
         self.environ_prefix = environ_prefix
         self.environ_name = environ_name
 
+    def __str__(self):
+        return str(self.value)
+
     def __repr__(self):
-        return "<Value default: {0}>".format(self.default)
+        return repr(self.value)
 
     def setup(self, name):
         value = self.default
         if self.environ:
-            if self.environ_name is None:
+            if not self.environ_name:
                 environ_name = name.upper()
             else:
                 environ_name = self.environ_name
@@ -56,6 +89,7 @@ class Value(object):
                 full_environ_name = environ_name
             if full_environ_name in os.environ:
                 value = self.to_python(os.environ[full_environ_name])
+        self.value = value
         return value
 
     def to_python(self, value):
@@ -299,6 +333,7 @@ class SecretValue(Value):
 class EmailURLValue(CastingMixin, MultipleMixin, Value):
     caster = 'dj_email_url.parse'
     message = 'Cannot interpret email URL value {0!r}'
+    late_binding = True
 
     def __init__(self, *args, **kwargs):
         kwargs.setdefault('environ', True)
@@ -334,15 +369,18 @@ class DatabaseURLValue(DictBackendMixin, CastingMixin, Value):
     caster = 'dj_database_url.parse'
     message = 'Cannot interpret database URL value {0!r}'
     environ_name = 'DATABASE_URL'
+    late_binding = True
 
 
 class CacheURLValue(DictBackendMixin, CastingMixin, Value):
     caster = 'django_cache_url.parse'
     message = 'Cannot interpret cache URL value {0!r}'
     environ_name = 'CACHE_URL'
+    late_binding = True
 
 
 class SearchURLValue(DictBackendMixin, CastingMixin, Value):
     caster = 'dj_search_url.parse'
     message = 'Cannot interpret Search URL value {0!r}'
     environ_name = 'SEARCH_URL'
+    late_binding = True
