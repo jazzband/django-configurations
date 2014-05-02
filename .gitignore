@@ -5,3 +5,4 @@ docs/_build
 test.db
 build/
 .tox/
+htmlcov/
