@@ -196,3 +196,18 @@ As you can see django-configurations provides a helper module
 ``configurations.fastcgi`` that handles the setup of your configurations.
 
 .. _runfcgi: https://docs.djangoproject.com/en/1.5/howto/deployment/fastcgi/
+
+
+Sphinx
+------
+
+In case you would like to user the amazing `autodoc` feature of `http://sphinx-doc.org/`_, 
+you can initialize you django project the following way in your `conf.py`::
+
+    ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
+    sys.path.append(ROOT)
+    os.environ['DJANGO_SETTINGS_MODULE'] = 'myproject.settings'
+    os.environ['DJANGO_CONFIGURATION'] = 'Dev'
+
+    from configurations.importer import install
+    install()
