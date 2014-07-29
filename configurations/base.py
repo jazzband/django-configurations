@@ -32,8 +32,13 @@ class ConfigurationBase(type):
         parents = [base for base in bases if isinstance(base,
                                                         ConfigurationBase)]
         if parents:
-            for base in bases[::-1]:
-                settings_vars.update(uppercase_attributes(base))
+            for base in bases:
+                for key, value in uppercase_attributes(base).items():
+                    if key in attrs:
+                        if isinstance(value, tuple):
+                            attrs[key] += value
+                    else:
+                        attrs[key] = value
         attrs = dict(settings_vars, **attrs)
         return super(ConfigurationBase, cls).__new__(cls, name, bases, attrs)
 
