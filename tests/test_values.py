@@ -29,16 +29,38 @@ class FailingCasterValue(CastingMixin, Value):
 
 class ValueTests(TestCase):
 
-    def test_value(self):
+    def test_value_with_default(self):
         value = Value('default', environ=False)
-        self.assertEqual(value.setup('TEST'), 'default')
+        self.assertEqual(type(value), type('default'))
+        self.assertEqual(value, 'default')
+        self.assertEqual(str(value), 'default')
+
+    def test_value_with_default_and_late_binding(self):
+        value = Value('default', environ=False, late_binding=True)
+        self.assertEqual(type(value), Value)
         with env(DJANGO_TEST='override'):
             self.assertEqual(value.setup('TEST'), 'default')
+            value = Value(environ_name='TEST')
+            self.assertEqual(type(value), type('override'))
+            self.assertEqual(value, 'override')
+            self.assertEqual(str(value), 'override')
+            self.assertEqual('{0}'.format(value), 'override')
+            self.assertEqual('%s' % value, 'override')
+
+            value = Value(environ_name='TEST', late_binding=True)
+            self.assertEqual(type(value), Value)
+            self.assertEqual(value.value, 'override')
+            self.assertEqual(str(value), 'override')
+            self.assertEqual('{0}'.format(value), 'override')
+            self.assertEqual('%s' % value, 'override')
+
+            self.assertEqual(repr(value), repr('override'))
 
     @patch.dict(os.environ, clear=True, DJANGO_TEST='override')
     def test_env_var(self):
         value = Value('default')
         self.assertEqual(value.setup('TEST'), 'override')
+        self.assertEqual(str(value), 'override')
         self.assertNotEqual(value.setup('TEST'), value.default)
         self.assertEqual(value.to_python(os.environ['DJANGO_TEST']),
                          value.setup('TEST'))
@@ -59,6 +81,10 @@ class ValueTests(TestCase):
 
         with patch.dict(os.environ, clear=True, TEST='override'):
             value = Value('default', environ_prefix='')
+            self.assertEqual(value.setup('TEST'), 'override')
+
+        with patch.dict(os.environ, clear=True, ACME_TEST='override'):
+            value = Value('default', environ_prefix='ACME_')
             self.assertEqual(value.setup('TEST'), 'override')
 
     def test_boolean_values_true(self):
@@ -234,7 +260,8 @@ class ValueTests(TestCase):
             self.assertEqual(value.setup('SECRET_KEY'), '123')
 
         value = SecretValue(environ_name='FACEBOOK_API_SECRET',
-                            environ_prefix=None)
+                            environ_prefix=None,
+                            late_binding=True)
         self.assertRaises(ValueError, value.setup, 'TEST')
         with env(FACEBOOK_API_SECRET='123'):
             self.assertEqual(value.setup('TEST'), '123')
@@ -313,3 +340,21 @@ class ValueTests(TestCase):
 
         backends = ['non.existing.Backend']
         self.assertRaises(ValueError, BackendsValue, backends)
+
+    def test_tuple_value(self):
+        value = TupleValue(None)
+        self.assertEqual(value.default, ())
+        self.assertEqual(value.value, ())
+
+        value = TupleValue((1, 2))
+        self.assertEqual(value.default, (1, 2))
+        self.assertEqual(value.value, (1, 2))
+
+    def test_set_value(self):
+        value = SetValue()
+        self.assertEqual(value.default, set())
+        self.assertEqual(value.value, set())
+
+        value = SetValue([1, 2])
+        self.assertEqual(value.default, set([1, 2]))
+        self.assertEqual(value.value, set([1, 2]))
