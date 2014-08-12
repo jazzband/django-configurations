@@ -204,7 +204,7 @@ Sphinx
 In case you would like to user the amazing `autodoc` feature of `http://sphinx-doc.org/`_, 
 you can initialize you django project the following way in your `conf.py`::
 
-    ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
+    ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '/path/to/project/root'))
     sys.path.append(ROOT)
     os.environ['DJANGO_SETTINGS_MODULE'] = 'myproject.settings'
     os.environ['DJANGO_CONFIGURATION'] = 'Dev'
