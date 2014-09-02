@@ -17,7 +17,7 @@ def setup_value(target, name, value):
     setattr(target, name, value.value)
     if value.multiple:
         for multiple_name, multiple_value in actual_value.items():
-            setattr(target, multiple_name, multiple_value.value)
+            setattr(target, multiple_name, multiple_value)
 
 
 class Value(object):

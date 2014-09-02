@@ -14,7 +14,8 @@ from configurations.values import (Value, BooleanValue, IntegerValue,
                                    RegexValue, PathValue, SecretValue,
                                    DatabaseURLValue, EmailURLValue,
                                    CacheURLValue, BackendsValue,
-                                   CastingMixin, SearchURLValue)
+                                   CastingMixin, SearchURLValue,
+                                   setup_value)
 
 
 @contextmanager
@@ -358,3 +359,28 @@ class ValueTests(TestCase):
         value = SetValue([1, 2])
         self.assertEqual(value.default, set([1, 2]))
         self.assertEqual(value.value, set([1, 2]))
+
+    def test_setup_value(self):
+
+        class Target(object):
+            pass
+
+        value = EmailURLValue()
+        with env(EMAIL_URL='smtps://user@domain.com:password@smtp.example.com:587'):
+            setup_value(Target, 'EMAIL', value)
+            self.assertEqual(Target.EMAIL, {
+                'EMAIL_BACKEND': 'django.core.mail.backends.smtp.EmailBackend',
+                'EMAIL_FILE_PATH': '',
+                'EMAIL_HOST': 'smtp.example.com',
+                'EMAIL_HOST_PASSWORD': 'password',
+                'EMAIL_HOST_USER': 'user@domain.com',
+                'EMAIL_PORT': 587,
+                'EMAIL_USE_TLS': True
+            })
+            self.assertEqual(Target.EMAIL_BACKEND, 'django.core.mail.backends.smtp.EmailBackend')
+            self.assertEqual(Target.EMAIL_FILE_PATH, '')
+            self.assertEqual(Target.EMAIL_HOST, 'smtp.example.com')
+            self.assertEqual(Target.EMAIL_HOST_PASSWORD, 'password')
+            self.assertEqual(Target.EMAIL_HOST_USER, 'user@domain.com')
+            self.assertEqual(Target.EMAIL_PORT, 587)
+            self.assertEqual(Target.EMAIL_USE_TLS, True)
