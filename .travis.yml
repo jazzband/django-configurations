@@ -1,27 +1,27 @@
 language: python
 env:
-  - TOXENV=py26-1.4.x
-  - TOXENV=py26-1.5.x
-  - TOXENV=py26-1.6.x
-  - TOXENV=py27-1.4.x
-  - TOXENV=py27-1.5.x
-  - TOXENV=py27-1.6.x
-  - TOXENV=py27-1.7.x
-  - TOXENV=py32-1.5.x
-  - TOXENV=py32-1.6.x
-  - TOXENV=py32-1.7.x
-  - TOXENV=py33-1.5.x
-  - TOXENV=py33-1.6.x
-  - TOXENV=py33-1.7.x
-  - TOXENV=py34-1.5.x
-  - TOXENV=py34-1.6.x
-  - TOXENV=py34-1.7.x
-  - TOXENV=pypy-1.4.x
-  - TOXENV=pypy-1.5.x
-  - TOXENV=pypy-1.6.x
-  - TOXENV=pypy-1.7.x
-  - TOXENV=flake827
-  - TOXENV=flake833
+  - TOXENV=py26-dj14
+  - TOXENV=py26-dj15
+  - TOXENV=py26-dj16
+  - TOXENV=py27-dj14
+  - TOXENV=py27-dj15
+  - TOXENV=py27-dj16
+  - TOXENV=py27-dj17
+  - TOXENV=py32-dj15
+  - TOXENV=py32-dj16
+  - TOXENV=py32-dj17
+  - TOXENV=py33-dj15
+  - TOXENV=py33-dj16
+  - TOXENV=py33-dj17
+  - TOXENV=py34-dj15
+  - TOXENV=py34-dj16
+  - TOXENV=py34-dj17
+  - TOXENV=pypy-dj14
+  - TOXENV=pypy-dj15
+  - TOXENV=pypy-dj16
+  - TOXENV=pypy-dj17
+  - TOXENV=flake8-py27
+  - TOXENV=flake8-py33
 install:
   - pip install tox
 script:
