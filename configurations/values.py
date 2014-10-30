@@ -266,7 +266,8 @@ class ValidationMixin(object):
         else:
             raise ValueError('Cannot use validator of '
                              '{0} ({1!r})'.format(self, self.validator))
-        self.to_python(self.default)
+        if self.default:
+            self.to_python(self.default)
 
     def to_python(self, value):
         try:

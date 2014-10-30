@@ -215,6 +215,14 @@ class ValueTests(TestCase):
         with env(DJANGO_TEST='httb://spam.eggs'):
             self.assertRaises(ValueError, value.setup, 'TEST')
 
+    def test_url_values_with_no_default(self):
+        value = URLValue()  # no default
+        with env(DJANGO_TEST='http://spam.eggs'):
+            self.assertEqual(value.setup('TEST'), 'http://spam.eggs')
+
+    def test_url_values_with_wrong_default(self):
+        self.assertRaises(ValueError, URLValue, 'httb://spam.eggs')
+
     def test_ip_values(self):
         value = IPValue('0.0.0.0')
         with env(DJANGO_TEST='127.0.0.1'):
