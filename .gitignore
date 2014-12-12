@@ -6,3 +6,4 @@ test.db
 build/
 .tox/
 htmlcov/
+*.pyc
