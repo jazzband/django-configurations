@@ -71,7 +71,7 @@ a ``Configuration`` class::
 
     from configurations import Configuration
 
-    class Prod(Configuration, FullPageCaching):
+    class Prod(FullPageCaching, Configuration):
         DEBUG = False
         # ...
 
