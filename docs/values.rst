@@ -274,6 +274,27 @@ Type values
 
     See the :class:`~ListValue` examples above.
 
+.. class:: TupleOfTuplesValue(default, [tuple_separator=';', separator=',', converter=None])
+
+    A :class:`~TupleValue` subclass that handles tuple of tuples values.
+
+    :param tuple_separator: the separator to split each tuple with
+    :param separator: the separator to split the inner tuple contents with
+    :param converter: the optional converter callable to apply for each inner 
+                      tuple item
+
+    Useful for ADMINS, MANAGERS, and the like.  For example::
+
+        ADMINS = TupleOfTuplesValue((
+            ('John', 'jcleese@site.com'), 
+            ('Eric', 'eidle@site.com'),
+        ))
+
+    Override using environment variables like this::
+
+        DJANGO_ADMINS=Terry,tjones@site.com;Graham,gchapman@site.com
+
+
 .. class:: SetValue
 
     A :class:`~Value` subclass that handles set values.

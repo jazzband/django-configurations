@@ -176,7 +176,16 @@ class ListValue(Value):
             self.default = []
         # initial conversion
         if self.converter is not None:
-            self.default = [self.converter(value) for value in self.default]
+            self.default = self._convert(self.default)
+
+    def _convert(self, list_):
+        converted_values = []
+        for value in list_:
+            try:
+                converted_values.append(self.converter(value))
+            except (TypeError, ValueError):
+                raise ValueError(self.message.format(value, value))
+        return converted_values
 
     def to_python(self, value):
         split_value = [v.strip() for v in value.strip().split(self.separator)]
@@ -184,14 +193,7 @@ class ListValue(Value):
         value_list = filter(None, split_value)
         if self.converter is None:
             return list(value_list)
-
-        converted_values = []
-        for list_value in value_list:
-            try:
-                converted_values.append(self.converter(list_value))
-            except (TypeError, ValueError):
-                raise ValueError(self.message.format(list_value, value))
-        return converted_values
+        return self._convert(value_list)
 
 
 class BackendsValue(ListValue):
@@ -216,6 +218,33 @@ class TupleValue(ListValue):
 
     def to_python(self, value):
         return tuple(super(TupleValue, self).to_python(value))
+
+
+class TupleOfTuplesValue(TupleValue):
+    def __init__(self, *args, **kwargs):
+        self.tuple_separator = kwargs.pop('tuple_separator', ';')
+        super(TupleOfTuplesValue, self).__init__(*args, **kwargs)
+
+    def _convert(self, items):
+        # This could receive either a bare tuple or tuple of tuples
+        if items and isinstance(items[0], tuple):
+            converted_tuples = []
+            for inner in items:
+                converted = super(TupleOfTuplesValue, self)._convert(inner)
+                converted_tuples.append(tuple(converted))
+            return tuple(converted_tuples)
+        return tuple(super(TupleOfTuplesValue, self)._convert(items))
+
+    def to_python(self, value):
+        split_value = [
+            v.strip() for v in value.strip().split(self.tuple_separator)
+        ]
+        # Remove empty items
+        value_list = filter(None, split_value)
+        tuples = [
+            super(TupleOfTuplesValue, self).to_python(v) for v in value_list
+        ]
+        return tuple(tuples)
 
 
 class SetValue(ListValue):
