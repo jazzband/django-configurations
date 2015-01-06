@@ -295,6 +295,21 @@ class ValueTests(TestCase):
                     'USER': '',
                 }})
 
+    def test_database_url_additional_args(self):
+
+        def mock_database_url_caster(self, url, engine=None):
+            return { 'URL': url, 'ENGINE': engine }
+
+        with patch('configurations.values.DatabaseURLValue.caster', mock_database_url_caster):
+            value = DatabaseURLValue(engine='django_mysqlpool.backends.mysqlpool')
+            with env(DATABASE_URL='sqlite://'):
+                self.assertEqual(value.setup('DATABASE_URL'), {
+                    'default': {
+                        'URL': 'sqlite://',
+                        'ENGINE': 'django_mysqlpool.backends.mysqlpool'
+                    }
+                })
+
     def test_email_url_value(self):
         value = EmailURLValue()
         self.assertEqual(value.default, {})
