@@ -108,6 +108,12 @@ class ValueTests(TestCase):
         with env(DJANGO_TEST='nonboolean'):
             self.assertRaises(ValueError, value.setup, 'TEST')
 
+    def test_boolean_values_assign_false_to_another_booleanvalue(self):
+        value1 = BooleanValue(False)
+        value2 = BooleanValue(value1)
+        self.assertFalse(value1.setup('TEST1'))
+        self.assertFalse(value2.setup('TEST2'))
+
     def test_integer_values(self):
         value = IntegerValue(1)
         with env(DJANGO_TEST='2'):
