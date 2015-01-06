@@ -1,0 +1,6 @@
+[run]
+source = configurations
+branch = 1
+
+[report]
+omit = *tests*,*migrations*
