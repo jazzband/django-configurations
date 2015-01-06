@@ -4,7 +4,7 @@ Cookbook
 Calling a Django management command
 -----------------------------------
 
-.. versionadded:: 1.0
+.. versionadded:: 0.9
 
 If you want to call a Django management command programmatically, say
 from a script outside of your usual Django code, you can use the
