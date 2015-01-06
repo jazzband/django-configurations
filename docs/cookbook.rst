@@ -1,6 +1,22 @@
 Cookbook
 ========
 
+Calling a Django management command
+-----------------------------------
+
+.. versionadded:: 1.0
+
+If you want to call a Django management command programmatically, say
+from a script outside of your usual Django code, you can use the
+equivalent of Django's :func:`~django.core.management.call_command` function
+with django-configurations, too.
+
+Simply import it from ``configurations.management`` instead::
+
+    from configurations.management import call_command
+
+    call_command('dumpdata', exclude=['contenttypes', 'auth'])
+
 Envdir
 ------
 
