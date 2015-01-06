@@ -212,3 +212,33 @@ As you can see django-configurations provides a helper module
 ``configurations.fastcgi`` that handles the setup of your configurations.
 
 .. _runfcgi: https://docs.djangoproject.com/en/1.5/howto/deployment/fastcgi/
+
+
+Sphinx
+------
+
+.. versionadded: 0.9
+
+In case you would like to user the amazing `autodoc` feature of the
+documentation tool `Sphinx <http://sphinx-doc.org/>`_, you need add
+django-configurations to your ``extensions`` config variable and set
+the environment variable accordingly:
+
+.. code-block:: python
+   :emphasize-lines: 2-3, 12
+
+    # My custom Django environment variables
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mysite.settings')
+    os.environ.setdefault('DJANGO_CONFIGURATION', 'Dev')
+
+    # Add any Sphinx extension module names here, as strings. They can be extensions
+    # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
+    extensions = [
+        'sphinx.ext.autodoc',
+        'sphinx.ext.intersphinx',
+        'sphinx.ext.viewcode',
+        # ...
+        'configurations',
+    ]
+
+    # ...

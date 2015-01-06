@@ -13,3 +13,14 @@ def load_ipython_extension(ipython):
     from . import importer
 
     importer.install()
+
+
+def setup(app):
+    """
+    The callback for Sphinx that acts as a Sphinx extension.
+
+    Add this to the ``extensions`` config variable in your ``conf.py``.
+    """
+    from . import importer
+
+    importer.install()
