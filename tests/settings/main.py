@@ -3,9 +3,13 @@ import uuid
 import django
 
 from configurations import Configuration, pristinemethod
+from configurations.values import BooleanValue
 
 
 class Test(Configuration):
+
+    ENV_LOADED = BooleanValue(False)
+
     DEBUG = True
 
     SITE_ID = 1

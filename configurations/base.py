@@ -1,3 +1,5 @@
+import os
+import re
 import warnings
 
 from django.utils import six
@@ -66,9 +68,53 @@ class Configuration(six.with_metaclass(ConfigurationBase)):
     to the name of the class.
 
     """
+    DOTENV_LOADED = None
+
+    @classmethod
+    def load_dotenv(cls):
+        """
+        Pulled from Honcho code with minor updates, reads local default
+        environment variables from a .env file located in the project root
+        or provided directory.
+
+        http://www.wellfireinteractive.com/blog/easier-12-factor-django/
+        https://gist.github.com/bennylope/2999704
+        """
+        # check if the class has DOTENV set wether with a path or None
+        dotenv = getattr(cls, 'DOTENV', None)
+
+        # if DOTENV is falsy we want to disable it
+        if not dotenv:
+            return
+
+        # now check if we can access the file since we know we really want to
+        try:
+            with open(dotenv, 'r') as f:
+                content = f.read()
+        except IOError as e:
+            raise ImproperlyConfigured("Couldn't read .env file "
+                                       "with the path {}. Error: "
+                                       "{}".format(dotenv, e))
+        else:
+            for line in content.splitlines():
+                m1 = re.match(r'\A([A-Za-z_0-9]+)=(.*)\Z', line)
+                if not m1:
+                    continue
+                key, val = m1.group(1), m1.group(2)
+                m2 = re.match(r"\A'(.*)'\Z", val)
+                if m2:
+                    val = m2.group(1)
+                m3 = re.match(r'\A"(.*)"\Z', val)
+                if m3:
+                    val = re.sub(r'\\(.)', r'\1', m3.group(1))
+                os.environ.setdefault(key, val)
+
+            cls.DOTENV_LOADED = dotenv
+
     @classmethod
     def pre_setup(cls):
-        pass
+        if cls.DOTENV_LOADED is None:
+            cls.load_dotenv()
 
     @classmethod
     def post_setup(cls):
@@ -88,4 +134,4 @@ class Settings(Configuration):
         # make sure to remove the handling of the Settings class above when deprecating
         warnings.warn("configurations.Settings was renamed to "
                       "settings.Configuration and will be "
-                      "removed in 1.0", PendingDeprecationWarning)
+                      "removed in 1.0", DeprecationWarning)
