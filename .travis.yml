@@ -1,6 +1,5 @@
 language: python
 env:
-  - TOXENV=coverage-py27-dj16
   - TOXENV=flake8-py27
   - TOXENV=flake8-py33
   - TOXENV=py26-dj14

@@ -8,7 +8,7 @@ from django.core import validators
 from django.core.exceptions import ValidationError, ImproperlyConfigured
 from django.utils import six
 
-from .utils import import_by_path
+from .utils import import_by_path, getargspec
 
 
 def setup_value(target, name, value):
@@ -44,7 +44,7 @@ class Value(object):
     def __new__(cls, *args, **kwargs):
         """
         checks if the creation can end up directly in the final value.
-        That is the case whenever environ = False or environ_name is given
+        That is the case whenever environ = False or environ_name is given.
         """
         instance = object.__new__(cls)
         instance.__init__(*args, **kwargs)
@@ -59,7 +59,7 @@ class Value(object):
                  environ_prefix='DJANGO', *args, **kwargs):
         if 'late_binding' in kwargs:
             self.late_binding = kwargs.get('late_binding')
-        if isinstance(default, Value) and default.default:
+        if isinstance(default, Value) and default.default is not None:
             self.default = copy.copy(default.default)
         else:
             self.default = default
@@ -140,10 +140,20 @@ class CastingMixin(object):
             error = 'Cannot use caster of {0} ({1!r})'.format(self,
                                                               self.caster)
             raise ValueError(error)
+        try:
+            arg_names = getargspec(self._caster)[0]
+            self._params = dict((name, kwargs[name])
+                                for name in arg_names
+                                if name in kwargs)
+        except TypeError:
+            self._params = {}
 
     def to_python(self, value):
         try:
-            return self._caster(value)
+            if self._params:
+                return self._caster(value, **self._params)
+            else:
+                return self._caster(value)
         except self.exception:
             raise ValueError(self.message.format(value))
 

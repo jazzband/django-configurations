@@ -1,7 +1,6 @@
 include README.rst
 include AUTHORS
 include .travis.yml
-include manage.py
 include tasks.py
 recursive-include tests *
 recursive-include docs *

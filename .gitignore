@@ -7,3 +7,4 @@ build/
 .tox/
 htmlcov/
 *.pyc
+dist/

@@ -109,6 +109,12 @@ class ValueTests(TestCase):
         with env(DJANGO_TEST='nonboolean'):
             self.assertRaises(ValueError, value.setup, 'TEST')
 
+    def test_boolean_values_assign_false_to_another_booleanvalue(self):
+        value1 = BooleanValue(False)
+        value2 = BooleanValue(value1)
+        self.assertFalse(value1.setup('TEST1'))
+        self.assertFalse(value2.setup('TEST2'))
+
     def test_integer_values(self):
         value = IntegerValue(1)
         with env(DJANGO_TEST='2'):
@@ -351,6 +357,21 @@ class ValueTests(TestCase):
                     'PORT': '',
                     'USER': '',
                 }})
+
+    def test_database_url_additional_args(self):
+
+        def mock_database_url_caster(self, url, engine=None):
+            return { 'URL': url, 'ENGINE': engine }
+
+        with patch('configurations.values.DatabaseURLValue.caster', mock_database_url_caster):
+            value = DatabaseURLValue(engine='django_mysqlpool.backends.mysqlpool')
+            with env(DATABASE_URL='sqlite://'):
+                self.assertEqual(value.setup('DATABASE_URL'), {
+                    'default': {
+                        'URL': 'sqlite://',
+                        'ENGINE': 'django_mysqlpool.backends.mysqlpool'
+                    }
+                })
 
     def test_email_url_value(self):
         value = EmailURLValue()

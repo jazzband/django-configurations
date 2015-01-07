@@ -1,6 +1,25 @@
 Cookbook
 ========
 
+Calling a Django management command
+-----------------------------------
+
+.. versionadded:: 0.9
+
+If you want to call a Django management command programmatically, say
+from a script outside of your usual Django code, you can use the
+equivalent of Django's :func:`~django.core.management.call_command` function
+with django-configurations, too.
+
+Simply import it from ``configurations.management`` instead:
+
+.. code-block:: python
+   :emphasize-lines: 1
+
+    from configurations.management import call_command
+
+    call_command('dumpdata', exclude=['contenttypes', 'auth'])
+
 Envdir
 ------
 
@@ -14,7 +33,9 @@ Imagine for example you want to set a few environment variables, all you
 have to do is to create a directory with files that have capitalized names
 and contain the values you want to set.
 
-Example::
+Example:
+
+.. code-block:: console
 
     $ tree mysite_env/
     mysite_env/
@@ -30,7 +51,9 @@ Example::
     $
 
 Then, to enable the ``mysite_env`` environment variables, simply use the
-``envdir`` command line tool as a prefix for your program, e.g.::
+``envdir`` command line tool as a prefix for your program, e.g.:
+
+.. code-block:: console
 
     $ envdir mysite_env python manage.py runserver
 
@@ -51,13 +74,17 @@ using pip_ to install packages.
 Django 1.5.x
 ^^^^^^^^^^^^
 
-First install Django 1.5.x and django-configurations::
+First install Django 1.5.x and django-configurations:
 
-    pip install -r https://raw.github.com/jezdez/django-configurations/templates/1.5.x/requirements.txt
+.. code-block:: console
 
-Then create your new Django project with the provided template::
+    $ pip install -r https://raw.github.com/jezdez/django-configurations/templates/1.5.x/requirements.txt
 
-    django-admin.py startproject mysite -v2 --template https://github.com/jezdez/django-configurations/archive/templates/1.5.x.zip
+Then create your new Django project with the provided template:
+
+.. code-block:: console
+
+    $ django-admin.py startproject mysite -v2 --template https://github.com/jezdez/django-configurations/archive/templates/1.5.x.zip
 
 See the repository of the template for more information:
 
@@ -66,13 +93,17 @@ See the repository of the template for more information:
 Django 1.6.x
 ^^^^^^^^^^^^
 
-First install Django 1.6.x and django-configurations::
+First install Django 1.6.x and django-configurations:
 
-    pip install -r https://raw.github.com/jezdez/django-configurations/templates/1.6.x/requirements.txt
+.. code-block:: console
 
-Or Django 1.6::
+    $ pip install -r https://raw.github.com/jezdez/django-configurations/templates/1.6.x/requirements.txt
 
-    django-admin.py startproject mysite -v2 --template https://github.com/jezdez/django-configurations/archive/templates/1.6.x.zip
+Or Django 1.6:
+
+.. code-block:: console
+
+    $ django-admin.py startproject mysite -v2 --template https://github.com/jezdez/django-configurations/archive/templates/1.6.x.zip
 
 Now you have a default Django 1.5.x or 1.6.x project in the ``mysite``
 directory that uses django-configurations.
@@ -90,7 +121,9 @@ Celery
 ^^^^^
 
 Given Celery's way to load Django settings in worker processes you should
-probably just add the following to the **beginning** of your settings module::
+probably just add the following to the **beginning** of your settings module:
+
+.. code-block:: python
 
     from configurations import importer
     importer.install()
@@ -145,26 +178,32 @@ enable an extension in your IPython configuration. See the IPython
 documentation for how to create and `manage your IPython profile`_ correctly.
 
 Here's a quick how-to in case you don't have a profile yet. Type in your
-command line shell::
+command line shell:
 
-    ipython profile create
+.. code-block:: console
+
+    $ ipython profile create
 
 Then let IPython show you where the configuration file ``ipython_config.py``
-was created::
+was created:
 
-    ipython locate profile
+.. code-block:: console
+
+    $ ipython locate profile
 
 That should print a directory path where you can find the
 ``ipython_config.py`` configuration file. Now open that file and extend the
 ``c.InteractiveShellApp.extensions`` configuration value. It may be commented
 out from when IPython created the file or it may not exist in the file at all.
-In either case make sure it's not a Python comment anymore and reads like this::
+In either case make sure it's not a Python comment anymore and reads like this:
 
-    # A list of dotted module names of IPython extensions to load.
-    c.InteractiveShellApp.extensions = [
-        # .. your other extensions if available
-        'configurations',
-    ]
+.. code-block:: python
+
+   # A list of dotted module names of IPython extensions to load.
+   c.InteractiveShellApp.extensions = [
+       # .. your other extensions if available
+       'configurations',
+   ]
 
 That will tell IPython to load django-configurations correctly on startup.
 It also works with django-extensions's shell_plus_ management command.
@@ -179,12 +218,14 @@ FastCGI
 In case you use FastCGI for deploying Django (you really shouldn't) and aren't
 allowed to use Django's runfcgi_ management command (that would automatically
 handle the setup for your if you've followed the quickstart guide above), make
-sure to use something like the following script::
+sure to use something like the following script:
+
+.. code-block:: python
 
     #!/usr/bin/env python
 
     import os
-     
+
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mysite.settings')
     os.environ.setdefault('DJANGO_CONFIGURATION', 'MySiteConfiguration')
 
@@ -196,3 +237,33 @@ As you can see django-configurations provides a helper module
 ``configurations.fastcgi`` that handles the setup of your configurations.
 
 .. _runfcgi: https://docs.djangoproject.com/en/1.5/howto/deployment/fastcgi/
+
+
+Sphinx
+------
+
+.. versionadded: 0.9
+
+In case you would like to user the amazing `autodoc` feature of the
+documentation tool `Sphinx <http://sphinx-doc.org/>`_, you need add
+django-configurations to your ``extensions`` config variable and set
+the environment variable accordingly:
+
+.. code-block:: python
+   :emphasize-lines: 2-3, 12
+
+    # My custom Django environment variables
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mysite.settings')
+    os.environ.setdefault('DJANGO_CONFIGURATION', 'Dev')
+
+    # Add any Sphinx extension module names here, as strings. They can be extensions
+    # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
+    extensions = [
+        'sphinx.ext.autodoc',
+        'sphinx.ext.intersphinx',
+        'sphinx.ext.viewcode',
+        # ...
+        'configurations',
+    ]
+
+    # ...
