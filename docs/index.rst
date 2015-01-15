@@ -95,6 +95,4 @@ requests and bug reports:
 
     https://github.com/jezdez/django-configurations/issues
 
-Thanks! Feel free to leave a tip, too:
-
-    https://www.gittip.com/jezdez/
+Thanks!
