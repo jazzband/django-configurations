@@ -4,6 +4,7 @@ import os
 import sys
 from optparse import make_option
 
+from django import VERSION as DJ_VERSION
 from django.core.exceptions import ImproperlyConfigured
 from django.conf import ENVIRONMENT_VARIABLE as SETTINGS_ENVIRONMENT_VARIABLE
 
@@ -29,7 +30,12 @@ def install(check_options=False):
         from django.core.management import base
 
         # add the configuration option to all management commands
-        base.BaseCommand.option_list += configuration_options
+        # django switched to argparse in version 1.8
+        if DJ_VERSION >= (1, 8):
+            import argparse
+            base.BaseCommand.add_arguments('--configuration', argparse)
+        else:
+            base.BaseCommand.option_list += configuration_options
 
         importer = ConfigurationImporter(check_options=check_options)
         sys.meta_path.insert(0, importer)
