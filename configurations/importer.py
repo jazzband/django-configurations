@@ -2,10 +2,12 @@ import imp
 import logging
 import os
 import sys
+from optparse import make_option
 
 from django import VERSION as DJ_VERSION
-from django.core.exceptions import ImproperlyConfigured
 from django.conf import ENVIRONMENT_VARIABLE as SETTINGS_ENVIRONMENT_VARIABLE
+from django.core.exceptions import ImproperlyConfigured
+from django.core.management import base
 
 from .utils import uppercase_attributes, reraise
 from .values import Value, setup_value
@@ -13,11 +15,25 @@ from .values import Value, setup_value
 installed = False
 
 CONFIGURATION_ENVIRONMENT_VARIABLE = 'DJANGO_CONFIGURATION'
+CONFIGURATION_ARGUMENT = '--configuration'
+CONFIGURATION_ARGUMENT_HELP = ('The name of the configuration class to load, e.g. '
+                               '"Development". If this isn\'t provided, the '
+                               'DJANGO_CONFIGURATION environment variable will '
+                               'be used.')
+
+
+configuration_options = (make_option(CONFIGURATION_ARGUMENT,
+                                     help=CONFIGURATION_ARGUMENT_HELP),)
 
 
 def install(check_options=False):
     global installed
     if not installed:
+        if DJ_VERSION >= (1, 8):
+            pass
+        else:
+            # add the configuration option to all management commands
+            base.BaseCommand.option_list += configuration_options
         importer = ConfigurationImporter(check_options=check_options)
         sys.meta_path.insert(0, importer)
         installed = True
@@ -56,38 +72,25 @@ class ConfigurationImporter(object):
     def check_options(self):
         # django switched to argparse in version 1.8
         if DJ_VERSION >= (1, 8):
-            from django.core.management.base import (CommandError,
-                                                     CommandParser,
-                                                     handle_default_options)
-            parser = CommandParser(None,
+            parser = base.CommandParser(None,
                                    usage="%(prog)s subcommand [options] [args]",
                                    add_help=False)
             parser.add_argument('--settings')
             parser.add_argument('--pythonpath')
-            parser.add_argument('--configuration',
-                                help='The name of the configuration class to load, e.g. '
-                                     '"Development". If this isn\'t provided, the '
-                                     'DJANGO_CONFIGURATION environment variable will '
-                                     'be used.')
+            parser.add_argument(CONFIGURATION_ARGUMENT,
+                                help=CONFIGURATION_ARGUMENT_HELP)
 
             parser.add_argument('args', nargs='*')  # catch-all
             try:
                 options, args = parser.parse_known_args(self.argv[2:])
                 if options.configuration:
                     os.environ[self.namevar] = options.configuration
-                handle_default_options(options)
-            except CommandError:
+                base.handle_default_options(options)
+            except base.CommandError:
                 pass  # Ignore any option errors at this point.
         # django < 1.7 did use optparse
         else:
             from django.core.management import LaxOptionParser
-            from optparse import make_option
-            configuration_options = (make_option('--configuration',
-                                                 help='The name of the configuration class to load, e.g. '
-                                                 '"Development". If this isn\'t provided, the '
-                                                 'DJANGO_CONFIGURATION environment variable will '
-                                                 'be used.'),)
-
             parser = LaxOptionParser(option_list=configuration_options,
                                      add_help_option=False)
             try:
