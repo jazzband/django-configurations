@@ -14,6 +14,13 @@ def load_ipython_extension(ipython):
 
     importer.install()
 
+    # django >=1.7
+    try:
+        import django
+        django.setup()
+    except AttributeError:
+        pass
+
 
 def setup(app):
     """
