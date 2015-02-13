@@ -34,11 +34,18 @@ def install(check_options=False):
 
             def create_parser(self, prog_name, subcommand):
                 parser = orig_create_parser(self, prog_name, subcommand)
-                if not isinstance(parser, OptionParser):
+                if isinstance(parser, OptionParser):
+                    # in case the option_list is set the create_parser
+                    # will actually return a OptionParser for backward
+                    # compatibility. It uses BaseCommand.use_argparse
+                    # to decide that, which checks for the option_list list
+                    base.BaseCommand.option_list += configuration_options
+                else:
                     # probably argparse, let's not import argparse though
                     parser.add_argument(CONFIGURATION_ARGUMENT,
                                         help=CONFIGURATION_ARGUMENT_HELP)
                 return parser
+
             base.BaseCommand.create_parser = create_parser
         else:
             # add the configuration option to all management commands
