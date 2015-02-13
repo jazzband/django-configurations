@@ -95,7 +95,8 @@ class ConfigurationImporter(object):
             if no_style is not None and '--no-color' in self.argv:
                 stylize = no_style()
             else:
-                stylize = lambda text: colorize(text, fg='green')
+                def stylize(text):
+                    return colorize(text, fg='green')
 
             if (self.argv[1] == 'runserver' and
                     os.environ.get('RUN_MAIN') == 'true'):
