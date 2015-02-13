@@ -125,10 +125,11 @@ probably just add the following to the **beginning** of your settings module:
 
 .. code-block:: python
 
-    from configurations import importer
-    importer.install()
+    import configurations
+    configurations.setup()
 
 That has the same effect as using the ``manage.py`` or ``wsgi.py`` utilities.
+This will also call ``django.setup()`` on Django >= 1.7.
 
 >= 3.1
 ^^^^^^
@@ -154,8 +155,8 @@ Celery's documentation`_:
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mysite.settings')
     os.environ.setdefault('DJANGO_CONFIGURATION', 'MySiteConfiguration')
 
-    from configurations import importer
-    importer.install()
+    import configurations
+    configurations.setup()
 
     app = Celery('mysite')
     app.config_from_object('django.conf:settings')

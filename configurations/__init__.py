@@ -6,10 +6,7 @@ __version__ = '0.8'
 __all__ = ['Configuration', 'pristinemethod', 'Settings']
 
 
-def load_ipython_extension(ipython):
-    # The `ipython` argument is the currently active `InteractiveShell`
-    # instance, which can be used in any way. This allows you to register
-    # new magics or aliases, for example.
+def _setup():
     from . import importer
 
     importer.install()
@@ -22,12 +19,20 @@ def load_ipython_extension(ipython):
         pass
 
 
-def setup(app):
+def load_ipython_extension(ipython):
+    """
+    The `ipython` argument is the currently active `InteractiveShell`
+    instance, which can be used in any way. This allows you to register
+    new magics or aliases, for example.
+    """
+    _setup()
+
+
+def setup(app=None):
     """
     The callback for Sphinx that acts as a Sphinx extension.
 
-    Add this to the ``extensions`` config variable in your ``conf.py``.
+    Add ``'configurations'`` to the ``extensions`` config variable
+    in your docs' ``conf.py``.
     """
-    from . import importer
-
-    importer.install()
+    _setup()
