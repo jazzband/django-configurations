@@ -210,7 +210,7 @@ class SequenceValue(Value):
     def to_python(self, value):
         split_value = [v.strip() for v in value.strip().split(self.separator)]
         # removing empty items
-        value_list = filter(None, split_value)
+        value_list = self.sequence_type(filter(None, split_value))
         if self.converter is not None:
             value_list = self._convert(value_list)
         return self.sequence_type(value_list)
@@ -249,7 +249,7 @@ class SingleNestedSequenceValue(SequenceValue):
             v.strip() for v in value.strip().split(self.seq_separator)
         ]
         # Remove empty items
-        filtered = filter(None, split_value)
+        filtered = self.sequence_type(filter(None, split_value))
         sequence = [
             super(SingleNestedSequenceValue, self).to_python(f) for f in filtered
         ]
