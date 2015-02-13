@@ -9,8 +9,9 @@ from mock import patch
 
 from configurations.values import (Value, BooleanValue, IntegerValue,
                                    FloatValue, DecimalValue, ListValue,
-                                   TupleValue, SetValue, DictValue,
-                                   URLValue, EmailValue, IPValue,
+                                   TupleValue, SingleNestedTupleValue,
+                                   SingleNestedListValue, SetValue,
+                                   DictValue, URLValue, EmailValue, IPValue,
                                    RegexValue, PathValue, SecretValue,
                                    DatabaseURLValue, EmailURLValue,
                                    CacheURLValue, BackendsValue,
@@ -180,6 +181,68 @@ class ValueTests(TestCase):
             self.assertEqual(value.setup('TEST'), ('2', '2'))
         with env(DJANGO_TEST=''):
             self.assertEqual(value.setup('TEST'), ())
+
+    def test_single_nested_list_values_default(self):
+        value = SingleNestedListValue()
+        with env(DJANGO_TEST='2,3;4,5'):
+            expected = [['2', '3'], ['4', '5']]
+            self.assertEqual(value.setup('TEST'), expected)
+        with env(DJANGO_TEST='2;3;4;5'):
+            expected = [['2'], ['3'], ['4'], ['5']]
+            self.assertEqual(value.setup('TEST'), expected)
+        with env(DJANGO_TEST='2,3,4,5'):
+            expected = [['2', '3', '4', '5']]
+            self.assertEqual(value.setup('TEST'), expected)
+        with env(DJANGO_TEST='2, 3 , ; 4 , 5 ; '):
+            expected = [['2', '3'], ['4', '5']]
+            self.assertEqual(value.setup('TEST'), expected)
+        with env(DJANGO_TEST=''):
+            self.assertEqual(value.setup('TEST'), [])
+
+    def test_single_nested_list_values_separator(self):
+        value = SingleNestedListValue(seq_separator=':')
+        with env(DJANGO_TEST='2,3:4,5'):
+            self.assertEqual(value.setup('TEST'), [['2', '3'], ['4', '5']])
+
+    def test_single_nested_list_values_converter(self):
+        value = SingleNestedListValue(converter=int)
+        with env(DJANGO_TEST='2,3;4,5'):
+            self.assertEqual(value.setup('TEST'), [[2, 3], [4, 5]])
+
+    def test_single_nested_list_values_converter_default(self):
+        value = SingleNestedListValue([['2', '3'], ['4', '5']], converter=int)
+        self.assertEqual(value.value, [[2, 3], [4, 5]])
+
+    def test_single_nested_tuple_values_default(self):
+        value = SingleNestedTupleValue()
+        with env(DJANGO_TEST='2,3;4,5'):
+            expected = (('2', '3'), ('4', '5'))
+            self.assertEqual(value.setup('TEST'), expected)
+        with env(DJANGO_TEST='2;3;4;5'):
+            expected = (('2',), ('3',), ('4',), ('5',))
+            self.assertEqual(value.setup('TEST'), expected)
+        with env(DJANGO_TEST='2,3,4,5'):
+            expected = (('2', '3', '4', '5'),)
+            self.assertEqual(value.setup('TEST'), expected)
+        with env(DJANGO_TEST='2, 3 , ; 4 , 5 ; '):
+            expected = (('2', '3'), ('4', '5'))
+            self.assertEqual(value.setup('TEST'), expected)
+        with env(DJANGO_TEST=''):
+            self.assertEqual(value.setup('TEST'), ())
+
+    def test_single_nested_tuple_values_separator(self):
+        value = SingleNestedTupleValue(seq_separator=':')
+        with env(DJANGO_TEST='2,3:4,5'):
+            self.assertEqual(value.setup('TEST'), (('2', '3'), ('4', '5')))
+
+    def test_single_nested_tuple_values_converter(self):
+        value = SingleNestedTupleValue(converter=int)
+        with env(DJANGO_TEST='2,3;4,5'):
+            self.assertEqual(value.setup('TEST'), ((2, 3), (4, 5)))
+
+    def test_single_nested_tuple_values_converter_default(self):
+        value = SingleNestedTupleValue((('2', '3'), ('4', '5')), converter=int)
+        self.assertEqual(value.value, ((2, 3), (4, 5)))
 
     def test_set_values_default(self):
         value = SetValue()

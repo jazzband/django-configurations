@@ -171,37 +171,97 @@ class DecimalValue(CastingMixin, Value):
     exception = decimal.InvalidOperation
 
 
-class ListValue(Value):
+class SequenceValue(Value):
+    """
+    Common code for sequence-type values (lists and tuples).
+    Do not use this class directly. Instead use a subclass.
+    """
+
+    # Specify this value in subclasses, e.g. with 'list' or 'tuple'
+    sequence_type = None
     converter = None
-    message = 'Cannot interpret list item {0!r} in list {1!r}'
 
     def __init__(self, *args, **kwargs):
+        msg = 'Cannot interpret {0} item {{0!r}} in {0} {{1!r}}'
+        self.message = msg.format(self.sequence_type.__name__)
         self.separator = kwargs.pop('separator', ',')
         converter = kwargs.pop('converter', None)
         if converter is not None:
             self.converter = converter
-        super(ListValue, self).__init__(*args, **kwargs)
-        # make sure the default is a list
+        super(SequenceValue, self).__init__(*args, **kwargs)
+        # make sure the default is the correct sequence type
         if self.default is None:
-            self.default = []
+            self.default = self.sequence_type()
+        else:
+            self.default = self.sequence_type(self.default)
         # initial conversion
         if self.converter is not None:
-            self.default = [self.converter(value) for value in self.default]
+            self.default = self._convert(self.default)
+
+    def _convert(self, sequence):
+        converted_values = []
+        for value in sequence:
+            try:
+                converted_values.append(self.converter(value))
+            except (TypeError, ValueError):
+                raise ValueError(self.message.format(value, value))
+        return self.sequence_type(converted_values)
 
     def to_python(self, value):
         split_value = [v.strip() for v in value.strip().split(self.separator)]
         # removing empty items
         value_list = filter(None, split_value)
-        if self.converter is None:
-            return list(value_list)
+        if self.converter is not None:
+            value_list = self._convert(value_list)
+        return self.sequence_type(value_list)
 
-        converted_values = []
-        for list_value in value_list:
-            try:
-                converted_values.append(self.converter(list_value))
-            except (TypeError, ValueError):
-                raise ValueError(self.message.format(list_value, value))
-        return converted_values
+
+class ListValue(SequenceValue):
+    sequence_type = list
+
+
+class TupleValue(SequenceValue):
+    sequence_type = tuple
+
+
+class SingleNestedSequenceValue(SequenceValue):
+    """
+    Common code for nested sequences (list of lists, or tuple of tuples).
+    Do not use this class directly. Instead use a subclass.
+    """
+
+    def __init__(self, *args, **kwargs):
+        self.seq_separator = kwargs.pop('seq_separator', ';')
+        super(SingleNestedSequenceValue, self).__init__(*args, **kwargs)
+
+    def _convert(self, items):
+        # This could receive either a bare or nested sequence
+        if items and isinstance(items[0], self.sequence_type):
+            converted_sequences = [
+                super(SingleNestedSequenceValue, self)._convert(i) for i in items
+            ]
+            return self.sequence_type(converted_sequences)
+        return self.sequence_type(
+            super(SingleNestedSequenceValue, self)._convert(items))
+
+    def to_python(self, value):
+        split_value = [
+            v.strip() for v in value.strip().split(self.seq_separator)
+        ]
+        # Remove empty items
+        filtered = filter(None, split_value)
+        sequence = [
+            super(SingleNestedSequenceValue, self).to_python(f) for f in filtered
+        ]
+        return self.sequence_type(sequence)
+
+
+class SingleNestedListValue(SingleNestedSequenceValue):
+    sequence_type = list
+
+
+class SingleNestedTupleValue(SingleNestedSequenceValue):
+    sequence_type = tuple
 
 
 class BackendsValue(ListValue):
@@ -212,20 +272,6 @@ class BackendsValue(ListValue):
         except ImproperlyConfigured as err:
             six.reraise(ValueError, ValueError(err), sys.exc_info()[2])
         return value
-
-
-class TupleValue(ListValue):
-    message = 'Cannot interpret tuple item {0!r} in tuple {1!r}'
-
-    def __init__(self, *args, **kwargs):
-        super(TupleValue, self).__init__(*args, **kwargs)
-        if self.default is None:
-            self.default = ()
-        else:
-            self.default = tuple(self.default)
-
-    def to_python(self, value):
-        return tuple(super(TupleValue, self).to_python(value))
 
 
 class SetValue(ListValue):

@@ -231,7 +231,7 @@ Type values
 
 .. class:: ListValue(default, [separator=',', converter=None])
 
-    A :class:`~Value` subclass that handles list values.
+    A :class:`~SequenceValue` subclass that handles list values.
 
     :param separator: the separator to split environment variables with
     :param converter: the optional converter callable to apply for each list
@@ -266,13 +266,46 @@ Type values
 
 .. class:: TupleValue
 
-    A :class:`~Value` subclass that handles tuple values.
+    A :class:`~SequenceValue` subclass that handles tuple values.
 
     :param separator: the separator to split environment variables with
     :param converter: the optional converter callable to apply for each tuple
                       item
 
     See the :class:`~ListValue` examples above.
+
+.. class:: SingleNestedTupleValue(default, [seq_separator=';', separator=',', converter=None])
+
+    A :class:`~SingleNestedSequenceValue` subclass that handles single nested tuple values,
+    e.g. ``((a, b), (c, d))``.
+
+    :param seq_separator: the separator to split each tuple with
+    :param separator: the separator to split the inner tuple contents with
+    :param converter: the optional converter callable to apply for each inner 
+                      tuple item
+
+    Useful for ADMINS, MANAGERS, and the like.  For example::
+
+        ADMINS = SingleNestedTupleValue((
+            ('John', 'jcleese@site.com'), 
+            ('Eric', 'eidle@site.com'),
+        ))
+
+    Override using environment variables like this::
+
+        DJANGO_ADMINS=Terry,tjones@site.com;Graham,gchapman@site.com
+
+.. class:: SingleNestedListValue(default, [seq_separator=';', separator=',', converter=None])
+
+    A :class:`~SingleNestedSequenceValue` subclass that handles single nested list values,
+    e.g. ``[[a, b], [c, d]]``.
+
+    :param seq_separator: the separator to split each list with
+    :param separator: the separator to split the inner list contents with
+    :param converter: the optional converter callable to apply for each inner 
+                      list item
+
+    See the :class:`~SingleNestedTupleValue` examples above.
 
 .. class:: SetValue
 
