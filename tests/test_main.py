@@ -105,7 +105,7 @@ class MainTests(TestCase):
         manage_args = ['python', os.path.join(ROOT_DIR, 'manage.py')]
         proc = subprocess.Popen(manage_args + ['test', '--help'],
                                 stdout=subprocess.PIPE)
-        self.assertIn('--configuration', proc.communicate()[0])
+        self.assertIn('--configuration', proc.communicate()[0].decode('utf-8'))
         proc = subprocess.Popen(manage_args + ['runserver', '--help'],
                                 stdout=subprocess.PIPE)
-        self.assertIn('--configuration', proc.communicate()[0])
+        self.assertIn('--configuration', proc.communicate()[0].decode('utf-8'))
