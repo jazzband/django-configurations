@@ -23,9 +23,9 @@ class MainTests(TestCase):
         self.assertNotEqual(main.PRISTINE_FUNCTION_SETTING, 5)
         self.assertTrue(lambda: callable(main.PRISTINE_FUNCTION_SETTING))
         self.assertEqual(main.TEMPLATE_CONTEXT_PROCESSORS,
-                         global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
-                             'tests.settings.base.test_callback',
-                         ))
+                         tuple(global_settings.TEMPLATE_CONTEXT_PROCESSORS) + (
+                                   'tests.settings.base.test_callback',
+                               ))
         self.assertEqual(main.PRE_SETUP_TEST_SETTING, 6)
         self.assertRaises(AttributeError, lambda: main.POST_SETUP_TEST_SETTING)
         self.assertEqual(main.Test.POST_SETUP_TEST_SETTING, 7)
