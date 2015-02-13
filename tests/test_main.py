@@ -1,4 +1,5 @@
 import os
+import subprocess
 import sys
 
 from django.conf import global_settings
@@ -8,6 +9,9 @@ from django.core.exceptions import ImproperlyConfigured
 from mock import patch
 
 from configurations.importer import ConfigurationImporter
+
+ROOT_DIR = os.path.dirname(os.path.dirname(__file__))
+TEST_PROJECT_DIR = os.path.join(ROOT_DIR, 'test_project')
 
 
 class MainTests(TestCase):
@@ -92,3 +96,16 @@ class MainTests(TestCase):
         importer = ConfigurationImporter(check_options=True)
         self.assertEqual(importer.module, 'tests.settings.main')
         self.assertEqual(importer.name, 'Test')
+
+    def test_configuration_argument_in_cli(self):
+        """
+        Verify that's configuration option has been added to managements
+        commands
+        """
+        manage_args = ['python', os.path.join(ROOT_DIR, 'manage.py')]
+        proc = subprocess.Popen(manage_args + ['test', '--help'],
+                                stdout=subprocess.PIPE)
+        self.assertIn('--configuration', proc.communicate()[0])
+        proc = subprocess.Popen(manage_args + ['runserver', '--help'],
+                                stdout=subprocess.PIPE)
+        self.assertIn('--configuration', proc.communicate()[0])

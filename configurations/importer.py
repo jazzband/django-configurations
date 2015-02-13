@@ -2,9 +2,9 @@ import imp
 import logging
 import os
 import sys
-from optparse import make_option
+from optparse import OptionParser, make_option
 
-from django import VERSION as DJ_VERSION
+from django import VERSION as DJANGO_VERSION
 from django.conf import ENVIRONMENT_VARIABLE as SETTINGS_ENVIRONMENT_VARIABLE
 from django.core.exceptions import ImproperlyConfigured
 from django.core.management import base
@@ -16,10 +16,10 @@ installed = False
 
 CONFIGURATION_ENVIRONMENT_VARIABLE = 'DJANGO_CONFIGURATION'
 CONFIGURATION_ARGUMENT = '--configuration'
-CONFIGURATION_ARGUMENT_HELP = ('The name of the configuration class to load, e.g. '
-                               '"Development". If this isn\'t provided, the '
-                               'DJANGO_CONFIGURATION environment variable will '
-                               'be used.')
+CONFIGURATION_ARGUMENT_HELP = ('The name of the configuration class to load, '
+                               'e.g. "Development". If this isn\'t provided, '
+                               'the  DJANGO_CONFIGURATION environment '
+                               'variable will be used.')
 
 
 configuration_options = (make_option(CONFIGURATION_ARGUMENT,
@@ -29,8 +29,17 @@ configuration_options = (make_option(CONFIGURATION_ARGUMENT,
 def install(check_options=False):
     global installed
     if not installed:
-        if DJ_VERSION >= (1, 8):
-            pass
+        if DJANGO_VERSION >= (1, 8):
+            orig_create_parser = base.BaseCommand.create_parser
+
+            def create_parser(self, prog_name, subcommand):
+                parser = orig_create_parser(self, prog_name, subcommand)
+                if not isinstance(parser, OptionParser):
+                    # probably argparse, let's not import argparse though
+                    parser.add_argument(CONFIGURATION_ARGUMENT,
+                                        help=CONFIGURATION_ARGUMENT_HELP)
+                return parser
+            base.BaseCommand.create_parser = create_parser
         else:
             # add the configuration option to all management commands
             base.BaseCommand.option_list += configuration_options
@@ -71,10 +80,10 @@ class ConfigurationImporter(object):
 
     def check_options(self):
         # django switched to argparse in version 1.8
-        if DJ_VERSION >= (1, 8):
+        if DJANGO_VERSION >= (1, 8):
             parser = base.CommandParser(None,
-                                   usage="%(prog)s subcommand [options] [args]",
-                                   add_help=False)
+                                        usage="%(prog)s subcommand [options] [args]",
+                                        add_help=False)
             parser.add_argument('--settings')
             parser.add_argument('--pythonpath')
             parser.add_argument(CONFIGURATION_ARGUMENT,
