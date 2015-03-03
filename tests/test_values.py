@@ -76,6 +76,12 @@ class ValueTests(TestCase):
             self.assertEqual(value1.setup('TEST1'), 'override1')
             self.assertEqual(value2.setup('TEST2'), 'override2')
 
+    def test_value_var_equal(self):
+        value1 = Value('default')
+        value2 = Value('default')
+        self.assertEqual(value1, value2)
+        self.assertTrue(value1 in ['default'])
+
     def test_env_var_prefix(self):
         with patch.dict(os.environ, clear=True, ACME_TEST='override'):
             value = Value('default', environ_prefix='ACME')
