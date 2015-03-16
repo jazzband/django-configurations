@@ -47,18 +47,17 @@ class Value(object):
         That is the case whenever environ = False or environ_name is given.
         """
         instance = object.__new__(cls)
-        instance.__init__(*args, **kwargs)
+        if 'late_binding' in kwargs:
+            instance.late_binding = kwargs.get('late_binding')
         if not instance.late_binding:
-            if (instance.environ and instance.environ_name) \
-                    or (not instance.environ and instance.default):
+            instance.__init__(*args, **kwargs)
+            if ((instance.environ and instance.environ_name) or
+                    (not instance.environ and instance.default)):
                 instance = instance.setup(instance.environ_name)
-
         return instance
 
     def __init__(self, default=None, environ=True, environ_name=None,
                  environ_prefix='DJANGO', *args, **kwargs):
-        if 'late_binding' in kwargs:
-            self.late_binding = kwargs.get('late_binding')
         if isinstance(default, Value) and default.default is not None:
             self.default = copy.copy(default.default)
         else:
