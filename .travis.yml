@@ -9,11 +9,6 @@ cache:
     - ~/.cache/pip
 env:
   global:
-    # These two environment variables could be set by Travis itself, or Travis
-    # could configure itself in /etc/, ~/, or inside of the virtual
-    # environments. In any case if these two values get configured then end
-    # users only need to enable the pip cache and manually run pip wheel before
-    # running pip install.
     - PIP_WHEEL_DIR=$HOME/.cache/pip/wheels
     - PIP_FIND_LINKS=file://$HOME/.cache/pip/wheels
   matrix:
@@ -51,7 +46,9 @@ env:
     - TOXENV=pypy-dj17
     - TOXENV=pypy-dj18
     - TOXENV=pypy-dj19
-install: pip install tox
+install:
+  - pip wheel -r tests/requirements.txt
+  - pip install tox
 script: tox
 branches:
   except:
