@@ -75,6 +75,9 @@ class Value(object):
     def __repr__(self):
         return repr(self.value)
 
+    def __eq__(self, other):
+        return self.value == other
+
     def setup(self, name):
         value = self.default
         if self.environ:
