@@ -102,10 +102,9 @@ class MainTests(TestCase):
         Verify that's configuration option has been added to managements
         commands
         """
-        manage_args = ['python', os.path.join(ROOT_DIR, 'manage.py')]
-        proc = subprocess.Popen(manage_args + ['test', '--help'],
+        proc = subprocess.Popen(['django-cadmin', 'test', '--help'],
                                 stdout=subprocess.PIPE)
         self.assertIn('--configuration', proc.communicate()[0].decode('utf-8'))
-        proc = subprocess.Popen(manage_args + ['runserver', '--help'],
+        proc = subprocess.Popen(['django-cadmin', 'runserver', '--help'],
                                 stdout=subprocess.PIPE)
         self.assertIn('--configuration', proc.communicate()[0].decode('utf-8'))
