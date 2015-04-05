@@ -39,7 +39,8 @@ def install(check_options=False):
                     # will actually return a OptionParser for backward
                     # compatibility. It uses BaseCommand.use_argparse
                     # to decide that, which checks for the option_list list
-                    base.BaseCommand.option_list += configuration_options
+                    if configuration_options[0] not in base.BaseCommand.option_list:
+                        base.BaseCommand.option_list += configuration_options
                 else:
                     # probably argparse, let's not import argparse though
                     parser.add_argument(CONFIGURATION_ARGUMENT,
@@ -104,7 +105,7 @@ class ConfigurationImporter(object):
                 base.handle_default_options(options)
             except base.CommandError:
                 pass  # Ignore any option errors at this point.
-        # django < 1.7 did use optparse
+        # django <= 1.7 did use optparse
         else:
             from django.core.management import LaxOptionParser
             parser = LaxOptionParser(option_list=configuration_options,
