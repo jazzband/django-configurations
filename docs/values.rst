@@ -197,8 +197,8 @@ Type values
     A :class:`~Value` subclass that checks and returns boolean values. Possible
     values for environment variables are:
 
-    - ``True`` values: ``'yes'``, ``'y'``, ``'true'``, ``'1'``
-    - ``False`` values: ``'no'``, ``'n'``, ``'false'``, ``'0'``,
+    - ``True`` values: ``'yes'``, ``'Yes'``, ``'y'``, ``'Y'``, ``'true'``, ``'True'``, ``'TRUE'``, ``'1'``
+    - ``False`` values: ``'no'``, ``'No'``, ``'n'``, ``'N'``, ``'false'``, ``'False'``,  ``'FALSE'``, ``'0'``,
       ``''`` (empty string)
 
     ::
@@ -281,13 +281,13 @@ Type values
 
     :param seq_separator: the separator to split each tuple with
     :param separator: the separator to split the inner tuple contents with
-    :param converter: the optional converter callable to apply for each inner 
+    :param converter: the optional converter callable to apply for each inner
                       tuple item
 
     Useful for ADMINS, MANAGERS, and the like.  For example::
 
         ADMINS = SingleNestedTupleValue((
-            ('John', 'jcleese@site.com'), 
+            ('John', 'jcleese@site.com'),
             ('Eric', 'eidle@site.com'),
         ))
 
@@ -302,7 +302,7 @@ Type values
 
     :param seq_separator: the separator to split each list with
     :param separator: the separator to split the inner list contents with
-    :param converter: the optional converter callable to apply for each inner 
+    :param converter: the optional converter callable to apply for each inner
                       list item
 
     See the :class:`~SingleNestedTupleValue` examples above.
