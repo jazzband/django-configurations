@@ -9,7 +9,7 @@ from django.conf import ENVIRONMENT_VARIABLE as SETTINGS_ENVIRONMENT_VARIABLE
 from django.core.exceptions import ImproperlyConfigured
 from django.core.management import base
 
-from .utils import uppercase_attributes, reraise
+from .utils import uppercase_attributes, reraise, LaxOptionParser
 from .values import Value, setup_value
 
 installed = False
