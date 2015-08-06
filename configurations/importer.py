@@ -2,7 +2,7 @@ import imp
 import logging
 import os
 import sys
-from optparse import OptionParser, make_option
+from optparse import make_option
 
 from django import VERSION as DJANGO_VERSION
 from django.conf import ENVIRONMENT_VARIABLE as SETTINGS_ENVIRONMENT_VARIABLE
