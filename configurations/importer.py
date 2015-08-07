@@ -172,7 +172,7 @@ class ConfigurationLoader(object):
         except AttributeError as err:  # pragma: no cover
             reraise(err, "Couldn't find configuration '{0}' "
                          "in module '{1}'".format(self.name,
-                                                  mod.__name__)))
+                                                  mod.__name__))
         try:
             cls.pre_setup()
             cls.setup()
