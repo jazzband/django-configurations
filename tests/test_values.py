@@ -336,6 +336,7 @@ class ValueTests(TestCase):
             self.assertEqual(value.setup('TEST'), '/does/not/exist')
 
     def test_secret_value(self):
+        # no default allowed, only environment values are
         self.assertRaises(ValueError, SecretValue, 'default')
 
         value = SecretValue()

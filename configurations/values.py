@@ -27,6 +27,7 @@ class Value(object):
     """
     multiple = False
     late_binding = False
+    environ_required = False
 
     @property
     def value(self):
@@ -57,7 +58,8 @@ class Value(object):
         return instance
 
     def __init__(self, default=None, environ=True, environ_name=None,
-                 environ_prefix='DJANGO', *args, **kwargs):
+                 environ_prefix='DJANGO', environ_required=False,
+                 *args, **kwargs):
         if isinstance(default, Value) and default.default is not None:
             self.default = copy.copy(default.default)
         else:
@@ -67,6 +69,7 @@ class Value(object):
             environ_prefix = environ_prefix[:-1]
         self.environ_prefix = environ_prefix
         self.environ_name = environ_name
+        self.environ_required = environ_required
 
     def __str__(self):
         return str(self.value)
@@ -92,6 +95,10 @@ class Value(object):
             full_environ_name = self.full_environ_name(name)
             if full_environ_name in os.environ:
                 value = self.to_python(os.environ[full_environ_name])
+            elif self.environ_required:
+                raise ValueError('Value {0!r} is required to be set as the '
+                                 'environment variable {1!r}'
+                                 .format(name, full_environ_name))
         self.value = value
         return value
 
@@ -378,6 +385,7 @@ class SecretValue(Value):
 
     def __init__(self, *args, **kwargs):
         kwargs['environ'] = True
+        kwargs['environ_required'] = True
         super(SecretValue, self).__init__(*args, **kwargs)
         if self.default is not None:
             raise ValueError('Secret values are only allowed to '

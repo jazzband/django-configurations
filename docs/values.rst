@@ -139,7 +139,7 @@ the prefix.
 ``Value`` class
 ---------------
 
-.. class:: Value(default, [environ=True, environ_name=None, environ_prefix='DJANGO'])
+.. class:: Value(default, [environ=True, environ_name=None, environ_prefix='DJANGO', environ_required=False])
 
    The ``Value`` class takes one required and several optional parameters.
 
@@ -147,9 +147,11 @@ the prefix.
    :param environ: toggle for environment use
    :param environ_name: name of environment variable to look for
    :param environ_prefix: prefix to use when looking for environment variable
+   :param environ_required: wheter or not the value is required to be set as an environment variable
    :type environ: bool
    :type environ_name: capitalized string or None
    :type environ_prefix: capitalized string
+   :type environ_required: bool
 
    The ``default`` parameter is effectively the value the setting has
    right now in your ``settings.py``.
@@ -537,6 +539,11 @@ Other values
     file.
 
     :raises: ``ValueError`` when given a default value
+
+    .. versionchanged:: 1.0
+
+      This value class has the ``environ_required`` parameter turned to
+      ``True``.
 
     ::
 
