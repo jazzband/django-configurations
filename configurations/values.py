@@ -77,18 +77,19 @@ class Value(object):
     def __eq__(self, other):
         return self.value == other
 
+    def full_environ_name(self, name):
+        if self.environ_name:
+            environ_name = self.environ_name
+        else:
+            environ_name = name.upper()
+        if self.environ_prefix:
+            environ_name = '{0}_{1}'.format(self.environ_prefix, environ_name)
+        return environ_name
+
     def setup(self, name):
         value = self.default
         if self.environ:
-            if not self.environ_name:
-                environ_name = name.upper()
-            else:
-                environ_name = self.environ_name
-            if self.environ_prefix:
-                full_environ_name = '{0}_{1}'.format(self.environ_prefix,
-                                                     environ_name)
-            else:
-                full_environ_name = environ_name
+            full_environ_name = self.full_environ_name(name)
             if full_environ_name in os.environ:
                 value = self.to_python(os.environ[full_environ_name])
         self.value = value
