@@ -5,6 +5,10 @@ django-configurations
    :alt: Build Status
    :target: https://travis-ci.org/jezdez/django-configurations
 
+.. image:: https://img.shields.io/badge/bus%20factor-1-red.svg
+   :alt: bus factor 1
+   :target: https://en.wikipedia.org/wiki/Bus_factor
+
 django-configurations eases Django project configuration by relying
 on the composability of Python classes. It extends the notion of
 Django's module based settings loading with well established
