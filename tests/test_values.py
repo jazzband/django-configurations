@@ -406,20 +406,19 @@ class ValueTests(TestCase):
     def test_cache_url_value(self):
         cache_setting = {
             'default': {
-                'BACKEND': 'redis_cache.cache.RedisCache',
-                'KEY_PREFIX': '',
-                'LOCATION': 'host:port:1'
+                'BACKEND': 'django_redis.cache.RedisCache',
+                'LOCATION': 'host:12345:1'
             }
         }
-        cache_url = 'redis://user@host:port/1'
+        cache_url = 'redis://user@host:12345/1'
         value = CacheURLValue(cache_url)
         self.assertEqual(value.default, cache_setting)
         value = CacheURLValue()
         self.assertEqual(value.default, {})
-        with env(CACHE_URL='redis://user@host:port/1'):
+        with env(CACHE_URL='redis://user@host:12345/1'):
             self.assertEqual(value.setup('CACHE_URL'), cache_setting)
-        with env(CACHE_URL='wrong://user@host:port/1'):
-            self.assertRaises(KeyError, value.setup, 'TEST')
+        with env(CACHE_URL='wrong://user@host:12345/1'):
+            self.assertRaisesRegexp(Exception, 'Unknown backend: "wrong"', value.setup, 'TEST')
 
     def test_search_url_value(self):
         value = SearchURLValue()
