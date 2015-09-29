@@ -1,7 +1,7 @@
 django-configurations
 =====================
 
-.. image:: https://secure.travis-ci.org/jazzband/django-configurations.png
+.. image:: https://travis-ci.org/jazzband/django-configurations.svg?branch=master
    :alt: Build Status
    :target: https://travis-ci.org/jazzband/django-configurations
 
