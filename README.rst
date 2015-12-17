@@ -1,13 +1,13 @@
 django-configurations
 =====================
 
-.. image:: https://secure.travis-ci.org/jezdez/django-configurations.png
+.. image:: https://secure.travis-ci.org/jazzband/django-configurations.png
    :alt: Build Status
-   :target: https://travis-ci.org/jezdez/django-configurations
+   :target: https://travis-ci.org/jazzband/django-configurations
 
-.. image:: https://img.shields.io/badge/bus%20factor-1-red.svg
-   :alt: bus factor 1
-   :target: https://en.wikipedia.org/wiki/Bus_factor
+.. image:: https://jazzband.co/static/img/badge.svg
+   :alt: Jazzband
+   :target: https://jazzband.co/
 
 django-configurations eases Django project configuration by relying
 on the composability of Python classes. It extends the notion of

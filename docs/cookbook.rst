@@ -78,17 +78,17 @@ First install Django 1.5.x and django-configurations:
 
 .. code-block:: console
 
-    $ pip install -r https://raw.github.com/jezdez/django-configurations/templates/1.5.x/requirements.txt
+    $ pip install -r https://raw.github.com/jazzband/django-configurations/templates/1.5.x/requirements.txt
 
 Then create your new Django project with the provided template:
 
 .. code-block:: console
 
-    $ django-admin.py startproject mysite -v2 --template https://github.com/jezdez/django-configurations/archive/templates/1.5.x.zip
+    $ django-admin.py startproject mysite -v2 --template https://github.com/jazzband/django-configurations/archive/templates/1.5.x.zip
 
 See the repository of the template for more information:
 
-    https://github.com/jezdez/django-configurations/tree/templates/1.5.x
+    https://github.com/jazzband/django-configurations/tree/templates/1.5.x
 
 Django 1.6.x
 ^^^^^^^^^^^^
@@ -97,20 +97,20 @@ First install Django 1.6.x and django-configurations:
 
 .. code-block:: console
 
-    $ pip install -r https://raw.github.com/jezdez/django-configurations/templates/1.6.x/requirements.txt
+    $ pip install -r https://raw.github.com/jazzband/django-configurations/templates/1.6.x/requirements.txt
 
 Or Django 1.6:
 
 .. code-block:: console
 
-    $ django-admin.py startproject mysite -v2 --template https://github.com/jezdez/django-configurations/archive/templates/1.6.x.zip
+    $ django-admin.py startproject mysite -v2 --template https://github.com/jazzband/django-configurations/archive/templates/1.6.x.zip
 
 Now you have a default Django 1.5.x or 1.6.x project in the ``mysite``
 directory that uses django-configurations.
 
 See the repository of the template for more information:
 
-    https://github.com/jezdez/django-configurations/tree/templates/1.6.x
+    https://github.com/jazzband/django-configurations/tree/templates/1.6.x
 
 .. _pip: http://pip-installer.org/
 
