@@ -6,8 +6,8 @@ cache:
   - "~/.cache/pip"
 env:
   global:
-  - PIP_WHEEL_DIR=$HOME/.cache/pip/wheels
-  - PIP_FIND_LINKS=file://$HOME/.cache/pip/wheels
+    - PIP_WHEEL_DIR=$HOME/.cache/pip/wheels
+    - PIP_FIND_LINKS=file://$HOME/.cache/pip/wheels
   matrix:
     - TOXENV=flake8-py27
     - TOXENV=flake8-py35
@@ -52,8 +52,8 @@ matrix:
     - env: TOXENV=py35-djmaster
     - env: TOXENV=pypy-djmaster
 install:
-- pip wheel -r tests/requirements.txt
-- pip install tox
+  - pip wheel -r tests/requirements.txt
+  - pip install tox
 script: tox
 branches:
   except: templates/1.5.x templates/1.6.x
