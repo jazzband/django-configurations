@@ -3,24 +3,26 @@
 Changelog
 ---------
 
-v0.9 (2015-12-18)
+v1.0.0 (2015-12-18)
 ^^^^^^^^^^^^^^^^^
 
 - Project has moved to `Jazzband <https://jazzband.co/>`_. See guidelines for
   contributing.
 
-- Support for django 1.8 and above. Thanks to:
+- Support for Django 1.8 and above. Thanks to:
   - @benjaminabel
   - @jdietrich
+  - @blueyed
+  - and others...
 
-- Allow ``Value`` classes to be used outside of ``Configuration`` classes (#62)
+- Allow ``Value`` classes to be used outside of ``Configuration`` classes. (#62)
 
-- Fixed "Value with ValidationMixin will raise ValueError if no default assigned" (#69)
+- Fixed "Value with ValidationMixin will raise ValueError if no default assigned". (#69)
 
-- Fixed wrong behaviour when assigning BooleanValue (#83)
+- Fixed wrong behaviour when assigning BooleanValue. (#83)
 
 - Add ability to programmatically call Django commands from configurations using
-  ``call_command``
+  ``call_command``.
 
 - Added SingleNestedTupleValue and SingleNestedListValue classes. (#85)
 
