@@ -4,7 +4,7 @@ Changelog
 ---------
 
 v1.0.0 (2015-12-18)
-^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^
 
 - Project has moved to `Jazzband <https://jazzband.co/>`_. See guidelines for
   contributing.
