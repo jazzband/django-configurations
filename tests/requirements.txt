@@ -6,4 +6,3 @@ dj-email-url
 dj-search-url
 django-cache-url>=1.0.0
 six
-unittest2
