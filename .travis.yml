@@ -54,7 +54,7 @@ matrix:
 install:
   - pip wheel -r tests/requirements.txt
   - pip install tox codecov
-script: tox
+script: tox -v
 after_success:
   - codecov
 branches:
