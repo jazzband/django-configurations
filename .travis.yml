@@ -53,8 +53,10 @@ matrix:
     - env: TOXENV=pypy-djmaster
 install:
   - pip wheel -r tests/requirements.txt
-  - pip install tox
+  - pip install tox codecov
 script: tox
+after_success:
+  - codecov
 branches:
   except: templates/1.5.x templates/1.6.x
 deploy:
