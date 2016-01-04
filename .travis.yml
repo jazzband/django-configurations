@@ -11,6 +11,7 @@ env:
   matrix:
     - TOXENV=flake8-py27
     - TOXENV=flake8-py35
+    - TOXENV=readme-py27
     - TOXENV=py26-dj14
     - TOXENV=py26-dj15
     - TOXENV=py26-dj16
