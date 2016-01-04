@@ -9,6 +9,10 @@ django-configurations
    :alt: Jazzband
    :target: https://jazzband.co/
 
+.. image:: https://codecov.io/github/jazzband/django-configurations/coverage.svg?branch=master
+   :alt: Codecov
+   :target: https://codecov.io/github/jazzband/django-configurations?branch=master
+
 django-configurations eases Django project configuration by relying
 on the composability of Python classes. It extends the notion of
 Django's module based settings loading with well established
