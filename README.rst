@@ -71,7 +71,6 @@ of the appropriate starter functions, e.g. a typical **manage.py** using
 django-configurations would look like this:
 
 .. code-block:: python
-   :emphasize-lines: 10
 
     #!/usr/bin/env python
 
@@ -93,7 +92,6 @@ Notice in line 10 we don't use the common tool
 The same applies to your **wsgi.py** file, e.g.:
 
 .. code-block:: python
-   :emphasize-lines: 6
 
     import os
 
