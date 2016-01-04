@@ -2,9 +2,15 @@ import os
 import subprocess
 import sys
 
+from django import VERSION as DJANGO_VERSION
 from django.conf import global_settings
 from django.test import TestCase
 from django.core.exceptions import ImproperlyConfigured
+
+if sys.version_info >= (2, 7):
+    from unittest import skipIf
+else:
+    from django.utils.unittest import skipIf
 
 from mock import patch
 
@@ -108,3 +114,20 @@ class MainTests(TestCase):
         proc = subprocess.Popen(['django-cadmin', 'runserver', '--help'],
                                 stdout=subprocess.PIPE)
         self.assertIn('--configuration', proc.communicate()[0].decode('utf-8'))
+
+    @skipIf(DJANGO_VERSION >= (1, 10), 'only applies to Django < 1.10')
+    def test_deprecated_option_list_command(self):
+        """
+        Verify that the configuration option is correctly added to any
+        management commands which are still relying on option_list to
+        add their own custom arguments
+
+        Specific test for a pattern which was deprecated in Django 1.8
+        and which will become completely unsupported in Django 1.10.
+        https://docs.djangoproject.com/en/1.8/howto/custom-management-commands/#custom-commands-options
+        """
+        proc = subprocess.Popen(['django-cadmin', 'old_optparse_command', '--help'],
+                                stdout=subprocess.PIPE)
+        output = proc.communicate()[0].decode('utf-8')
+        self.assertIn('--configuration', output)
+        self.assertIn('--arg1', output)
