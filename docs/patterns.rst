@@ -54,7 +54,7 @@ setting other values, e.g.::
 
         @property
         def LANGUAGES(self):
-            return Configuration.LANGUAGES + (('tlh', 'Klingon'),)
+            return list(Configuration.LANGUAGES) + [('tlh', 'Klingon')]
 
 Configuration mixins
 --------------------
