@@ -167,3 +167,13 @@ connecting to a database::
     A new ``setup`` method was added to be able to handle the new
     :class:`~configurations.values.Value` classes and allow an in-between
     modification of the configuration values.
+    
+
+Standalone scripts
+------------------
+
+If you want to run scripts outside of your project you need to add these lines
+on top of your file::
+
+    import configurations
+    configurations.setup()
