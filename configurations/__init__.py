@@ -11,12 +11,8 @@ def _setup():
 
     importer.install()
 
-    # django >=1.7
-    try:
-        import django
-        django.setup()
-    except AttributeError:
-        pass
+    import django
+    django.setup()
 
 
 def load_ipython_extension(ipython):

@@ -7,10 +7,7 @@ from django.conf import global_settings
 from django.test import TestCase
 from django.core.exceptions import ImproperlyConfigured
 
-if sys.version_info >= (2, 7):
-    from unittest import skipIf
-else:
-    from django.utils.unittest import skipIf
+from unittest import skipIf
 
 from mock import patch
 
