@@ -3,8 +3,8 @@
 Changelog
 ---------
 
-v1.0.1 (Not yet released)
-^^^^^^^^^^^^^^^^^^^^^^^^^
+v2.0 (Not yet released)
+^^^^^^^^^^^^^^^^^^^^^^^
 
 - Drop support of python2.6 and python3.2
 - Drop support of Django < 1.8
