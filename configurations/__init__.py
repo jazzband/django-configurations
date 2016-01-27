@@ -2,7 +2,7 @@
 from .base import Settings, Configuration
 from .decorators import pristinemethod
 
-__version__ = '1.0.1.dev'
+__version__ = '2.0.dev'
 __all__ = ['Configuration', 'pristinemethod', 'Settings']
 
 
@@ -11,12 +11,8 @@ def _setup():
 
     importer.install()
 
-    # django >=1.7
-    try:
-        import django
-        django.setup()
-    except AttributeError:
-        pass
+    import django
+    django.setup()
 
 
 def load_ipython_extension(ipython):

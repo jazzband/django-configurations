@@ -71,46 +71,27 @@ You can use a special Django project template that is a copy of the one
 included in Django 1.5.x and 1.6.x. The following examples assumes you're
 using pip_ to install packages.
 
-Django 1.5.x
+Django 1.8.x
 ^^^^^^^^^^^^
 
-First install Django 1.5.x and django-configurations:
+First install Django 1.8.x and django-configurations:
 
 .. code-block:: console
 
-    $ pip install -r https://raw.github.com/jazzband/django-configurations/templates/1.5.x/requirements.txt
+    $ pip install -r https://raw.github.com/jazzband/django-configurations/templates/1.8.x/requirements.txt
 
-Then create your new Django project with the provided template:
-
-.. code-block:: console
-
-    $ django-admin.py startproject mysite -v2 --template https://github.com/jazzband/django-configurations/archive/templates/1.5.x.zip
-
-See the repository of the template for more information:
-
-    https://github.com/jazzband/django-configurations/tree/templates/1.5.x
-
-Django 1.6.x
-^^^^^^^^^^^^
-
-First install Django 1.6.x and django-configurations:
+Or Django 1.8:
 
 .. code-block:: console
 
-    $ pip install -r https://raw.github.com/jazzband/django-configurations/templates/1.6.x/requirements.txt
+    $ django-admin.py startproject mysite -v2 --template https://github.com/jazzband/django-configurations/archive/templates/1.8.x.zip
 
-Or Django 1.6:
-
-.. code-block:: console
-
-    $ django-admin.py startproject mysite -v2 --template https://github.com/jazzband/django-configurations/archive/templates/1.6.x.zip
-
-Now you have a default Django 1.5.x or 1.6.x project in the ``mysite``
+Now you have a default Django 1.8.x project in the ``mysite``
 directory that uses django-configurations.
 
 See the repository of the template for more information:
 
-    https://github.com/jazzband/django-configurations/tree/templates/1.6.x
+    https://github.com/jazzband/django-configurations/tree/templates/1.8.x
 
 .. _pip: http://pip-installer.org/
 
@@ -129,7 +110,7 @@ probably just add the following to the **beginning** of your settings module:
     configurations.setup()
 
 That has the same effect as using the ``manage.py`` or ``wsgi.py`` utilities.
-This will also call ``django.setup()`` on Django >= 1.7.
+This will also call ``django.setup()``.
 
 >= 3.1
 ^^^^^^

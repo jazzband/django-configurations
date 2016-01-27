@@ -4,7 +4,6 @@ import os
 import sys
 from optparse import OptionParser, make_option
 
-from django import VERSION as DJANGO_VERSION
 from django.conf import ENVIRONMENT_VARIABLE as SETTINGS_ENVIRONMENT_VARIABLE
 from django.core.exceptions import ImproperlyConfigured
 from django.core.management import base
@@ -29,28 +28,24 @@ configuration_options = (make_option(CONFIGURATION_ARGUMENT,
 def install(check_options=False):
     global installed
     if not installed:
-        if DJANGO_VERSION >= (1, 8):
-            orig_create_parser = base.BaseCommand.create_parser
+        orig_create_parser = base.BaseCommand.create_parser
 
-            def create_parser(self, prog_name, subcommand):
-                parser = orig_create_parser(self, prog_name, subcommand)
-                if isinstance(parser, OptionParser):
-                    # in case the option_list is set the create_parser
-                    # will actually return a OptionParser for backward
-                    # compatibility. In that case we should tack our
-                    # options on to the end of the parser on the way out.
-                    for option in configuration_options:
-                        parser.add_option(option)
-                else:
-                    # probably argparse, let's not import argparse though
-                    parser.add_argument(CONFIGURATION_ARGUMENT,
-                                        help=CONFIGURATION_ARGUMENT_HELP)
-                return parser
+        def create_parser(self, prog_name, subcommand):
+            parser = orig_create_parser(self, prog_name, subcommand)
+            if isinstance(parser, OptionParser):
+                # in case the option_list is set the create_parser
+                # will actually return a OptionParser for backward
+                # compatibility. In that case we should tack our
+                # options on to the end of the parser on the way out.
+                for option in configuration_options:
+                    parser.add_option(option)
+            else:
+                # probably argparse, let's not import argparse though
+                parser.add_argument(CONFIGURATION_ARGUMENT,
+                                    help=CONFIGURATION_ARGUMENT_HELP)
+            return parser
 
-            base.BaseCommand.create_parser = create_parser
-        else:
-            # add the configuration option to all management commands
-            base.BaseCommand.option_list += configuration_options
+        base.BaseCommand.create_parser = create_parser
         importer = ConfigurationImporter(check_options=check_options)
         sys.meta_path.insert(0, importer)
         installed = True
@@ -87,35 +82,22 @@ class ConfigurationImporter(object):
         return os.environ.get(self.namevar)
 
     def check_options(self):
-        # django switched to argparse in version 1.8
-        if DJANGO_VERSION >= (1, 8):
-            parser = base.CommandParser(None,
-                                        usage="%(prog)s subcommand [options] [args]",
-                                        add_help=False)
-            parser.add_argument('--settings')
-            parser.add_argument('--pythonpath')
-            parser.add_argument(CONFIGURATION_ARGUMENT,
-                                help=CONFIGURATION_ARGUMENT_HELP)
+        parser = base.CommandParser(None,
+                                    usage="%(prog)s subcommand [options] [args]",
+                                    add_help=False)
+        parser.add_argument('--settings')
+        parser.add_argument('--pythonpath')
+        parser.add_argument(CONFIGURATION_ARGUMENT,
+                            help=CONFIGURATION_ARGUMENT_HELP)
 
-            parser.add_argument('args', nargs='*')  # catch-all
-            try:
-                options, args = parser.parse_known_args(self.argv[2:])
-                if options.configuration:
-                    os.environ[self.namevar] = options.configuration
-                base.handle_default_options(options)
-            except base.CommandError:
-                pass  # Ignore any option errors at this point.
-        # django < 1.7 did use optparse
-        else:
-            from django.core.management import LaxOptionParser
-            parser = LaxOptionParser(option_list=configuration_options,
-                                     add_help_option=False)
-            try:
-                options, args = parser.parse_args(self.argv)
-                if options.configuration:
-                    os.environ[self.namevar] = options.configuration
-            except:
-                pass  # Ignore any option errors at this point.
+        parser.add_argument('args', nargs='*')  # catch-all
+        try:
+            options, args = parser.parse_known_args(self.argv[2:])
+            if options.configuration:
+                os.environ[self.namevar] = options.configuration
+            base.handle_default_options(options)
+        except base.CommandError:
+            pass  # Ignore any option errors at this point.
 
     def validate(self):
         if self.name is None:
@@ -127,13 +109,9 @@ class ConfigurationImporter(object):
         if len(self.argv) > 1:
             from . import __version__
             from django.utils.termcolors import colorize
-            # Django >= 1.7 supports hiding the colorization in the shell
-            try:
-                from django.core.management.color import no_style
-            except ImportError:
-                no_style = None
+            from django.core.management.color import no_style
 
-            if no_style is not None and '--no-color' in self.argv:
+            if '--no-color' in self.argv:
                 stylize = no_style()
             else:
                 def stylize(text):
