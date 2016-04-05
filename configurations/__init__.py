@@ -32,3 +32,4 @@ def setup(app=None):
     in your docs' ``conf.py``.
     """
     _setup()
+    return {'version': __version__, 'parallel_read_safe': True}
