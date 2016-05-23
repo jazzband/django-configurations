@@ -6,7 +6,7 @@ from django.test import TestCase
 from django.conf import settings
 
 
-class ShpinxTests(TestCase):
+class SphinxTests(TestCase):
     docs_dir = os.path.join(settings.BASE_DIR, 'docs')
 
     def test_multiprocessing(self):

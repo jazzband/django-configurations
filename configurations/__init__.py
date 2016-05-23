@@ -25,11 +25,5 @@ def load_ipython_extension(ipython):
 
 
 def setup(app=None):
-    """
-    The callback for Sphinx that acts as a Sphinx extension.
-
-    Add ``'configurations'`` to the ``extensions`` config variable
-    in your docs' ``conf.py``.
-    """
+    """Function used to initialize configurations similar to :func:`.django.setup`."""
     _setup()
-    return {'version': __version__, 'parallel_read_safe': True}

@@ -224,8 +224,6 @@ As you can see django-configurations provides a helper module
 Sphinx
 ------
 
-.. versionadded: 0.9
-
 In case you would like to user the amazing `autodoc` feature of the
 documentation tool `Sphinx <http://sphinx-doc.org/>`_, you need add
 django-configurations to your ``extensions`` config variable and set
@@ -245,7 +243,11 @@ the environment variable accordingly:
         'sphinx.ext.intersphinx',
         'sphinx.ext.viewcode',
         # ...
-        'configurations',
+        'configurations.sphinx',
     ]
 
     # ...
+
+.. versionchanged:: 2.0
+
+Please note that the sphinx callable has been moved from `configurations` to `configurations.sphinx`.

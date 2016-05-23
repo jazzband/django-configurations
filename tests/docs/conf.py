@@ -9,7 +9,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings.main")
 os.environ.setdefault('DJANGO_CONFIGURATION', 'Test')
 
 extensions = [
-    'configurations',
+    'configurations.sphinx',
 ]
 
 # The suffix of source filenames.
