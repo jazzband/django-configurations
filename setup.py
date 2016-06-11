@@ -29,7 +29,7 @@ def find_version(*parts):
 setup(
     name="django-configurations",
     version=find_version("configurations", "__init__.py"),
-    url='http://django-configurations.readthedocs.org/',
+    url='https://django-configurations.readthedocs.io/',
     license='BSD',
     description="A helper for organizing Django settings.",
     long_description=read('README.rst'),

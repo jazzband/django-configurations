@@ -20,7 +20,7 @@ object oriented programming patterns.
 
 Check out the `documentation`__ for more complete examples.
 
-.. __: http://django-configurations.readthedocs.org/en/latest/
+.. __: https://django-configurations.readthedocs.io/en/latest/
 
 
 Quickstart

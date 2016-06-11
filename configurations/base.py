@@ -15,7 +15,7 @@ __all__ = ['Configuration']
 install_failure = ("django-configurations settings importer wasn't "
                    "correctly installed. Please use one of the starter "
                    "functions to install it as mentioned in the docs: "
-                   "http://django-configurations.readthedocs.org/")
+                   "https://django-configurations.readthedocs.io/")
 
 
 class ConfigurationBase(type):
