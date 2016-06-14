@@ -392,6 +392,7 @@ class ValueTests(TestCase):
                 'EMAIL_HOST_PASSWORD': 'password',
                 'EMAIL_HOST_USER': 'user@domain.com',
                 'EMAIL_PORT': 587,
+                'EMAIL_USE_SSL': False,
                 'EMAIL_USE_TLS': True})
         with env(EMAIL_URL='console://'):
             self.assertEqual(value.setup('EMAIL_URL'), {
@@ -401,6 +402,7 @@ class ValueTests(TestCase):
                 'EMAIL_HOST_PASSWORD': None,
                 'EMAIL_HOST_USER': None,
                 'EMAIL_PORT': None,
+                'EMAIL_USE_SSL': False,
                 'EMAIL_USE_TLS': False})
         with env(EMAIL_URL='smtps://user@domain.com:password@smtp.example.com:wrong'):
             self.assertRaises(ValueError, value.setup, 'TEST')
@@ -481,6 +483,7 @@ class ValueTests(TestCase):
                 'EMAIL_HOST_PASSWORD': 'password',
                 'EMAIL_HOST_USER': 'user@domain.com',
                 'EMAIL_PORT': 587,
+                'EMAIL_USE_SSL': False,
                 'EMAIL_USE_TLS': True
             })
             self.assertEqual(Target.EMAIL_BACKEND, 'django.core.mail.backends.smtp.EmailBackend')
