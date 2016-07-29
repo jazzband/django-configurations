@@ -1,9 +1,9 @@
 # flake8: noqa
-from .base import Settings, Configuration
+from .base import Configuration
 from .decorators import pristinemethod
 
 __version__ = '2.0.dev'
-__all__ = ['Configuration', 'pristinemethod', 'Settings']
+__all__ = ['Configuration', 'pristinemethod']
 
 
 def _setup():

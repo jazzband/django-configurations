@@ -1,6 +1,5 @@
 import os
 import re
-import warnings
 
 from django.utils import six
 from django.conf import global_settings
@@ -21,10 +20,7 @@ install_failure = ("django-configurations settings importer wasn't "
 class ConfigurationBase(type):
 
     def __new__(cls, name, bases, attrs):
-        # also check for "Configuration" here to handle the Settings class
-        # below remove it when we deprecate the Settings class
-        if (bases not in ((object,), ()) and
-                bases[0].__name__ not in ('NewBase', 'Configuration')):
+        if bases not in ((object,), ()) and bases[0].__name__ != 'NewBase':
             # if this is actually a subclass in a settings module
             # we better check if the importer was correctly installed
             from . import importer
@@ -125,13 +121,3 @@ class Configuration(six.with_metaclass(ConfigurationBase)):
         for name, value in uppercase_attributes(cls).items():
             if isinstance(value, Value):
                 setup_value(cls, name, value)
-
-
-class Settings(Configuration):
-
-    @classmethod
-    def pre_setup(cls):
-        # make sure to remove the handling of the Settings class above when deprecating
-        warnings.warn("configurations.Settings was renamed to "
-                      "settings.Configuration and will be "
-                      "removed in 1.0", DeprecationWarning)
