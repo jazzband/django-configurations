@@ -2,7 +2,7 @@
 from .base import Configuration
 from .decorators import pristinemethod
 
-__version__ = '2.0.dev'
+__version__ = '2.0'
 __all__ = ['Configuration', 'pristinemethod']
 
 

@@ -3,12 +3,24 @@
 Changelog
 ---------
 
-v2.0 (Not yet released)
-^^^^^^^^^^^^^^^^^^^^^^^
+v2.0 (2016-07-29)
+^^^^^^^^^^^^^^^^^
 
-- Drop support of python2.6 and python3.2
-- Drop support of Django < 1.8
+- **BACKWARD INCOMPATIBLE** Drop support of Python 2.6 and 3.2
 
+- **BACKWARD INCOMPATIBLE** Drop support of Django < 1.8
+
+- **BACKWARD INCOMPATIBLE** Moved sphinx callable has been moved from
+  ``configurations`` to ``configurations.sphinx``.
+
+- **BACKWARD INCOMPATIBLE** Removed the previously deprecated
+  ``configurations.Settings`` class in favor of the
+  ``configurations.Configuration`` added in 0.4. This removal was planned for
+  the 1.0 release and is now finally enacted.
+
+- Add multiprocessing support for sphinx integration
+
+- Fix a RemovedInDjango19Warning warning
 
 v1.0 (2016-01-04)
 ^^^^^^^^^^^^^^^^^

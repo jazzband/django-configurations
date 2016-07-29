@@ -250,4 +250,5 @@ the environment variable accordingly:
 
 .. versionchanged:: 2.0
 
-Please note that the sphinx callable has been moved from `configurations` to `configurations.sphinx`.
+Please note that the sphinx callable has been moved from ``configurations`` to
+``configurations.sphinx``.
