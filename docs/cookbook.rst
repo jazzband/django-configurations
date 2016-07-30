@@ -192,7 +192,7 @@ It also works with django-extensions's shell_plus_ management command.
 
 .. _IPython: http://ipython.org/
 .. _`manage your IPython profile`: http://ipython.org/ipython-doc/dev/config/overview.html#configuration-file-location
-.. _shell_plus: http://django-extensions.readthedocs.org/en/latest/shell_plus.html
+.. _shell_plus: https://django-extensions.readthedocs.io/en/latest/shell_plus.html
 
 FastCGI
 -------
