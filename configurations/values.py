@@ -80,6 +80,12 @@ class Value(object):
     def __eq__(self, other):
         return self.value == other
 
+    def __bool__(self):
+        return bool(self.value)
+
+    # Compatibility with python 2
+    __nonzero__ = __bool__
+
     def full_environ_name(self, name):
         if self.environ_name:
             environ_name = self.environ_name
