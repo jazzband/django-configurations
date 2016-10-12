@@ -58,6 +58,14 @@ class ValueTests(TestCase):
 
             self.assertEqual(repr(value), repr('override'))
 
+    def test_value_truthy(self):
+        value = Value('default')
+        self.assertTrue(bool(value))
+
+    def test_value_falsey(self):
+        value = Value()
+        self.assertFalse(bool(value))
+
     @patch.dict(os.environ, clear=True, DJANGO_TEST='override')
     def test_env_var(self):
         value = Value('default')
@@ -99,7 +107,7 @@ class ValueTests(TestCase):
         value = BooleanValue(False)
         for truthy in value.true_values:
             with env(DJANGO_TEST=truthy):
-                self.assertTrue(value.setup('TEST'))
+                self.assertTrue(bool(value.setup('TEST')))
 
     def test_boolean_values_faulty(self):
         self.assertRaises(ValueError, BooleanValue, 'false')
@@ -108,7 +116,7 @@ class ValueTests(TestCase):
         value = BooleanValue(True)
         for falsy in value.false_values:
             with env(DJANGO_TEST=falsy):
-                self.assertFalse(value.setup('TEST'))
+                self.assertFalse(bool(value.setup('TEST')))
 
     def test_boolean_values_nonboolean(self):
         value = BooleanValue(True)
