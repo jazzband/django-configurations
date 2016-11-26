@@ -136,8 +136,8 @@ Celery's documentation`_:
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mysite.settings')
     os.environ.setdefault('DJANGO_CONFIGURATION', 'MySiteConfiguration')
 
-    import configurations
-    configurations.setup()
+    from configurations import importer
+    importer.install()
 
     app = Celery('mysite')
     app.config_from_object('django.conf:settings')
