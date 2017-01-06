@@ -129,6 +129,7 @@ class Base(Configuration):
         # Uncomment the next line to enable admin documentation:
         # 'django.contrib.admindocs',
         'configurations',
+        'imagekit',
     )
 
     # A sample logging configuration. The only tangible logging

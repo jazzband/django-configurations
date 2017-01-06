@@ -47,6 +47,11 @@ class MainTests(TestCase):
         self.assertTrue(lambda: callable(settings.PRISTINE_FUNCTION_SETTING))
         self.assertEqual(settings.PRE_SETUP_TEST_SETTING, 6)
 
+    def test_imagekit_app_config_working(self):
+        """Test whether app-config is correctly injecting the imagekit settings."""
+        from django.conf import settings
+        self.assertEqual(settings.IMAGEKIT_CACHE_BACKEND, 'default')
+
     @patch.dict(os.environ, clear=True, DJANGO_CONFIGURATION='Test')
     def test_empty_module_var(self):
         self.assertRaises(ImproperlyConfigured, ConfigurationImporter)

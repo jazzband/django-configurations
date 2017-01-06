@@ -7,3 +7,5 @@ dj-search-url
 django-cache-url>=1.0.0
 six
 Sphinx>=1.4
+django-imagekit==3.3
+Pillow==4.0.0
