@@ -255,9 +255,9 @@ Please note that the sphinx callable has been moved from ``configurations`` to
 
 
 Channels
-------
+--------
 
-If you have to deploy a project that uses the django-channels using `Daphne <http://github.com/django/daphne/>`
+If you have to deploy a project that uses the Django channels using `Daphne <http://github.com/django/daphne/>`
 as the `interface server <http://channels.readthedocs.io/en/latest/deploying.html#run-interface-servers>` please
 write your asgi.py script as follows
 
