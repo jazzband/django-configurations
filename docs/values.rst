@@ -120,6 +120,21 @@ instead of using the name of the :class:`~Value` instance.::
     class Dev(Configuration):
         TIME_ZONE = values.Value('UTC', environ_name='MYSITE_TZ')
 
+Allow final value to be used outside the configuration context
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+You may use the ``environ_name`` parameter to allow a :class:`~Value` be
+directly converted to its final value for use outside of the configuration
+context::
+
+    >>> type(values.Value([]))
+    <class 'configurations.values.Value'>
+    >>> type(values.Value([], environ_name="FOOBAR"))
+    <class 'list'>
+
+This can also be achieved when using ``environ=False`` and providing a
+default value.
+
 Custom environment variable prefixes
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
