@@ -123,7 +123,7 @@ instead of using the name of the :class:`~Value` instance.::
 Allow final value to be used outside the configuration context
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-You may use the ``environ_name`` parameter to allow a :class:`~Value` be
+You may use the ``environ_name`` parameter to allow a :class:`~Value` to be
 directly converted to its final value for use outside of the configuration
 context::
 
