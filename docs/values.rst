@@ -120,6 +120,21 @@ instead of using the name of the :class:`~Value` instance.::
     class Dev(Configuration):
         TIME_ZONE = values.Value('UTC', environ_name='MYSITE_TZ')
 
+Allow final value to be used outside the configuration context
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+You may use the ``environ_name`` parameter to allow a :class:`~Value` to be
+directly converted to its final value for use outside of the configuration
+context::
+
+    >>> type(values.Value([]))
+    <class 'configurations.values.Value'>
+    >>> type(values.Value([], environ_name="FOOBAR"))
+    <class 'list'>
+
+This can also be achieved when using ``environ=False`` and providing a
+default value.
+
 Custom environment variable prefixes
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -283,13 +298,13 @@ Type values
 
     :param seq_separator: the separator to split each tuple with
     :param separator: the separator to split the inner tuple contents with
-    :param converter: the optional converter callable to apply for each inner 
+    :param converter: the optional converter callable to apply for each inner
                       tuple item
 
     Useful for ADMINS, MANAGERS, and the like.  For example::
 
         ADMINS = SingleNestedTupleValue((
-            ('John', 'jcleese@site.com'), 
+            ('John', 'jcleese@site.com'),
             ('Eric', 'eidle@site.com'),
         ))
 
@@ -304,7 +319,7 @@ Type values
 
     :param seq_separator: the separator to split each list with
     :param separator: the separator to split the inner list contents with
-    :param converter: the optional converter callable to apply for each inner 
+    :param converter: the optional converter callable to apply for each inner
                       list item
 
     See the :class:`~SingleNestedTupleValue` examples above.
