@@ -62,7 +62,7 @@ def reraise(exc, prefix=None, suffix=None):
         suffix = ''
     elif not (suffix.startswith('(') and suffix.endswith(')')):
         suffix = '(' + suffix + ')'
-    exc.args = ('{0} {1} {2}'.format(prefix, exc.args[0], suffix),) + args[1:]
+    exc.args = ('{0} {1} {2}'.format(prefix, args[0], suffix),) + args[1:]
     raise
 
 

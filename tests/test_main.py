@@ -118,3 +118,17 @@ class MainTests(TestCase):
         self.assertIn('setup_2', stdout)
         self.assertIn('setup_done', stdout)
         self.assertEqual(proc.returncode, 0)
+
+    def test_utils_reraise(self):
+        from configurations.utils import reraise
+
+        class CustomException(Exception):
+            pass
+
+        with self.assertRaises(CustomException) as cm:
+            try:
+                raise CustomException
+            except Exception as exc:
+                reraise(exc, "Couldn't setup configuration", None)
+
+        self.assertEqual(cm.exception.args, ("Couldn't setup configuration:   ",))
