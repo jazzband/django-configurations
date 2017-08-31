@@ -4,3 +4,4 @@ include .travis.yml
 include tasks.py
 recursive-include tests *
 recursive-include docs *
+include LICENSE
