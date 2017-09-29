@@ -9,26 +9,30 @@ env:
   - TOXENV=py27-dj18
   - TOXENV=py27-dj19
   - TOXENV=py27-djmaster
-  - TOXENV=py33-dj18
   - TOXENV=py34-dj18
   - TOXENV=py34-dj19
   - TOXENV=py34-djmaster
   - TOXENV=py35-dj18
   - TOXENV=py35-dj19
   - TOXENV=py35-djmaster
-  - TOXENV=pypy-dj18
-  - TOXENV=pypy-dj19
 matrix:
   allow_failures:
     - env: TOXENV=py27-djmaster
     - env: TOXENV=py34-djmaster
     - env: TOXENV=py35-djmaster
     - env: TOXENV=pypy-djmaster
+  include:
+    - env: TOXENV=pypy-dj18
+      python: pypy
+    - env: TOXENV=pypy-dj19
+      python: pypy
 install:
-  - pip install tox codecov
+  - pip install tox
 script: tox -v
 after_success:
-  - codecov
+  - pip install codecov
+  - codecov --required -X gcov --flags ${TOXENV//-/ }
+  - coverage report -m
 branches:
   except: templates/1.5.x templates/1.6.x
 deploy:
