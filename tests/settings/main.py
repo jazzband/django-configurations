@@ -7,7 +7,9 @@ from configurations.values import BooleanValue
 
 
 class Test(Configuration):
-    BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), os.pardir))
+    BASE_DIR = os.path.abspath(
+        os.path.join(os.path.dirname(
+            os.path.abspath(__file__)), os.pardir))
 
     ENV_LOADED = BooleanValue(False)
 
@@ -38,10 +40,11 @@ class Test(Configuration):
     if django.VERSION[:2] < (1, 6):
         TEST_RUNNER = 'discover_runner.DiscoverRunner'
 
-    def TEMPLATE_CONTEXT_PROCESSORS(self):
-        return tuple(Configuration.TEMPLATE_CONTEXT_PROCESSORS) + (
-            'tests.settings.base.test_callback',
-        )
+    @property
+    def ALLOWED_HOSTS(self):
+        allowed_hosts = super(Test, self).ALLOWED_HOSTS[:]
+        allowed_hosts.append('base')
+        return allowed_hosts
 
     ATTRIBUTE_SETTING = True
 
@@ -54,7 +57,7 @@ class Test(Configuration):
     def METHOD_SETTING(self):
         return 2
 
-    LAMBDA_SETTING = lambda self: 3
+    LAMBDA_SETTING = lambda self: 3  # noqa: E731
 
     PRISTINE_LAMBDA_SETTING = pristinemethod(lambda: 4)
 

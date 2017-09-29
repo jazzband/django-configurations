@@ -3,7 +3,6 @@ import subprocess
 import sys
 
 from django import VERSION as DJANGO_VERSION
-from django.conf import global_settings
 from django.test import TestCase
 from django.core.exceptions import ImproperlyConfigured
 
@@ -29,10 +28,7 @@ class MainTests(TestCase):
         self.assertTrue(lambda: callable(main.PRISTINE_LAMBDA_SETTING))
         self.assertNotEqual(main.PRISTINE_FUNCTION_SETTING, 5)
         self.assertTrue(lambda: callable(main.PRISTINE_FUNCTION_SETTING))
-        self.assertEqual(main.TEMPLATE_CONTEXT_PROCESSORS,
-                         tuple(global_settings.TEMPLATE_CONTEXT_PROCESSORS) + (
-                                   'tests.settings.base.test_callback',
-                               ))
+        self.assertEqual(main.ALLOWED_HOSTS, ['base'])
         self.assertEqual(main.PRE_SETUP_TEST_SETTING, 6)
         self.assertRaises(AttributeError, lambda: main.POST_SETUP_TEST_SETTING)
         self.assertEqual(main.Test.POST_SETUP_TEST_SETTING, 7)
@@ -74,8 +70,9 @@ class MainTests(TestCase):
         importer = ConfigurationImporter()
         self.assertEqual(importer.module, 'tests.settings.main')
         self.assertEqual(importer.name, 'Test')
-        self.assertEqual(repr(importer),
-                         "<ConfigurationImporter for 'tests.settings.main.Test'>")
+        self.assertEqual(
+            repr(importer),
+            "<ConfigurationImporter for 'tests.settings.main.Test'>")
 
     @patch.dict(os.environ, clear=True,
                 DJANGO_SETTINGS_MODULE='tests.settings.inheritance',
@@ -123,8 +120,9 @@ class MainTests(TestCase):
         and which will become completely unsupported in Django 1.10.
         https://docs.djangoproject.com/en/1.8/howto/custom-management-commands/#custom-commands-options
         """
-        proc = subprocess.Popen(['django-cadmin', 'old_optparse_command', '--help'],
-                                stdout=subprocess.PIPE)
+        proc = subprocess.Popen(
+            ['django-cadmin', 'old_optparse_command', '--help'],
+            stdout=subprocess.PIPE)
         output = proc.communicate()[0].decode('utf-8')
         self.assertIn('--configuration', output)
         self.assertIn('--arg1', output)
