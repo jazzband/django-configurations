@@ -419,7 +419,7 @@ class ValueTests(TestCase):
         cache_setting = {
             'default': {
                 'BACKEND': 'django_redis.cache.RedisCache',
-                'LOCATION': 'host:6379:1'
+                'LOCATION': 'redis://host:6379/1',
             }
         }
         cache_url = 'redis://user@host:6379/1'
