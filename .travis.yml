@@ -27,10 +27,12 @@ matrix:
     - env: TOXENV=pypy-dj19
       python: pypy
 install:
-  - pip install tox codecov
+  - pip install tox
 script: tox -v
 after_success:
+  - pip install codecov
   - codecov
+  - coverage report -m
 branches:
   except: templates/1.5.x templates/1.6.x
 deploy:
