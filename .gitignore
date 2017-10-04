@@ -8,3 +8,4 @@ build/
 htmlcov/
 *.pyc
 dist/
+tests/docs/_build/

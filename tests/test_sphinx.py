@@ -18,5 +18,4 @@ class SphinxTests(TestCase):
             '.',
             '_build/html',
         ], cwd=self.docs_dir, stderr=subprocess.STDOUT)
-        self.assertIn(b'waiting for workers', output)
         self.assertIn(b'build succeeded.', output)

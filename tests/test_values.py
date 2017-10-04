@@ -377,10 +377,12 @@ class ValueTests(TestCase):
     def test_database_url_additional_args(self):
 
         def mock_database_url_caster(self, url, engine=None):
-            return { 'URL': url, 'ENGINE': engine }
+            return {'URL': url, 'ENGINE': engine}
 
-        with patch('configurations.values.DatabaseURLValue.caster', mock_database_url_caster):
-            value = DatabaseURLValue(engine='django_mysqlpool.backends.mysqlpool')
+        with patch('configurations.values.DatabaseURLValue.caster',
+                   mock_database_url_caster):
+            value = DatabaseURLValue(
+                engine='django_mysqlpool.backends.mysqlpool')
             with env(DATABASE_URL='sqlite://'):
                 self.assertEqual(value.setup('DATABASE_URL'), {
                     'default': {
@@ -392,7 +394,7 @@ class ValueTests(TestCase):
     def test_email_url_value(self):
         value = EmailURLValue()
         self.assertEqual(value.default, {})
-        with env(EMAIL_URL='smtps://user@domain.com:password@smtp.example.com:587'):
+        with env(EMAIL_URL='smtps://user@domain.com:password@smtp.example.com:587'):  # noqa: E501
             self.assertEqual(value.setup('EMAIL_URL'), {
                 'EMAIL_BACKEND': 'django.core.mail.backends.smtp.EmailBackend',
                 'EMAIL_FILE_PATH': '',
@@ -404,7 +406,7 @@ class ValueTests(TestCase):
                 'EMAIL_USE_TLS': True})
         with env(EMAIL_URL='console://'):
             self.assertEqual(value.setup('EMAIL_URL'), {
-                'EMAIL_BACKEND': 'django.core.mail.backends.console.EmailBackend',
+                'EMAIL_BACKEND': 'django.core.mail.backends.console.EmailBackend',  # noqa: E501
                 'EMAIL_FILE_PATH': '',
                 'EMAIL_HOST': None,
                 'EMAIL_HOST_PASSWORD': None,
@@ -412,7 +414,7 @@ class ValueTests(TestCase):
                 'EMAIL_PORT': None,
                 'EMAIL_USE_SSL': False,
                 'EMAIL_USE_TLS': False})
-        with env(EMAIL_URL='smtps://user@domain.com:password@smtp.example.com:wrong'):
+        with env(EMAIL_URL='smtps://user@domain.com:password@smtp.example.com:wrong'):  # noqa: E501
             self.assertRaises(ValueError, value.setup, 'TEST')
 
     def test_cache_url_value(self):
@@ -436,8 +438,9 @@ class ValueTests(TestCase):
         with env(CACHE_URL='redis://user@host:port/1'):
             with self.assertRaises(ValueError) as cm:
                 value.setup('TEST')
-            self.assertEqual(cm.exception.args[0],
-                             "Cannot interpret cache URL value 'redis://user@host:port/1'")
+            self.assertEqual(
+                cm.exception.args[0],
+                "Cannot interpret cache URL value 'redis://user@host:port/1'")
 
     def test_search_url_value(self):
         value = SearchURLValue()
@@ -445,7 +448,7 @@ class ValueTests(TestCase):
         with env(SEARCH_URL='elasticsearch://127.0.0.1:9200/index'):
             self.assertEqual(value.setup('SEARCH_URL'), {
                 'default': {
-                    'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
+                    'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',  # noqa: E501
                     'URL': 'http://127.0.0.1:9200',
                     'INDEX_NAME': 'index',
                 }})
@@ -482,7 +485,7 @@ class ValueTests(TestCase):
             pass
 
         value = EmailURLValue()
-        with env(EMAIL_URL='smtps://user@domain.com:password@smtp.example.com:587'):
+        with env(EMAIL_URL='smtps://user@domain.com:password@smtp.example.com:587'):  # noqa: E501
             setup_value(Target, 'EMAIL', value)
             self.assertEqual(Target.EMAIL, {
                 'EMAIL_BACKEND': 'django.core.mail.backends.smtp.EmailBackend',
@@ -494,7 +497,9 @@ class ValueTests(TestCase):
                 'EMAIL_USE_SSL': False,
                 'EMAIL_USE_TLS': True
             })
-            self.assertEqual(Target.EMAIL_BACKEND, 'django.core.mail.backends.smtp.EmailBackend')
+            self.assertEqual(
+                Target.EMAIL_BACKEND,
+                'django.core.mail.backends.smtp.EmailBackend')
             self.assertEqual(Target.EMAIL_FILE_PATH, '')
             self.assertEqual(Target.EMAIL_HOST, 'smtp.example.com')
             self.assertEqual(Target.EMAIL_HOST_PASSWORD, 'password')
