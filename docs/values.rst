@@ -214,8 +214,8 @@ Type values
     A :class:`~Value` subclass that checks and returns boolean values. Possible
     values for environment variables are:
 
-    - ``True`` values: ``'yes'``, ``'y'``, ``'true'``, ``'1'``
-    - ``False`` values: ``'no'``, ``'n'``, ``'false'``, ``'0'``,
+    - ``True`` values: ``'yes'``, ``'Yes'``, ``'y'``, ``'Y'``, ``'true'``, ``'True'``, ``'TRUE'``, ``'1'``
+    - ``False`` values: ``'no'``, ``'No'``, ``'n'``, ``'N'``, ``'false'``, ``'False'``,  ``'FALSE'``, ``'0'``,
       ``''`` (empty string)
 
     ::

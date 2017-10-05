@@ -122,8 +122,8 @@ class MultipleMixin(object):
 
 
 class BooleanValue(Value):
-    true_values = ('yes', 'y', 'true', '1')
-    false_values = ('no', 'n', 'false', '0', '')
+    true_values = ('yes','Yes', 'y', 'Y', 'true', 'True', 'TRUE', '1')
+    false_values = ('no','No', 'n', 'N', 'false', 'False', 'FALSE', '0', '')
 
     def __init__(self, *args, **kwargs):
         super(BooleanValue, self).__init__(*args, **kwargs)
