@@ -16,7 +16,7 @@ from configurations.values import (Value, BooleanValue, IntegerValue,
                                    DatabaseURLValue, EmailURLValue,
                                    CacheURLValue, BackendsValue,
                                    CastingMixin, SearchURLValue,
-                                   setup_value)
+                                   setup_value, PositiveIntegerValue)
 
 
 @contextmanager
@@ -134,6 +134,15 @@ class ValueTests(TestCase):
         with env(DJANGO_TEST='2'):
             self.assertEqual(value.setup('TEST'), 2)
         with env(DJANGO_TEST='noninteger'):
+            self.assertRaises(ValueError, value.setup, 'TEST')
+
+    def test_positive_integer_values(self):
+        value = PositiveIntegerValue(1)
+        with env(DJANGO_TEST='2'):
+            self.assertEqual(value.setup('TEST'), 2)
+        with env(DJANGO_TEST='noninteger'):
+            self.assertRaises(ValueError, value.setup, 'TEST')
+        with env(DJANGO_TEST='-1'):
             self.assertRaises(ValueError, value.setup, 'TEST')
 
     def test_float_values(self):

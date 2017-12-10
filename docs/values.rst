@@ -230,6 +230,14 @@ Type values
 
         MYSITE_CACHE_TIMEOUT = values.IntegerValue(3600)
 
+.. class:: PositiveIntegerValue
+
+    A :class:`~Value` subclass that handles positive integer values.
+
+    ::
+
+        MYSITE_WORKER_POOL = values.PositiveIntegerValue(8)
+
 .. class:: FloatValue
 
     A :class:`~Value` subclass that handles float values.
