@@ -38,6 +38,22 @@ command line option, e.g.::
 
     python manage.py runserver --settings=mysite.settings --configuration=Prod
 
+Property settings
+-----------------
+
+Use a `property` to allow for computed settings. This pattern can also be used to postpone / lazy evaluate a value. E.g. useful when nesting a Value in a dictionary and a string is required::
+
+    class Prod(Configuration):
+        SENTRY_DSN = values.Value(None, environ_prefix=None)
+
+        @property
+        def RAVEN_CONFIG(self):
+            return {
+                'dsn': self.SENTRY_DSN,
+            }
+
+
+
 Global settings defaults
 ------------------------
 
