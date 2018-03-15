@@ -11,8 +11,10 @@ def _setup():
 
     importer.install()
 
-    import django
-    django.setup()
+    from django.apps import apps
+    if not apps.ready:
+        import django
+        django.setup()
 
 
 def load_ipython_extension(ipython):
