@@ -178,6 +178,15 @@ class IntegerValue(CastingMixin, Value):
     caster = int
 
 
+class PositiveIntegerValue(IntegerValue):
+
+    def to_python(self, value):
+        int_value = super(PositiveIntegerValue, self).to_python(value)
+        if int_value < 0:
+            raise ValueError(self.message.format(value))
+        return int_value
+
+
 class FloatValue(CastingMixin, Value):
     caster = float
 
