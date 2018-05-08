@@ -66,6 +66,7 @@ after_success:
   - coverage xml
   - coverage report -m
   - codecov --required -X gcov -X fix -X pycov -f coverage.xml --flags ${TOXENV//-/ }
+  - cat coverage.xml
 branches:
   except: templates/1.5.x templates/1.6.x
 deploy:
