@@ -65,7 +65,7 @@ after_success:
   - pip install codecov
   - coverage xml
   - coverage report -m
-  - codecov --required -X gcov -X fix -X pycov --flags ${TOXENV//-/ }
+  - codecov --required -X gcov -X fix -X pycov -f coverage.xml --flags ${TOXENV//-/ }
 branches:
   except: templates/1.5.x templates/1.6.x
 deploy:
