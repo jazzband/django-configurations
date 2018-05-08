@@ -1,4 +1,0 @@
-[run]
-source = .
-include = configurations/*,tests/*
-branch = 1
