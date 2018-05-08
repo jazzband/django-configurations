@@ -63,8 +63,9 @@ install:
 script: tox -v
 after_success:
   - pip install codecov
-  - codecov --required -X gcov --flags ${TOXENV//-/ }
+  - coverage xml
   - coverage report -m
+  - codecov --required -X gcov -X fix -X pycov --flags ${TOXENV//-/ }
 branches:
   except: templates/1.5.x templates/1.6.x
 deploy:
