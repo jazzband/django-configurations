@@ -62,11 +62,14 @@ install:
   - pip install tox
 script: tox -v
 after_success:
-  - pip install codecov
-  - coverage xml
-  - coverage report -m
-  - codecov --required -X gcov -X fix -X pycov -f coverage.xml --flags ${TOXENV//-/ }
-  - cat coverage.xml
+  - |
+    if [ "$TOXENV" = py* ]; then
+      pip install codecov
+      coverage xml
+      coverage report -m
+      codecov --required -X gcov fix pycov -f coverage.xml --flags ${TOXENV//-/ }
+      cat coverage.xml
+    fi
 branches:
   except: templates/1.5.x templates/1.6.x
 deploy:
