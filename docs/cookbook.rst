@@ -136,11 +136,8 @@ Celery's documentation`_:
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mysite.settings')
     os.environ.setdefault('DJANGO_CONFIGURATION', 'MySiteConfiguration')
 
-    # The extra check is necessary to not call django.setup() twice.
-    from configurations import importer
-    if not importer.installed:
-        import configurations
-            configurations.setup()
+    import configurations
+    configurations.setup()
 
     app = Celery('mysite')
     app.config_from_object('django.conf:settings')
