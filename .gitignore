@@ -1,4 +1,6 @@
-.coverage
+.coverage.*
+coverage.xml
+sitecustomize.py
 docs/_build
 *.egg-info
 *.egg
