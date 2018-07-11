@@ -234,6 +234,8 @@ Type values
 
     A :class:`~Value` subclass that handles positive integer values.
 
+    .. versionadded:: 2.1
+
     ::
 
         MYSITE_WORKER_POOL = values.PositiveIntegerValue(8)
