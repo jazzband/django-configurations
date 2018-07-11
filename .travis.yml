@@ -3,80 +3,81 @@ sudo: false
 cache: pip
 matrix:
   include:
-    - env: TOXENV=flake8-py27
-      python: 2.7
-    - env: TOXENV=flake8-py36
-      python: 3.6
-    - env: TOXENV=readme-py27
-      python: 2.7
-    - env: TOXENV=py27-dj18
-      python: 2.7
-    - env: TOXENV=py27-dj110
-      python: 2.7
-    - env: TOXENV=py27-dj111
-      python: 2.7
-    - env: TOXENV=py34-dj18
-      python: 3.4
-    - env: TOXENV=py34-dj110
-      python: 3.4
-    - env: TOXENV=py34-dj111
-      python: 3.4
-    - env: TOXENV=py35-dj18
-      python: 3.5
-    - env: TOXENV=py35-dj110
-      python: 3.5
-    - env: TOXENV=py35-dj111
-      python: 3.5
-    - env: TOXENV=py36-dj18
-      python: 3.6
-    - env: TOXENV=py36-dj110
-      python: 3.6
-    - env: TOXENV=py36-dj111
-      python: 3.6
-    - env: TOXENV=pypy-dj18
-      python: pypy
-    - env: TOXENV=pypy-dj110
-      python: pypy
-    - env: TOXENV=pypy-dj111
-      python: pypy
-    - env: TOXENV=py34-dj20
-      python: 3.4
-    - env: TOXENV=py34-djmaster
-      python: 3.4
-    - env: TOXENV=py35-dj20
-      python: 3.5
-    - env: TOXENV=py35-djmaster
-      python: 3.5
-    - env: TOXENV=py36-dj20
-      python: 3.6
-    - env: TOXENV=py36-djmaster
-      python: 3.6
+  - env: TOXENV=flake8-py27
+    python: 2.7
+  - env: TOXENV=flake8-py36
+    python: 3.6
+  - env: TOXENV=readme-py27
+    python: 2.7
+  - env: TOXENV=py27-dj18
+    python: 2.7
+  - env: TOXENV=py27-dj110
+    python: 2.7
+  - env: TOXENV=py27-dj111
+    python: 2.7
+  - env: TOXENV=py34-dj18
+    python: 3.4
+  - env: TOXENV=py34-dj110
+    python: 3.4
+  - env: TOXENV=py34-dj111
+    python: 3.4
+  - env: TOXENV=py35-dj18
+    python: 3.5
+  - env: TOXENV=py35-dj110
+    python: 3.5
+  - env: TOXENV=py35-dj111
+    python: 3.5
+  - env: TOXENV=py36-dj18
+    python: 3.6
+  - env: TOXENV=py36-dj110
+    python: 3.6
+  - env: TOXENV=py36-dj111
+    python: 3.6
+  - env: TOXENV=pypy-dj18
+    python: pypy
+  - env: TOXENV=pypy-dj110
+    python: pypy
+  - env: TOXENV=pypy-dj111
+    python: pypy
+  - env: TOXENV=py34-dj20
+    python: 3.4
+  - env: TOXENV=py34-djmaster
+    python: 3.4
+  - env: TOXENV=py35-dj20
+    python: 3.5
+  - env: TOXENV=py35-djmaster
+    python: 3.5
+  - env: TOXENV=py36-dj20
+    python: 3.6
+  - env: TOXENV=py36-djmaster
+    python: 3.6
   allow_failures:
-    - env: TOXENV=py34-djmaster
-      python: 3.4
-    - env: TOXENV=py35-djmaster
-      python: 3.5
-    - env: TOXENV=py36-djmaster
-      python: 3.6
+  - env: TOXENV=py34-djmaster
+    python: 3.4
+  - env: TOXENV=py35-djmaster
+    python: 3.5
+  - env: TOXENV=py36-djmaster
+    python: 3.6
 install:
-  - pip install tox
+- pip install tox
 script: tox -v
 after_success:
-  - |
-    if [ "$TOXENV" = py* ]; then
-      pip install codecov
-      coverage xml
-      coverage report -m
-      codecov --required -X gcov fix pycov -f coverage.xml --flags ${TOXENV//-/ }
-    fi
+- |
+  if [ "$TOXENV" = py* ]; then
+    pip install codecov
+    coverage xml
+    coverage report -m
+    codecov --required -X gcov fix pycov -f coverage.xml --flags ${TOXENV//-/ }
+  fi
 branches:
   except: templates/1.5.x templates/1.6.x
 deploy:
   provider: pypi
   user: jazzband
-  distributions: "sdist bdist_wheel"
+  server: https://jazzband.co/projects/django-configurations/upload
+  distributions: sdist bdist_wheel
   password:
-    secure: Oq6xiBtbip8+0U8t1WvDcUt1tX6imQeaHXvB+bqh2eU+RYntz8UWl9UOxfQEV4ghssX1zEKeOZzpYohj+oEi5b8oJo3H8pcbJIdK6rTNJEjQpDGSSjI3I1pHlflAJCDhPlGIgZYVPlY0dWK50l86hL+Y7QzLXjgsVCqlTCCtDfA=
+    secure: LuserSjUTGSsls9zrvck/FbfL+gFpNU/ywOQ/67ufEbbpGCeDBEgxDzgb0acfHNk8wlAkaPvaAejQBFtcUulhdNT/g0NsmaEAjd6HhCGM+FRJAnYFaj33Js6C+N2tX5wznL7uCBxqgtaaH0hf6ucqC8OXqwoCVGgdxAEnUlC/fY=
   on:
     tags: true
     repo: jazzband/django-configurations
