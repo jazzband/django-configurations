@@ -3,6 +3,22 @@
 Changelog
 ---------
 
+v2.1 (2018-08-15)
+^^^^^^^^^^^^^^^^^
+
+- **BACKWARD INCOMPATIBLE** Drop support of Python 3.3.
+
+- **BACKWARD INCOMPATIBLE** Drop support of Django 1.9.
+
+- Add support for Django 2.1.
+
+- Add ``PositiveIntegerValue`` configuration value.
+
+- Fix ``bool(BooleanValue)`` to behave as one would expect (e.g.
+  ``bool(BooleanValue(False))`` returns ``False``).
+
+- Miscellaneous documentation improvements and bug fixes.
+
 v2.0 (2016-07-29)
 ^^^^^^^^^^^^^^^^^
 
