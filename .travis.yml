@@ -64,7 +64,6 @@ after_success:
   if [[ "$TOXENV" = py* ]]; then
     pip install codecov
     coverage xml
-    coverage report -m
     codecov --required -X gcov fix pycov -f coverage.xml --flags ${TOXENV//-/ }
   fi
 branches:
