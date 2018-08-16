@@ -65,7 +65,7 @@ install:
 script: tox -v
 after_success:
 - |
-  if [ "$TOXENV" = py* ]; then
+  if [[ "$TOXENV" = py* ]]; then
     pip install codecov
     coverage xml
     coverage report -m
