@@ -105,3 +105,16 @@ class MainTests(TestCase):
         proc = subprocess.Popen(['django-cadmin', 'runserver', '--help'],
                                 stdout=subprocess.PIPE)
         self.assertIn('--configuration', proc.communicate()[0].decode('utf-8'))
+
+    def test_django_setup_only_called_once(self):
+        proc = subprocess.Popen(
+            [sys.executable, os.path.join(os.path.dirname(__file__),
+                                          'setup_test.py')],
+            stdout=subprocess.PIPE)
+        res = proc.communicate()
+        stdout = res[0].decode('utf-8')
+
+        self.assertIn('setup_1', stdout)
+        self.assertIn('setup_2', stdout)
+        self.assertIn('setup_done', stdout)
+        self.assertEqual(proc.returncode, 0)
