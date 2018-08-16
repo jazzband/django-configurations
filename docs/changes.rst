@@ -3,6 +3,11 @@
 Changelog
 ---------
 
+v2.2 (2018-xx-yy)
+^^^^^^^^^^^^^^^^^
+
+- **BACKWARD INCOMPATIBLE** Drop support of Django < 1.11.
+
 v2.1 (2018-08-16)
 ^^^^^^^^^^^^^^^^^
 
