@@ -57,7 +57,7 @@ install:
 script: tox -v
 after_success:
 - |
-  if [[ "${TOXENV#-coverage}" != "$TOXENV" ]]; then
+  if [[ "${TOXENV%-coverage}" != "$TOXENV" ]]; then
     pip install codecov
     coverage xml
     codecov --required -X gcov fix pycov -f coverage.xml --flags ${TOXENV//-/ }
