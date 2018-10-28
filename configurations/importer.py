@@ -136,7 +136,7 @@ class ConfigurationImporter(object):
         if fullname is not None and fullname == self.module:
             module = fullname.rsplit('.', 1)[-1]
             return ConfigurationLoader(self.name,
-                                       imp.find_module(module, path))
+                                       imp.find_module(module, path._path))
         return None
 
 
