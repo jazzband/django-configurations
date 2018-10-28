@@ -156,17 +156,53 @@ settings setup is already done.
 In fact you can easily do something unrelated to settings, like
 connecting to a database::
 
-    from configurations import Configuration
+        from configurations import Configuration
 
-    class Prod(Configuration):
+        class Prod(Configuration):
+            # ...
+
+            @classmethod
+            def post_setup(cls):
+                import mango
+                mango.connect('enterprise')
+            
+This is also good for things like `django-heroku
+<https://github.com/heroku/django-heroku>`_ and `Sentry
+<https://sentry.io/for/django/>`_. Which require some initialization
+to work, but, which you maybe don't want activated on a dev config. 
+
+Intuitively you might want to add this kind of thing like
+any other setting::
+
+    class Prod(Base):
         # ...
+
+        EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+
+        sentry_sdk.init("your dsn", integrations=[DjangoIntegration()])
+
+But this will still activate sentry even when you're running a Dev 
+configuration. What you should do, is put this in the ``post_setup``
+function. That way sentry and/or the heroku helper, will only ever
+run when Prod is the selected configuration::
+
+    class Prod(Base): 
+        # ...
+
+        EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
         @classmethod
         def post_setup(cls):
-            import mango
-            mango.connect('enterprise')
-
-
+            """
+            Heroku + Sentry initialization
+            """
+            super(Prod, cls).post_setup()
+            sentry_sdk.init(
+                dsn=os.environ.get("your dsn"), integrations=[DjangoIntegration()]
+            )
+            django_heroku.settings(locals())
+            
+          
 .. warning::
 
     You could do the same by overriding the ``__init__`` method of your
