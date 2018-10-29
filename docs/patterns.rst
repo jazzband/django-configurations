@@ -166,8 +166,7 @@ connecting to a database::
                 import mango
                 mango.connect('enterprise')
             
-This is also good for things like `django-heroku
-<https://github.com/heroku/django-heroku>`_ and `Sentry
+This is also good for things like `Sentry
 <https://sentry.io/for/django/>`_. Which require some initialization
 to work, but, which you maybe don't want activated on a dev config. 
 
@@ -183,7 +182,7 @@ any other setting::
 
 But this will still activate sentry even when you're running a Dev 
 configuration. What you should do, is put this in the ``post_setup``
-function. That way sentry and/or the heroku helper, will only ever
+function. That way sentry will only ever
 run when Prod is the selected configuration::
 
     class Prod(Base): 
@@ -194,13 +193,13 @@ run when Prod is the selected configuration::
         @classmethod
         def post_setup(cls):
             """
-            Heroku + Sentry initialization
+            Sentry initialization
             """
             super(Prod, cls).post_setup()
             sentry_sdk.init(
                 dsn=os.environ.get("your dsn"), integrations=[DjangoIntegration()]
             )
-            django_heroku.settings(locals())
+            
             
           
 .. warning::
