@@ -1,8 +1,0 @@
-django-discover-runner
-mock
-dj-database-url
-dj-email-url
-dj-search-url
-django-cache-url>=1.0.0
-six
-Sphinx>=1.4
