@@ -41,6 +41,12 @@ setup(
             'django-cadmin = configurations.management:execute_from_command_line',
         ],
     },
+    extras_require={
+        'cache': ['django-cache-url'],
+        'database': ['dj-database-url'],
+        'email': ['dj-email-url'],
+        'search': ['dj-search-url'],
+    },
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Framework :: Django',

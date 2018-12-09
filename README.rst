@@ -32,6 +32,12 @@ Install django-configurations:
 
     pip install django-configurations
 
+or, alternatively, if you want to use URL-based values:
+
+.. code-block:: console
+
+    pip install django-configurations[cache,database,email,search]
+
 Then subclass the included ``configurations.Configuration`` class in your
 project's **settings.py** or any other module you're using to store the
 settings constants, e.g.:
