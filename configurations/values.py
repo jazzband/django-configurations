@@ -52,8 +52,8 @@ class Value(object):
             instance.late_binding = kwargs.get('late_binding')
         if not instance.late_binding:
             instance.__init__(*args, **kwargs)
-            if (instance.environ and instance.environ_name) \
-                    or (not instance.environ and instance.default):
+            if ((instance.environ and instance.environ_name)
+                    or (not instance.environ and instance.default)):
                 instance = instance.setup(instance.environ_name)
         return instance
 
