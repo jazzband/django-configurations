@@ -20,6 +20,37 @@ Simply import it from ``configurations.management`` instead:
 
     call_command('dumpdata', exclude=['contenttypes', 'auth'])
 
+Read .env file
+--------------
+
+Configurations can read values for environment variables out of an ``.env``
+file, and push them into the application's process environment. Simply set
+the ``DOTENV`` setting to the appropriate file name:
+
+.. code-block:: python
+
+   # mysite/settings.py
+
+   from os.path import dirname, join
+   from configurations import Configuration
+
+   BASE_DIR = dirname(dirname(__file__))
+
+   class Dev(Configuration):
+       DOTENV = join(BASE_PATH, '.env')
+
+       SECRET_KEY = values.SecretValue()
+
+An ``.env`` file is an ``.ini``-style file. It must contain a list of
+``KEY=value`` pairs, just like Shell environment variables:
+
+.. code-block:: ini
+
+   # .env
+
+   DJANGO_DEBUG=False
+   DJANGO_SECRET_KEY=1q2w3e4r5t6z7u8i9o0(%&)$§"!pqaycz
+
 Envdir
 ------
 
