@@ -1,27 +1,34 @@
-django-configurations
-=====================
+django-configurations |latest-version|
+======================================
 
-.. image:: https://travis-ci.org/jazzband/django-configurations.svg?branch=master
-   :alt: Build Status
-   :target: https://travis-ci.org/jazzband/django-configurations
-
-.. image:: https://jazzband.co/static/img/badge.svg
-   :alt: Jazzband
-   :target: https://jazzband.co/
-
-.. image:: https://codecov.io/github/jazzband/django-configurations/coverage.svg?branch=master
-   :alt: Codecov
-   :target: https://codecov.io/github/jazzband/django-configurations?branch=master
+|build-status| |codecov| |docs| |python-support| |jazzband|
 
 django-configurations eases Django project configuration by relying
 on the composability of Python classes. It extends the notion of
 Django's module based settings loading with well established
 object oriented programming patterns.
 
-Check out the `documentation`__ for more complete examples.
+Check out the `documentation`_ for more complete examples.
 
-.. __: https://django-configurations.readthedocs.io/en/latest/
-
+.. |latest-version| image:: https://img.shields.io/pypi/v/django-configurations.svg
+   :alt: Latest version on PyPI
+   :target: https://pypi.python.org/pypi/django-configurations
+.. |build-status| image:: https://img.shields.io/travis/jazzband/django-configurations/master.svg
+   :alt: Build status
+   :target: https://travis-ci.org/jazzband/django-configurations
+.. |codecov| image:: https://codecov.io/github/jazzband/django-configurations/coverage.svg?branch=master
+   :alt: Codecov
+   :target: https://codecov.io/github/jazzband/django-configurations?branch=master
+.. |docs| image:: https://readthedocs.org/projects/django-configurations/badge/?version=latest
+   :alt: Documentation status
+   :target: https://django-configurations.readthedocs.io/en/latest/?badge=latest
+.. |python-support| image:: https://img.shields.io/pypi/pyversions/django-configurations.svg
+   :target: https://pypi.python.org/pypi/django-configurations
+   :alt: Python versions
+.. |jazzband| image:: https://jazzband.co/static/img/badge.svg
+   :alt: Jazzband
+   :target: https://jazzband.co/
+.. _documentation: https://django-configurations.readthedocs.io/en/latest/
 
 Quickstart
 ----------
@@ -67,7 +74,9 @@ import path as usual, e.g. in bash:
 
 *Alternatively* supply the ``--configuration`` option when using Django
 management commands along the lines of Django's default ``--settings``
-command line option, e.g.::
+command line option, e.g.
+
+.. code-block:: console
 
     python manage.py runserver --settings=mysite.settings --configuration=Dev
 
