@@ -19,9 +19,9 @@ Check out the `documentation`_ for more complete examples.
 .. |codecov| image:: https://codecov.io/github/jazzband/django-configurations/coverage.svg?branch=master
    :alt: Codecov
    :target: https://codecov.io/github/jazzband/django-configurations?branch=master
-.. |docs| image:: https://readthedocs.org/projects/django-configurations/badge/?version=latest
+.. |docs| image:: https://img.shields.io/readthedocs/django-configurations/latest.svg
    :alt: Documentation status
-   :target: https://django-configurations.readthedocs.io/en/latest/?badge=latest
+   :target: https://readthedocs.org/projects/django-configurations/
 .. |python-support| image:: https://img.shields.io/pypi/pyversions/django-configurations.svg
    :target: https://pypi.python.org/pypi/django-configurations
    :alt: Python versions
