@@ -10,7 +10,9 @@ Server specific settings
 ------------------------
 
 For example, imagine you have a base setting class in your **settings.py**
-file::
+file:
+
+.. code-block:: python
 
     from configurations import Configuration
 
@@ -24,9 +26,11 @@ file::
     class Prod(Base):
         TIME_ZONE = 'America/New_York'
 
-You can now set the ``DJANGO_CONFIGURATION`` environment variable to one
-of the class names you've defined, e.g. on your production server it
-should be ``Prod``. In bash that would be::
+You can now set the ``DJANGO_CONFIGURATION`` environment variable to
+one of the class names you've defined, e.g. on your production server
+it should be ``Prod``. In Bash that would be:
+
+.. code-block:: console
 
     export DJANGO_SETTINGS_MODULE=mysite.settings
     export DJANGO_CONFIGURATION=Prod
@@ -34,32 +38,38 @@ should be ``Prod``. In bash that would be::
 
 Alternatively you can use the ``--configuration`` option when using Django
 management commands along the lines of Django's default ``--settings``
-command line option, e.g.::
+command line option, e.g.
+
+.. code-block:: console
 
     python manage.py runserver --settings=mysite.settings --configuration=Prod
 
 Property settings
 -----------------
 
-Use a `property` to allow for computed settings. This pattern can also be used to postpone / lazy evaluate a value. E.g. useful when nesting a Value in a dictionary and a string is required::
+Use a ``property`` to allow for computed settings. This pattern can
+also be used to postpone / lazy evaluate a value. E.g., useful when
+nesting a Value in a dictionary and a string is required:
+
+.. code-block:: python
 
     class Prod(Configuration):
-        SENTRY_DSN = values.Value(None, environ_prefix=None)
+        SOME_VALUE = values.Value(None, environ_prefix=None)
 
         @property
-        def RAVEN_CONFIG(self):
+        def SOME_CONFIG(self):
             return {
-                'dsn': self.SENTRY_DSN,
+                'some_key': self.SOME_VALUE,
             }
-
-
 
 Global settings defaults
 ------------------------
 
-Every ``configurations.Configuration`` subclass will automatically contain
-Django's global settings as class attributes, so you can refer to them when
-setting other values, e.g.::
+Every ``configurations.Configuration`` subclass will automatically
+contain Django's global settings as class attributes, so you can refer
+to them when setting other values, e.g.
+
+.. code-block:: python
 
     from configurations import Configuration
 
@@ -77,13 +87,17 @@ Configuration mixins
 
 You might want to apply some configuration values for each and every
 project you're working on without having to repeat yourself. Just define
-a few mixin you re-use multiple times::
+a few mixin you re-use multiple times:
+
+.. code-block:: python
 
     class FullPageCaching(object):
         USE_ETAGS = True
 
 Then import that mixin class in your site settings module and use it with
-a ``Configuration`` class::
+a ``Configuration`` class:
+
+.. code-block:: python
 
     from configurations import Configuration
 
@@ -97,8 +111,10 @@ Pristine methods
 .. versionadded:: 0.3
 
 In case one of your settings itself need to be a callable, you need to
-tell that django-configurations by using the ``pristinemethod`` decorator,
-e.g.::
+tell that django-configurations by using the ``pristinemethod``
+decorator, e.g.
+
+.. code-block:: python
 
     from configurations import Configuration, pristinemethod
 
@@ -108,12 +124,17 @@ e.g.::
         def ACCESS_FUNCTION(user):
             return user.is_staff
 
-Lambdas work, too::
+Lambdas work, too:
+
+.. code-block:: python
 
     from configurations import Configuration, pristinemethod
 
     class Prod(Configuration):
         ACCESS_FUNCTION = pristinemethod(lambda user: user.is_staff)
+
+
+.. _setup-methods:
 
 Setup methods
 -------------
@@ -123,7 +144,9 @@ Setup methods
 If there is something required to be set up before, during or after the
 settings loading happens, please override the ``pre_setup``, ``setup`` or
 ``post_setup`` class methods like so (don't forget to apply the Python
-``@classmethod`` decorator)::
+``@classmethod`` decorator):
+
+.. code-block:: python
 
     import logging
     from configurations import Configuration
@@ -154,60 +177,26 @@ Of course that won't work for ``post_setup`` since that's when the
 settings setup is already done.
 
 In fact you can easily do something unrelated to settings, like
-connecting to a database::
+connecting to a database:
 
-        from configurations import Configuration
+.. code-block:: python
 
-        class Prod(Configuration):
-            # ...
+    from configurations import Configuration
 
-            @classmethod
-            def post_setup(cls):
-                import mango
-                mango.connect('enterprise')
-            
-This is also good for things like `Sentry
-<https://sentry.io/for/django/>`_. Which require some initialization
-to work, but, which you maybe don't want activated on a dev config. 
-
-Intuitively you might want to add this kind of thing like
-any other setting::
-
-    class Prod(Base):
+    class Prod(Configuration):
         # ...
-
-        EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-
-        sentry_sdk.init("your dsn", integrations=[DjangoIntegration()])
-
-But this will still activate sentry even when you're running a Dev 
-configuration. What you should do, is put this in the ``post_setup``
-function. That way sentry will only ever
-run when Prod is the selected configuration::
-
-    class Prod(Base): 
-        # ...
-
-        EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
         @classmethod
         def post_setup(cls):
-            """
-            Sentry initialization
-            """
-            super(Prod, cls).post_setup()
-            sentry_sdk.init(
-                dsn=os.environ.get("your dsn"), integrations=[DjangoIntegration()]
-            )
-            
-            
-          
+            import mango
+            mango.connect('enterprise')
+
 .. warning::
 
     You could do the same by overriding the ``__init__`` method of your
     settings class but this may cause hard to debug errors because
-    at the time the ``__init__`` method is called (during Django startup)
-    the Django setting system isn't fully loaded yet.
+    at the time the ``__init__`` method is called (during Django
+    startup) the Django setting system isn't fully loaded yet.
 
     So anything you do in ``__init__`` that may require
     ``django.conf.settings`` or Django models there is a good chance it
@@ -216,15 +205,16 @@ run when Prod is the selected configuration::
 .. versionchanged:: 0.4
 
     A new ``setup`` method was added to be able to handle the new
-    :class:`~configurations.values.Value` classes and allow an in-between
-    modification of the configuration values.
-    
+    :class:`~configurations.values.Value` classes and allow an
+    in-between modification of the configuration values.
 
 Standalone scripts
 ------------------
 
-If you want to run scripts outside of your project you need to add these lines
-on top of your file::
+If you want to run scripts outside of your project you need to add
+these lines on top of your file:
+
+.. code-block:: python
 
     import configurations
     configurations.setup()
