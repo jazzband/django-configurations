@@ -8,8 +8,8 @@ Calling a Django management command
 
 If you want to call a Django management command programmatically, say
 from a script outside of your usual Django code, you can use the
-equivalent of Django's :func:`~django.core.management.call_command` function
-with django-configurations, too.
+equivalent of Django's :func:`~django.core.management.call_command`
+function with django-configurations, too.
 
 Simply import it from ``configurations.management`` instead:
 
@@ -31,17 +31,17 @@ the ``DOTENV`` setting to the appropriate file name:
 
    # mysite/settings.py
 
-   from os.path import dirname, join
+   import os.path
    from configurations import Configuration
 
-   BASE_DIR = dirname(dirname(__file__))
+   BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
    class Dev(Configuration):
-       DOTENV = join(BASE_PATH, '.env')
+       DOTENV = os.path.join(BASE_DIR, '.env')
 
        SECRET_KEY = values.SecretValue()
 
-An ``.env`` file is an ``.ini``-style file. It must contain a list of
+A ``.env`` file is a ``.ini``-style file. It must contain a list of
 ``KEY=value`` pairs, just like Shell environment variables:
 
 .. code-block:: ini
@@ -92,6 +92,42 @@ See envdir_ documentation for more information, e.g. using envdir_ from
 Python instead of from the command line.
 
 .. _envdir: https://pypi.python.org/pypi/envdir
+
+Sentry (dynamic setup calls)
+----------------------------
+
+For all tools that require an initialization call you should use
+:ref:`Setup methods<setup-methods>` (unless you want them activated
+for all environments).
+
+Intuitively you might want to add the required setup call like any
+other setting:
+
+.. code-block:: python
+
+    class Prod(Base):
+        # ...
+
+        sentry_sdk.init("your dsn", integrations=[DjangoIntegration()])
+
+But this will activate, in this case, Sentry even when you're running a
+Dev configuration. What you should do instead, is put that code in the
+``post_setup`` function. That way Sentry will only ever run when Prod
+is the selected configuration:
+
+.. code-block:: python
+
+    class Prod(Base):
+        # ...
+
+        @classmethod
+        def post_setup(cls):
+            """Sentry initialization"""
+            super(Prod, cls).post_setup()
+            sentry_sdk.init(
+                dsn=os.environ.get("your dsn"), integrations=[DjangoIntegration()]
+            )
+
 
 .. _project-templates:
 
@@ -224,6 +260,7 @@ It also works with django-extensions's shell_plus_ management command.
 .. _IPython: http://ipython.org/
 .. _`manage your IPython profile`: http://ipython.org/ipython-doc/dev/config/overview.html#configuration-file-location
 .. _shell_plus: https://django-extensions.readthedocs.io/en/latest/shell_plus.html
+
 
 FastCGI
 -------
