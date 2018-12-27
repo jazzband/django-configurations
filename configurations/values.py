@@ -176,9 +176,16 @@ class CastingMixin(object):
 
 class IntegerValue(CastingMixin, Value):
     caster = int
+    message = 'Cannot interpret integer value {0!r}'
+
+    def __init__(self, *args, **kwargs):
+        super(IntegerValue, self).__init__(*args, **kwargs)
+        if self.default is not None:
+            self.default = self.to_python(str(self.default))
 
 
 class PositiveIntegerValue(IntegerValue):
+    message = 'Cannot interpret positive integer value {0!r}'
 
     def to_python(self, value):
         int_value = super(PositiveIntegerValue, self).to_python(value)
@@ -189,11 +196,23 @@ class PositiveIntegerValue(IntegerValue):
 
 class FloatValue(CastingMixin, Value):
     caster = float
+    message = 'Cannot interpret float value {0!r}'
+
+    def __init__(self, *args, **kwargs):
+        super(FloatValue, self).__init__(*args, **kwargs)
+        if self.default is not None:
+            self.default = self.to_python(str(self.default))
 
 
 class DecimalValue(CastingMixin, Value):
     caster = decimal.Decimal
     exception = decimal.InvalidOperation
+    message = 'Cannot interpret decimal value {0!r}'
+
+    def __init__(self, *args, **kwargs):
+        super(DecimalValue, self).__init__(*args, **kwargs)
+        if self.default is not None:
+            self.default = self.to_python(str(self.default))
 
 
 class SequenceValue(Value):
