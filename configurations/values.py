@@ -176,9 +176,17 @@ class CastingMixin(object):
 
 class IntegerValue(CastingMixin, Value):
     caster = int
+    message = 'Cannot interpret integer value {0!r}'
+    late_binding = True
+
+    def __init__(self, *args, **kwargs):
+        super(IntegerValue, self).__init__(*args, **kwargs)
+        if self.default is not None:
+            self.default = self.to_python(str(self.default))
 
 
 class PositiveIntegerValue(IntegerValue):
+    message = 'Cannot interpret positive integer value {0!r}'
 
     def to_python(self, value):
         int_value = super(PositiveIntegerValue, self).to_python(value)

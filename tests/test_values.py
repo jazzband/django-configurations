@@ -129,12 +129,31 @@ class ValueTests(TestCase):
         self.assertFalse(value1.setup('TEST1'))
         self.assertFalse(value2.setup('TEST2'))
 
+    def test_direct_integer_value(self):
+        error_values = ('1.5', float(1.5))
+        values = ('1', 1)
+        for each in error_values:
+            self.assertRaises(ValueError, IntegerValue, each)
+        for each in values:
+            self.assertEqual(IntegerValue(each), int(each))
+
+    def test_direct_empty_value(self):
+        self.assertEqual(IntegerValue(), None)
+
     def test_integer_values(self):
         value = IntegerValue(1)
         with env(DJANGO_TEST='2'):
             self.assertEqual(value.setup('TEST'), 2)
         with env(DJANGO_TEST='noninteger'):
             self.assertRaises(ValueError, value.setup, 'TEST')
+
+    def test_direct_positive_integer_value(self):
+        error_values = ('-1.5', float(-1.5), '1.5', float(1.5))
+        values = ('1', 1)
+        for each in error_values:
+            self.assertRaises(ValueError, PositiveIntegerValue, each)
+        for each in values:
+            self.assertEqual(PositiveIntegerValue(each), int(each))
 
     def test_positive_integer_values(self):
         value = PositiveIntegerValue(1)
