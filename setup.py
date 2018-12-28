@@ -36,6 +36,7 @@ setup(
     author='Jannis Leidel',
     author_email='jannis@leidel.info',
     packages=['configurations'],
+    install_requires=['django'],
     entry_points={
         'console_scripts': [
             'django-cadmin = configurations.management:execute_from_command_line',
