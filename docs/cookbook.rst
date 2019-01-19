@@ -32,7 +32,7 @@ the ``DOTENV`` setting to the appropriate file name:
    # mysite/settings.py
 
    import os.path
-   from configurations import Configuration
+   from configurations import Configuration, values
 
    BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
@@ -40,6 +40,8 @@ the ``DOTENV`` setting to the appropriate file name:
        DOTENV = os.path.join(BASE_DIR, '.env')
 
        SECRET_KEY = values.SecretValue()
+       API_KEY = os.environ.get('API_KEY')
+       
 
 A ``.env`` file is a ``.ini``-style file. It must contain a list of
 ``KEY=value`` pairs, just like Shell environment variables:
@@ -50,6 +52,7 @@ A ``.env`` file is a ``.ini``-style file. It must contain a list of
 
    DJANGO_DEBUG=False
    DJANGO_SECRET_KEY=1q2w3e4r5t6z7u8i9o0(%&)$§"!pqaycz
+   API_KEY=1234
 
 Envdir
 ------
