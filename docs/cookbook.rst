@@ -51,7 +51,7 @@ A ``.env`` file is a ``.ini``-style file. It must contain a list of
    # .env
 
    DJANGO_DEBUG=False
-   DJANGO_SECRET_KEY=1q2w3e4r5t6z7u8i9o0(%&)$§"!pqaycz
+   DJANGO_SECRET_KEY=1q2w3e4r5t6z7u8i9o0(%&)$§!pqaycz
    API_KEY=1234
 
 Envdir
