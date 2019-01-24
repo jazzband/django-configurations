@@ -40,7 +40,9 @@ the ``DOTENV`` setting to the appropriate file name:
        DOTENV = os.path.join(BASE_DIR, '.env')
 
        SECRET_KEY = values.SecretValue()
-       API_KEY = os.environ.get('API_KEY')
+       API_KEY1 = values.Value()
+       API_KEY2 = values.Value()
+       API_KEY3 = values.Value('91011')
        
 
 A ``.env`` file is a ``.ini``-style file. It must contain a list of
@@ -52,7 +54,8 @@ A ``.env`` file is a ``.ini``-style file. It must contain a list of
 
    DJANGO_DEBUG=False
    DJANGO_SECRET_KEY=1q2w3e4r5t6z7u8i9o0(%&)$§!pqaycz
-   API_KEY=1234
+   API_KEY1=1234
+   API_KEY2=5678
 
 Envdir
 ------
