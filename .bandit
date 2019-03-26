@@ -1,2 +1,2 @@
 [bandit]
-exclude: tests
+exclude: tests,.tox
