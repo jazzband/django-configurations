@@ -3,10 +3,6 @@ sudo: false
 cache: pip
 matrix:
   include:
-  - env: TOXENV=flake8-py27
-    python: 2.7
-  - env: TOXENV=flake8-py36
-    python: 3.6
   - env: TOXENV=readme-py27
     python: 2.7
   - env: TOXENV=py27-dj111-coverage
