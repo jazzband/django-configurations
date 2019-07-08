@@ -1,12 +1,10 @@
 import inspect
 import sys
 
+from importlib import import_module
+
 from django.core.exceptions import ImproperlyConfigured
 from django.utils import six
-try:
-    from importlib import import_module
-except ImportError:
-    from django.utils.importlib import import_module
 
 
 def isuppercase(name):

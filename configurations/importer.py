@@ -124,8 +124,8 @@ class ConfigurationImporter(object):
                 def stylize(text):
                     return colorize(text, fg='green')
 
-            if (self.argv[1] == 'runserver' and
-                    os.environ.get('RUN_MAIN') == 'true'):
+            if (self.argv[1] == 'runserver'
+                    and os.environ.get('RUN_MAIN') == 'true'):
 
                 message = ("django-configurations version {0}, using "
                            "configuration '{1}'".format(__version__,

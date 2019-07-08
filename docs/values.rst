@@ -561,7 +561,8 @@ Other values
     A :class:`~Value` subclass that doesn't allow setting a default value
     during instantiation and force-enables the use of an environment variable
     to reduce the risk of accidentally storing secret values in the settings
-    file.
+    file. This usually resolves to ``DJANGO_SECRET_KEY`` unless you have
+    customized the environment variable names.
 
     :raises: ``ValueError`` when given a default value
 
