@@ -41,6 +41,7 @@ setup(
             'django-cadmin = configurations.management:execute_from_command_line',
         ],
     },
+    install_requires=['six'],
     extras_require={
         'cache': ['django-cache-url'],
         'database': ['dj-database-url'],
@@ -53,7 +54,6 @@ setup(
             'dj-database-url',
             'dj-email-url',
             'dj-search-url',
-            'six',
             'Sphinx>=1.4',
         ],
     },

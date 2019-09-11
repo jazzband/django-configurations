@@ -2,11 +2,11 @@ import ast
 import copy
 import decimal
 import os
+import six
 import sys
 
 from django.core import validators
 from django.core.exceptions import ValidationError, ImproperlyConfigured
-from django.utils import six
 
 from .utils import import_by_path, getargspec
 
