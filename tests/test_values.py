@@ -374,7 +374,6 @@ class ValueTests(TestCase):
         with env(DATABASE_URL='sqlite://'):
             self.assertEqual(value.setup('DATABASE_URL'), {
                 'default': {
-                    'CONN_MAX_AGE': 0,
                     'ENGINE': 'django.db.backends.sqlite3',
                     'HOST': '',
                     'NAME': ':memory:',
@@ -411,18 +410,15 @@ class ValueTests(TestCase):
                 'EMAIL_HOST_PASSWORD': 'password',
                 'EMAIL_HOST_USER': 'user@domain.com',
                 'EMAIL_PORT': 587,
-                'EMAIL_USE_SSL': False,
                 'EMAIL_USE_TLS': True})
-        with env(EMAIL_URL='console://'):
+        with env(EMAIL_URL='consolemail://'):
             self.assertEqual(value.setup('EMAIL_URL'), {
                 'EMAIL_BACKEND': 'django.core.mail.backends.console.EmailBackend',  # noqa: E501
                 'EMAIL_FILE_PATH': '',
                 'EMAIL_HOST': None,
                 'EMAIL_HOST_PASSWORD': None,
                 'EMAIL_HOST_USER': None,
-                'EMAIL_PORT': None,
-                'EMAIL_USE_SSL': False,
-                'EMAIL_USE_TLS': False})
+                'EMAIL_PORT': None})
         with env(EMAIL_URL='smtps://user@domain.com:password@smtp.example.com:wrong'):  # noqa: E501
             self.assertRaises(ValueError, value.setup, 'TEST')
 
@@ -430,7 +426,7 @@ class ValueTests(TestCase):
         cache_setting = {
             'default': {
                 'BACKEND': 'django_redis.cache.RedisCache',
-                'LOCATION': 'redis://host:6379/1',
+                'LOCATION': 'redis://user@host:6379/1',
             }
         }
         cache_url = 'redis://user@host:6379/1'
@@ -443,13 +439,7 @@ class ValueTests(TestCase):
         with env(CACHE_URL='wrong://user@host:port/1'):
             with self.assertRaises(Exception) as cm:
                 value.setup('TEST')
-            self.assertEqual(cm.exception.args[0], 'Unknown backend: "wrong"')
-        with env(CACHE_URL='redis://user@host:port/1'):
-            with self.assertRaises(ValueError) as cm:
-                value.setup('TEST')
-            self.assertEqual(
-                cm.exception.args[0],
-                "Cannot interpret cache URL value 'redis://user@host:port/1'")
+            self.assertEqual(cm.exception.args[0], 'wrong')
 
     def test_search_url_value(self):
         value = SearchURLValue()
@@ -503,7 +493,6 @@ class ValueTests(TestCase):
                 'EMAIL_HOST_PASSWORD': 'password',
                 'EMAIL_HOST_USER': 'user@domain.com',
                 'EMAIL_PORT': 587,
-                'EMAIL_USE_SSL': False,
                 'EMAIL_USE_TLS': True
             })
             self.assertEqual(

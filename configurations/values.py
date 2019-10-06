@@ -7,6 +7,7 @@ import sys
 from django.core import validators
 from django.core.exceptions import ValidationError, ImproperlyConfigured
 from django.utils import six
+from environ import Env
 
 from .utils import import_by_path, getargspec
 
@@ -414,7 +415,7 @@ class SecretValue(Value):
 
 
 class EmailURLValue(CastingMixin, MultipleMixin, Value):
-    caster = 'dj_email_url.parse'
+    caster = Env.email_url_config
     message = 'Cannot interpret email URL value {0!r}'
     late_binding = True
 
@@ -449,21 +450,21 @@ class DictBackendMixin(Value):
 
 
 class DatabaseURLValue(DictBackendMixin, CastingMixin, Value):
-    caster = 'dj_database_url.parse'
+    caster = Env.db_url_config
     message = 'Cannot interpret database URL value {0!r}'
     environ_name = 'DATABASE_URL'
     late_binding = True
 
 
 class CacheURLValue(DictBackendMixin, CastingMixin, Value):
-    caster = 'django_cache_url.parse'
+    caster = Env.cache_url_config
     message = 'Cannot interpret cache URL value {0!r}'
     environ_name = 'CACHE_URL'
     late_binding = True
 
 
 class SearchURLValue(DictBackendMixin, CastingMixin, Value):
-    caster = 'dj_search_url.parse'
+    caster = Env.search_url_config
     message = 'Cannot interpret Search URL value {0!r}'
     environ_name = 'SEARCH_URL'
     late_binding = True
