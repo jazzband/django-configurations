@@ -411,7 +411,7 @@ class ValueTests(TestCase):
                 'EMAIL_HOST_USER': 'user@domain.com',
                 'EMAIL_PORT': 587,
                 'EMAIL_USE_TLS': True})
-        with env(EMAIL_URL='consolemail://'):
+        with env(EMAIL_URL='console://'):
             self.assertEqual(value.setup('EMAIL_URL'), {
                 'EMAIL_BACKEND': 'django.core.mail.backends.console.EmailBackend',  # noqa: E501
                 'EMAIL_FILE_PATH': '',
@@ -419,6 +419,10 @@ class ValueTests(TestCase):
                 'EMAIL_HOST_PASSWORD': None,
                 'EMAIL_HOST_USER': None,
                 'EMAIL_PORT': None})
+        with env(EMAIL_URL='console://'):
+            with patch('warnings.warn') as warn:
+                value.setup('EMAIL_URL')
+            warn.asset_called_once()
         with env(EMAIL_URL='smtps://user@domain.com:password@smtp.example.com:wrong'):  # noqa: E501
             self.assertRaises(ValueError, value.setup, 'TEST')
 

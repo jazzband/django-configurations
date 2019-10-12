@@ -3,6 +3,7 @@ import copy
 import decimal
 import os
 import sys
+import warnings
 
 from django.core import validators
 from django.core.exceptions import ValidationError, ImproperlyConfigured
@@ -414,8 +415,24 @@ class SecretValue(Value):
         return value
 
 
+def env_email_url_config(cls, url, backend=None):
+    """
+    Convert schema to consolemail in order to be compatible with old
+    console:// schema.
+
+    This could be removed and set EmailURLValue.caster to Env.email_url_config
+    directly after the deprecation is removed.
+    """
+    if url.startswith('console://'):
+        warnings.warn('Email schema console:// is deprecated. Please use '
+                      'consolemail:// in new code.',
+                      DeprecationWarning)
+        url = url.replace('console://', 'consolemail://')
+    return Env.email_url_config(url, backend=backend)
+
+
 class EmailURLValue(CastingMixin, MultipleMixin, Value):
-    caster = Env.email_url_config
+    caster = env_email_url_config
     message = 'Cannot interpret email URL value {0!r}'
     late_binding = True
 
