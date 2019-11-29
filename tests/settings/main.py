@@ -31,7 +31,6 @@ class Test(Configuration):
         'django.contrib.contenttypes',
         'django.contrib.sites',
         'django.contrib.auth',
-        'django.contrib.admin',
         'tests',
     ]
 
