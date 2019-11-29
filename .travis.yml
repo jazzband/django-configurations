@@ -13,7 +13,6 @@ matrix:
     python: 3.6
   - env: TOXENV=pypy-dj111-coverage
     python: pypy
-    python: 3.5
   - env: TOXENV=py35-djmaster-coverage
     python: 3.5
   - env: TOXENV=py36-dj20-coverage
@@ -24,23 +23,18 @@ matrix:
     python: 3.6
   - env: TOXENV=py37-dj20-coverage
     python: 3.7
-    dist: xenial
     sudo: true
   - env: TOXENV=py37-dj21-coverage
     python: 3.7
-    dist: xenial
     sudo: true
   - env: TOXENV=py37-djmaster-coverage
     python: 3.7
-    dist: xenial
     sudo: true
   - env: TOXENV=py38-dj22-coverage
     python: 3.8
-    dist: xenial
     sudo: true
   - env: TOXENV=py38-dj30-coverage
     python: 3.8
-    dist: xenial
     sudo: true
   allow_failures:
   - env: TOXENV=py35-djmaster-coverage
