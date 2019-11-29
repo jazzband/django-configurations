@@ -3,10 +3,20 @@
 Changelog
 ---------
 
-v2.2 (2018-xx-yy)
+v2.2 (2019-xx-yy)
 ^^^^^^^^^^^^^^^^^
 
-- **BACKWARD INCOMPATIBLE** Drop support of Django < 1.11.
+- **BACKWARD INCOMPATIBLE** Drop support for Python 3.4.
+
+- **BACKWARD INCOMPATIBLE** Drop support for Django < 1.11.
+
+- Add support for Django 3.0.
+
+- Add support for Python Python 3.8.
+
+- Add support for Python PyPy 3.
+
+- Replace ``django.utils.six`` with ``six`` to support Django >= 3.
 
 v2.1 (2018-08-16)
 ^^^^^^^^^^^^^^^^^
