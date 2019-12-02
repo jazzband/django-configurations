@@ -3,7 +3,7 @@
 Changelog
 ---------
 
-v2.2 (2019-xx-yy)
+v2.2 (2019-12-02)
 ^^^^^^^^^^^^^^^^^
 
 - **BACKWARD INCOMPATIBLE** Drop support for Python 3.4.
@@ -12,9 +12,9 @@ v2.2 (2019-xx-yy)
 
 - Add support for Django 3.0.
 
-- Add support for Python Python 3.8.
+- Add support for Python 3.8.
 
-- Add support for Python PyPy 3.
+- Add support for PyPy 3.
 
 - Replace ``django.utils.six`` with ``six`` to support Django >= 3.
 
