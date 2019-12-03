@@ -18,7 +18,8 @@ v2.2 (2019-12-03)
 
 - Replace ``django.utils.six`` with ``six`` to support Django >= 3.
 
-- Start using tox-travis for simplified test harness management.
+- Start using tox-travis and setuptools-scm for simplified test harness
+  and release management.
 
 v2.1 (2018-08-16)
 ^^^^^^^^^^^^^^^^^
