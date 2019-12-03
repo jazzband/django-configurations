@@ -33,6 +33,7 @@ setup(
     license='BSD',
     description="A helper for organizing Django settings.",
     long_description=read('README.rst'),
+    long_description_content_type='text/x-rst',
     author='Jannis Leidel',
     author_email='jannis@leidel.info',
     packages=['configurations'],
