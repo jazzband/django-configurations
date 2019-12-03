@@ -128,8 +128,8 @@ class ConfigurationImporter(object):
                     and os.environ.get('RUN_MAIN') == 'true'):
 
                 message = ("django-configurations version {0}, using "
-                           "configuration '{1}'".format(__version__,
-                                                        self.name))
+                           "configuration {1}".format(__version__ or "",
+                                                      self.name))
                 self.logger.debug(stylize(message))
 
     def find_module(self, fullname, path=None):

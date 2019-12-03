@@ -10,3 +10,4 @@ htmlcov/
 *.pyc
 dist/
 tests/docs/_build/
+.eggs/

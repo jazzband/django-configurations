@@ -1,87 +1,37 @@
 language: python
-sudo: false
+dist: xenial
 cache: pip
-matrix:
-  include:
-  - env: TOXENV=readme-py27
-    python: 2.7
-  - env: TOXENV=py27-dj111-coverage
-    python: 2.7
-  - env: TOXENV=py35-dj111-coverage
-    python: 3.5
-  - env: TOXENV=py36-dj111-coverage
-    python: 3.6
-  - env: TOXENV=pypy-dj111-coverage
-    python: pypy
-  - env: TOXENV=pypy3-dj111-coverage
-    python: pypy3
-  - env: TOXENV=py35-dj20-coverage
-    python: 3.5
-  - env: TOXENV=py36-dj20-coverage
-    python: 3.6
-  - env: TOXENV=py37-dj20-coverage
-    python: 3.7
-  - env: TOXENV=pypy3-dj20-coverage
-    python: pypy3
-  - env: TOXENV=py36-dj21-coverage
-    python: 3.6
-  - env: TOXENV=py37-dj21-coverage
-    python: 3.7
-  - env: TOXENV=pypy3-dj21-coverage
-    python: pypy3
-  - env: TOXENV=py36-dj22-coverage
-    python: 3.6
-  - env: TOXENV=py37-dj22-coverage
-    python: 3.7
-  - env: TOXENV=py38-dj22-coverage
-    python: 3.8
-  - env: TOXENV=pypy3-dj22-coverage
-    python: pypy3
-  - env: TOXENV=py36-dj30-coverage
-    python: 3.6
-  - env: TOXENV=py37-dj30-coverage
-    python: 3.7
-  - env: TOXENV=py38-dj30-coverage
-    python: 3.8
-  - env: TOXENV=pypy3-dj30-coverage
-    python: pypy3
-  - env: TOXENV=py36-djmaster-coverage
-    python: 3.6
-  - env: TOXENV=py37-djmaster-coverage
-    python: 3.7
-  - env: TOXENV=py38-djmaster-coverage
-    python: 3.8
-  - env: TOXENV=pypy3-djmaster-coverage
-    python: pypy3
-  allow_failures:
-  - env: TOXENV=py36-djmaster-coverage
-    python: 3.6
-  - env: TOXENV=py37-djmaster-coverage
-    python: 3.7
-  - env: TOXENV=py38-djmaster-coverage
-    python: 3.8
-  - env: TOXENV=pypy3-djmaster-coverage
-    python: pypy3
-install:
-- pip install tox
+python:
+- '2.7'
+- '3.5'
+- '3.6'
+- '3.7'
+- '3.8'
+- 'pypy3'
+install: travis_retry pip install tox-travis codecov
 script: tox -v
-after_success:
-- |
-  if [[ "${TOXENV%-coverage}" != "$TOXENV" ]]; then
-    pip install codecov
-    coverage xml
-    codecov --required -X gcov fix pycov -f coverage.xml --flags ${TOXENV//-/ }
-  fi
+after_success: codecov --required -X gcov fix pycov -f coverage.xml --flags ${TOXENV//-/ }
 branches:
   except: templates/1.5.x templates/1.6.x
-deploy:
-  provider: pypi
-  user: jazzband
-  server: https://jazzband.co/projects/django-configurations/upload
-  distributions: sdist bdist_wheel
-  password:
-    secure: LuserSjUTGSsls9zrvck/FbfL+gFpNU/ywOQ/67ufEbbpGCeDBEgxDzgb0acfHNk8wlAkaPvaAejQBFtcUulhdNT/g0NsmaEAjd6HhCGM+FRJAnYFaj33Js6C+N2tX5wznL7uCBxqgtaaH0hf6ucqC8OXqwoCVGgdxAEnUlC/fY=
-  on:
-    tags: true
-    repo: jazzband/django-configurations
-    condition: "$TOXENV = py36-dj111"
+stages:
+- test
+- name: deploy
+  if: repo = jazzband/django-configurations AND tag IS present
+jobs:
+  include:
+  - stage: test
+  - stage: deploy
+    install: skip
+    script: skip
+    python: 3.7
+    env: skip
+    deploy:
+      provider: pypi
+      user: jazzband
+      server: https://jazzband.co/projects/django-configurations/upload
+      distributions: sdist bdist_wheel
+      password:
+        secure: LuserSjUTGSsls9zrvck/FbfL+gFpNU/ywOQ/67ufEbbpGCeDBEgxDzgb0acfHNk8wlAkaPvaAejQBFtcUulhdNT/g0NsmaEAjd6HhCGM+FRJAnYFaj33Js6C+N2tX5wznL7uCBxqgtaaH0hf6ucqC8OXqwoCVGgdxAEnUlC/fY=
+      on:
+        tags: true
+        repo: jazzband/django-configurations

@@ -3,7 +3,7 @@
 Changelog
 ---------
 
-v2.2 (2019-12-02)
+v2.2 (2019-12-03)
 ^^^^^^^^^^^^^^^^^
 
 - **BACKWARD INCOMPATIBLE** Drop support for Python 3.4.
@@ -17,6 +17,9 @@ v2.2 (2019-12-02)
 - Add support for PyPy 3.
 
 - Replace ``django.utils.six`` with ``six`` to support Django >= 3.
+
+- Start using tox-travis and setuptools-scm for simplified test harness
+  and release management.
 
 v2.1 (2018-08-16)
 ^^^^^^^^^^^^^^^^^

@@ -1,7 +1,9 @@
 include README.rst
+include CONTRIBUTING.md
 include AUTHORS
 include .travis.yml
-include tasks.py
+include tox.ini
 recursive-include tests *
 recursive-include docs *
+recursive-include test_project *
 include LICENSE

@@ -1,17 +1,7 @@
 from __future__ import print_function
-import ast
 import os
 import codecs
 from setuptools import setup
-
-
-class VersionFinder(ast.NodeVisitor):
-    def __init__(self):
-        self.version = None
-
-    def visit_Assign(self, node):
-        if node.targets[0].id == '__version__':
-            self.version = node.value.s
 
 
 def read(*parts):
@@ -20,19 +10,15 @@ def read(*parts):
         return fp.read()
 
 
-def find_version(*parts):
-    finder = VersionFinder()
-    finder.visit(ast.parse(read(*parts)))
-    return finder.version
-
-
 setup(
     name="django-configurations",
-    version=find_version("configurations", "__init__.py"),
+    use_scm_version={"version_scheme": "post-release", "local_scheme": "dirty-tag"},
+    setup_requires=["setuptools_scm"],
     url='https://django-configurations.readthedocs.io/',
     license='BSD',
     description="A helper for organizing Django settings.",
     long_description=read('README.rst'),
+    long_description_content_type='text/x-rst',
     author='Jannis Leidel',
     author_email='jannis@leidel.info',
     packages=['configurations'],
