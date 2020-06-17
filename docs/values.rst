@@ -353,6 +353,10 @@ Type values
         DEPARTMENTS = values.DictValue({
             'it': ['Mike', 'Joe'],
         })
+        
+    Override using environment variables like this::
+    
+        DJANGO_DEPARTMENTS={'it':['Mike','Joe'],'hr':['Emma','Olivia']}
 
 Validator values
 ^^^^^^^^^^^^^^^^
