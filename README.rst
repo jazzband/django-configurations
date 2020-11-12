@@ -120,5 +120,16 @@ The same applies to your **wsgi.py** file, e.g.:
 Here we don't use the default ``django.core.wsgi.get_wsgi_application``
 function but instead ``configurations.wsgi.get_wsgi_application``.
 
+If you're using configurations with `django-stubs <https://github.com/typeddjango/django-stubs>`_,
+you need to add the django_stubs_compat plugin to your mypy configuration
+in your setup.cfg or pyproject.toml:
+
+.. code-block:: ini
+
+    [mypy]
+    plugins = configurations.django_stubs_compat, mypy_django_plugin.main
+
+Note that the django_stubs_compat plugin is added before the mypy_django_plugin.
+
 That's it! You can now use your project with ``manage.py`` and your favorite
 WSGI enabled server.
