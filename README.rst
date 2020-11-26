@@ -13,9 +13,9 @@ Check out the `documentation`_ for more complete examples.
 .. |latest-version| image:: https://img.shields.io/pypi/v/django-configurations.svg
    :alt: Latest version on PyPI
    :target: https://pypi.python.org/pypi/django-configurations
-.. |build-status| image:: https://img.shields.io/travis/jazzband/django-configurations/master.svg
-   :alt: Build status
-   :target: https://travis-ci.org/jazzband/django-configurations
+.. |build-status| image:: https://github.com/jazzband/django-configurations/workflows/Test/badge.svg
+   :target: https://github.com/jazzband/django-configurations/actions
+   :alt: GitHub Actions
 .. |codecov| image:: https://codecov.io/github/jazzband/django-configurations/coverage.svg?branch=master
    :alt: Codecov
    :target: https://codecov.io/github/jazzband/django-configurations?branch=master

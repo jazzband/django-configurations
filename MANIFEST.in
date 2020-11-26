@@ -1,7 +1,6 @@
 include README.rst
 include CONTRIBUTING.md
 include AUTHORS
-include .travis.yml
 include tox.ini
 recursive-include tests *
 recursive-include docs *
