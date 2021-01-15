@@ -106,6 +106,22 @@ class MainTests(TestCase):
                                 stdout=subprocess.PIPE)
         self.assertIn('--configuration', proc.communicate()[0].decode('utf-8'))
 
+    def test_configuration_argument_in_runypy_cli(self):
+        """
+        Verify that's configuration option has been added to managements
+        commands when using the -m entry point
+        """
+        proc = subprocess.Popen(
+            [sys.executable, '-m', 'configurations', 'test', '--help'],
+            stdout=subprocess.PIPE,
+        )
+        self.assertIn('--configuration', proc.communicate()[0].decode('utf-8'))
+        proc = subprocess.Popen(
+            [sys.executable, '-m', 'configurations', 'runserver', '--help'],
+            stdout=subprocess.PIPE,
+        )
+        self.assertIn('--configuration', proc.communicate()[0].decode('utf-8'))
+
     def test_django_setup_only_called_once(self):
         proc = subprocess.Popen(
             [sys.executable, os.path.join(os.path.dirname(__file__),
