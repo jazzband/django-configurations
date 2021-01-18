@@ -14,6 +14,9 @@ unreleased
 
 - Add suppport for Python 3.9.
 
+- Deprecate ``utils.import_by_path`` in favor of
+  ``django.utils.module_loading.import_string``.
+
 v2.2 (2019-12-03)
 ^^^^^^^^^^^^^^^^^
 

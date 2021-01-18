@@ -6,8 +6,9 @@ import sys
 
 from django.core import validators
 from django.core.exceptions import ValidationError, ImproperlyConfigured
+from django.utils.module_loading import import_string
 
-from .utils import import_by_path, getargspec
+from .utils import getargspec
 
 
 def setup_value(target, name, value):
@@ -148,7 +149,11 @@ class CastingMixin:
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if isinstance(self.caster, str):
-            self._caster = import_by_path(self.caster)
+            try:
+                self._caster = import_string(self.caster)
+            except ImportError as err:
+                msg = "Could not import {!r}".format(self.caster)
+                raise ImproperlyConfigured(msg) from err
         elif callable(self.caster):
             self._caster = self.caster
         else:
@@ -289,8 +294,8 @@ class BackendsValue(ListValue):
 
     def converter(self, value):
         try:
-            import_by_path(value)
-        except ImproperlyConfigured as err:
+            import_string(value)
+        except ImportError as err:
             raise ValueError(err).with_traceback(sys.exc_info()[2])
         return value
 
@@ -337,7 +342,11 @@ class ValidationMixin:
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if isinstance(self.validator, str):
-            self._validator = import_by_path(self.validator)
+            try:
+                self._validator = import_string(self.validator)
+            except ImportError as err:
+                msg = "Could not import {!r}".format(self.validator)
+                raise ImproperlyConfigured(msg) from err
         elif callable(self.validator):
             self._validator = self.validator
         else:
