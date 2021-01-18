@@ -12,6 +12,8 @@ unreleased
 
 - Add support for Django 3.1 and 3.2.
 
+- Add suppport for Python 3.9.
+
 v2.2 (2019-12-03)
 ^^^^^^^^^^^^^^^^^
 
