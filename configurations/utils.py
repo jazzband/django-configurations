@@ -1,5 +1,6 @@
 import inspect
 import sys
+import warnings
 
 from functools import partial
 from importlib import import_module
@@ -23,6 +24,8 @@ def import_by_path(dotted_path, error_prefix=''):
 
     Backported from Django 1.6.
     """
+    warnings.warn("Function utils.import_by_path is deprecated in favor of "
+                  "django.utils.module_loading.import_string.", DeprecationWarning)
     try:
         module_path, class_name = dotted_path.rsplit('.', 1)
     except ValueError:
