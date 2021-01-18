@@ -1,4 +1,3 @@
-from __future__ import print_function
 import os
 import codecs
 from setuptools import setup
@@ -27,7 +26,7 @@ setup(
             'django-cadmin = configurations.management:execute_from_command_line',
         ],
     },
-    install_requires=['six'],
+    install_requires=[],
     extras_require={
         'cache': ['django-cache-url'],
         'database': ['dj-database-url'],

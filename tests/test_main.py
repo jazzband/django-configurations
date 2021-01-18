@@ -5,7 +5,7 @@ import sys
 from django.test import TestCase
 from django.core.exceptions import ImproperlyConfigured
 
-from mock import patch
+from unittest.mock import patch
 
 from configurations.importer import ConfigurationImporter
 

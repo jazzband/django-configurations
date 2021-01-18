@@ -1,6 +1,5 @@
 import os
 import re
-import six
 
 from django.conf import global_settings
 from django.core.exceptions import ImproperlyConfigured
@@ -37,14 +36,14 @@ class ConfigurationBase(type):
         # https://github.com/django/django/commit/226ebb17290b604ef29e82fb5c1fbac3594ac163#diff-ec2bed07bb264cb95a80f08d71a47c06R163-R170
         if "PASSWORD_RESET_TIMEOUT_DAYS" in attrs and "PASSWORD_RESET_TIMEOUT" in attrs:
             attrs.pop("PASSWORD_RESET_TIMEOUT_DAYS")
-        return super(ConfigurationBase, cls).__new__(cls, name, bases, attrs)
+        return super().__new__(cls, name, bases, attrs)
 
     def __repr__(self):
         return "<Configuration '{0}.{1}'>".format(self.__module__,
                                                   self.__name__)
 
 
-class Configuration(six.with_metaclass(ConfigurationBase)):
+class Configuration(metaclass=ConfigurationBase):
     """
     The base configuration class to inherit from.
 
@@ -91,10 +90,10 @@ class Configuration(six.with_metaclass(ConfigurationBase)):
         try:
             with open(dotenv, 'r') as f:
                 content = f.read()
-        except IOError as e:
+        except OSError as e:
             raise ImproperlyConfigured("Couldn't read .env file "
                                        "with the path {}. Error: "
-                                       "{}".format(dotenv, e))
+                                       "{}".format(dotenv, e)) from e
         else:
             for line in content.splitlines():
                 m1 = re.match(r'\A([A-Za-z_0-9]+)=(.*)\Z', line)
