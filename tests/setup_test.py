@@ -1,9 +1,6 @@
 """Used by tests to ensure logging is kept when calling setup() twice."""
 
-try:
-    from unittest import mock
-except ImportError:
-    from mock import mock
+from unittest import mock
 
 import configurations
 

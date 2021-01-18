@@ -51,7 +51,7 @@ def install(check_options=False):
         installed = True
 
 
-class ConfigurationImporter(object):
+class ConfigurationImporter:
     modvar = SETTINGS_ENVIRONMENT_VARIABLE
     namevar = CONFIGURATION_ENVIRONMENT_VARIABLE
     error_msg = ("Configuration cannot be imported, "
@@ -134,7 +134,7 @@ class ConfigurationImporter(object):
         return None
 
 
-class ConfigurationLoader(object):
+class ConfigurationLoader:
 
     def __init__(self, name, location):
         self.name = name

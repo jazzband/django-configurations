@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # django-configurations documentation build configuration file, created by
 # sphinx-quickstart on Sat Jul 21 15:03:23 2012.
 #
@@ -43,8 +41,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'django-configurations'
-copyright = u'2012-2014, Jannis Leidel and other contributors'
+project = 'django-configurations'
+copyright = '2012-2014, Jannis Leidel and other contributors'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -186,8 +184,8 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'django-configurations.tex', u'django-configurations Documentation',
-   u'Jannis Leidel', 'manual'),
+  ('index', 'django-configurations.tex', 'django-configurations Documentation',
+   'Jannis Leidel', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -216,8 +214,8 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'django-configurations', u'django-configurations Documentation',
-     [u'Jannis Leidel'], 1)
+    ('index', 'django-configurations', 'django-configurations Documentation',
+     ['Jannis Leidel'], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -230,8 +228,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'django-configurations', u'django-configurations Documentation',
-   u'Jannis Leidel', 'django-configurations', 'One line description of project.',
+  ('index', 'django-configurations', 'django-configurations Documentation',
+   'Jannis Leidel', 'django-configurations', 'One line description of project.',
    'Miscellaneous'),
 ]
 
@@ -248,10 +246,10 @@ texinfo_documents = [
 # -- Options for Epub output ---------------------------------------------------
 
 # Bibliographic Dublin Core info.
-epub_title = u'django-configurations'
-epub_author = u'Jannis Leidel'
-epub_publisher = u'Jannis Leidel'
-epub_copyright = u'2012, Jannis Leidel'
+epub_title = 'django-configurations'
+epub_author = 'Jannis Leidel'
+epub_publisher = 'Jannis Leidel'
+epub_copyright = '2012, Jannis Leidel'
 
 # The language of the text. It defaults to the language option
 # or en if the language is not set.

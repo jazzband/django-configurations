@@ -91,7 +91,7 @@ a few mixin you re-use multiple times:
 
 .. code-block:: python
 
-    class FullPageCaching(object):
+    class FullPageCaching:
         USE_ETAGS = True
 
 Then import that mixin class in your site settings module and use it with
