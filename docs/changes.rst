@@ -6,7 +6,7 @@ Changelog
 unreleased
 ^^^^^^^^^^
 
-- **BACKWARD INCOMPATIBLE** Drop support for Python 2.7.
+- **BACKWARD INCOMPATIBLE** Drop support for Python 2.7 and 3.5.
 
 - **BACKWARD INCOMPATIBLE** Drop support for Django < 2.2.
 
