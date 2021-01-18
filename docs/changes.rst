@@ -10,6 +10,8 @@ unreleased
 
 - **BACKWARD INCOMPATIBLE** Drop support for Django < 2.2.
 
+- Add support for Django 3.1 and 3.2.
+
 v2.2 (2019-12-03)
 ^^^^^^^^^^^^^^^^^
 
