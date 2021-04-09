@@ -36,6 +36,9 @@ class ConfigurationBase(type):
         # https://github.com/django/django/commit/226ebb17290b604ef29e82fb5c1fbac3594ac163#diff-ec2bed07bb264cb95a80f08d71a47c06R163-R170
         if "PASSWORD_RESET_TIMEOUT_DAYS" in attrs and "PASSWORD_RESET_TIMEOUT" in attrs:
             attrs.pop("PASSWORD_RESET_TIMEOUT_DAYS")
+        # https://docs.djangoproject.com/en/3.1/releases/3.1/#default-hashing-algorithm-settings
+        if "DEFAULT_HASHING_ALGORITHM" in attrs:
+            attrs.pop("DEFAULT_HASHING_ALGORITHM")
         return super().__new__(cls, name, bases, attrs)
 
     def __repr__(self):
