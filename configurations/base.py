@@ -32,13 +32,22 @@ class ConfigurationBase(type):
             for base in bases[::-1]:
                 settings_vars.update(uppercase_attributes(base))
         attrs = dict(settings_vars, **attrs)
-        # Fix ImproperlyConfigured issue introduced in Django
+
+        deprecated_settings = {
+            # DEFAULT_HASHING_ALGORITHM is always deprecated, as it's a
+            # transitional setting
+            # https://docs.djangoproject.com/en/3.1/releases/3.1/#default-hashing-algorithm-settings
+            "DEFAULT_HASHING_ALGORITHM",
+        }
+        # PASSWORD_RESET_TIMEOUT_DAYS is deprecated in favor of
+        # PASSWORD_RESET_TIMEOUT in Django 3.1
         # https://github.com/django/django/commit/226ebb17290b604ef29e82fb5c1fbac3594ac163#diff-ec2bed07bb264cb95a80f08d71a47c06R163-R170
-        if "PASSWORD_RESET_TIMEOUT_DAYS" in attrs and "PASSWORD_RESET_TIMEOUT" in attrs:
-            attrs.pop("PASSWORD_RESET_TIMEOUT_DAYS")
-        # https://docs.djangoproject.com/en/3.1/releases/3.1/#default-hashing-algorithm-settings
-        if "DEFAULT_HASHING_ALGORITHM" in attrs:
-            attrs.pop("DEFAULT_HASHING_ALGORITHM")
+        if "PASSWORD_RESET_TIMEOUT" in attrs:
+            deprecated_settings.add("PASSWORD_RESET_TIMEOUT_DAYS")
+        for deprecated_setting in deprecated_settings:
+            if deprecated_setting in attrs:
+                del attrs[deprecated_setting]
+
         return super().__new__(cls, name, bases, attrs)
 
     def __repr__(self):
