@@ -38,6 +38,10 @@ class ConfigurationBase(type):
             # transitional setting
             # https://docs.djangoproject.com/en/3.1/releases/3.1/#default-hashing-algorithm-settings
             "DEFAULT_HASHING_ALGORITHM",
+            # DEFAULT_CONTENT_TYPE and FILE_CHARSET are deprecated in
+            # Django 2.2 and are removed in Django 3.0
+            "DEFAULT_CONTENT_TYPE",
+            "FILE_CHARSET",
             # When DEFAULT_AUTO_FIELD is not explicitly set, Django's emits a
             # system check warning models.W042. This warning should not be
             # suppressed, as downstream users are expected to make a decision.
