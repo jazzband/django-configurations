@@ -547,7 +547,7 @@ Other values
 
     ::
 
-        MIDDLEWARE_CLASSES = values.BackendsValue([
+        MIDDLEWARE = values.BackendsValue([
             'django.middleware.common.CommonMiddleware',
             'django.contrib.sessions.middleware.SessionMiddleware',
             'django.middleware.csrf.CsrfViewMiddleware',
