@@ -1,6 +1,7 @@
 import decimal
 import os
 from contextlib import contextmanager
+from pathlib import Path
 
 from django.test import TestCase
 from django.core.exceptions import ImproperlyConfigured
@@ -335,22 +336,32 @@ class ValueTests(TestCase):
     def test_path_values_with_check(self):
         value = PathValue()
         with env(DJANGO_TEST='/'):
-            self.assertEqual(value.setup('TEST'), '/')
+            self.assertEqual(value.setup('TEST'), Path('/'))
         with env(DJANGO_TEST='~/'):
-            self.assertEqual(value.setup('TEST'), os.path.expanduser('~'))
+            self.assertEqual(value.setup('TEST'), Path.home())
         with env(DJANGO_TEST='/does/not/exist'):
             self.assertRaises(ValueError, value.setup, 'TEST')
 
     def test_path_values_no_check(self):
         value = PathValue(check_exists=False)
         with env(DJANGO_TEST='/'):
-            self.assertEqual(value.setup('TEST'), '/')
+            self.assertEqual(value.setup('TEST'), Path('/'))
         with env(DJANGO_TEST='~/spam/eggs'):
-            self.assertEqual(value.setup('TEST'),
-                             os.path.join(os.path.expanduser('~'),
-                                          'spam', 'eggs'))
+            self.assertEqual(
+                value.setup('TEST'),
+                Path.home() / 'spam' / 'eggs'
+            )
         with env(DJANGO_TEST='/does/not/exist'):
-            self.assertEqual(value.setup('TEST'), '/does/not/exist')
+            self.assertEqual(value.setup('TEST'), Path('/does/not/exist'))
+
+    def test_path_values_without_pathlib(self):
+        value = PathValue(use_pathlib=False)
+        with env(DJANGO_TEST='/'):
+            self.assertEqual(value.setup('TEST'), '/')
+        with env(DJANGO_TEST='~/'):
+            self.assertEqual(value.setup('TEST'), os.path.expanduser('~'))
+        with env(DJANGO_TEST='/does/not/exist'):
+            self.assertRaises(ValueError, value.setup, 'TEST')
 
     def test_secret_value(self):
         # no default allowed, only environment values are

@@ -3,6 +3,7 @@ import copy
 import decimal
 import os
 import sys
+from pathlib import Path
 
 from django.core import validators
 from django.core.exceptions import ValidationError, ImproperlyConfigured
@@ -391,14 +392,15 @@ class RegexValue(ValidationMixin, Value):
 class PathValue(Value):
     def __init__(self, *args, **kwargs):
         self.check_exists = kwargs.pop('check_exists', True)
+        self.use_pathlib = kwargs.pop('use_pathlib', True)
         super().__init__(*args, **kwargs)
 
     def setup(self, name):
         value = super().setup(name)
-        value = os.path.expanduser(value)
-        if self.check_exists and not os.path.exists(value):
+        value = Path(value).expanduser()
+        if self.check_exists and not value.exists():
             raise ValueError('Path {0!r} does  not exist.'.format(value))
-        return os.path.abspath(value)
+        return value.absolute() if self.use_pathlib else str(value)
 
 
 class SecretValue(Value):
