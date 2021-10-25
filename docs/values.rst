@@ -46,7 +46,6 @@ value:
 
     class Dev(Configuration):
         DEBUG = values.BooleanValue(True)
-        TEMPLATE_DEBUG = values.BooleanValue(DEBUG)
 
 See the list of :ref:`built-in value classes<built-ins>` for more information.
 
@@ -162,7 +161,7 @@ the prefix.
    :param environ: toggle for environment use
    :param environ_name: name of environment variable to look for
    :param environ_prefix: prefix to use when looking for environment variable
-   :param environ_required: wheter or not the value is required to be set as an environment variable
+   :param environ_required: whether or not the value is required to be set as an environment variable
    :type environ: bool
    :type environ_name: capitalized string or None
    :type environ_prefix: capitalized string
@@ -353,6 +352,10 @@ Type values
         DEPARTMENTS = values.DictValue({
             'it': ['Mike', 'Joe'],
         })
+        
+    Override using environment variables like this::
+    
+        DJANGO_DEPARTMENTS={'it':['Mike','Joe'],'hr':['Emma','Olivia']}
 
 Validator values
 ^^^^^^^^^^^^^^^^
@@ -547,7 +550,7 @@ Other values
 
     ::
 
-        MIDDLEWARE_CLASSES = values.BackendsValue([
+        MIDDLEWARE = values.BackendsValue([
             'django.middleware.common.CommonMiddleware',
             'django.contrib.sessions.middleware.SessionMiddleware',
             'django.middleware.csrf.CsrfViewMiddleware',

@@ -5,7 +5,7 @@ from contextlib import contextmanager
 from django.test import TestCase
 from django.core.exceptions import ImproperlyConfigured
 
-from mock import patch
+from unittest.mock import patch
 
 from configurations.values import (Value, BooleanValue, IntegerValue,
                                    FloatValue, DecimalValue, ListValue,
@@ -270,9 +270,9 @@ class ValueTests(TestCase):
     def test_set_values_default(self):
         value = SetValue()
         with env(DJANGO_TEST='2,2'):
-            self.assertEqual(value.setup('TEST'), set(['2', '2']))
+            self.assertEqual(value.setup('TEST'), {'2', '2'})
         with env(DJANGO_TEST='2, 2 ,'):
-            self.assertEqual(value.setup('TEST'), set(['2', '2']))
+            self.assertEqual(value.setup('TEST'), {'2', '2'})
         with env(DJANGO_TEST=''):
             self.assertEqual(value.setup('TEST'), set())
 
@@ -485,12 +485,12 @@ class ValueTests(TestCase):
         self.assertEqual(value.value, set())
 
         value = SetValue([1, 2])
-        self.assertEqual(value.default, set([1, 2]))
-        self.assertEqual(value.value, set([1, 2]))
+        self.assertEqual(value.default, {1, 2})
+        self.assertEqual(value.value, {1, 2})
 
     def test_setup_value(self):
 
-        class Target(object):
+        class Target:
             pass
 
         value = EmailURLValue()

@@ -1,4 +1,3 @@
-from __future__ import print_function
 import os
 import codecs
 from setuptools import setup
@@ -27,7 +26,10 @@ setup(
             'django-cadmin = configurations.management:execute_from_command_line',
         ],
     },
-    install_requires=['six'],
+    install_requires=[
+        'django>=2.2',
+        'setuptools',
+    ],
     extras_require={
         'cache': ['django-cache-url'],
         'database': ['dj-database-url'],
@@ -45,20 +47,18 @@ setup(
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Framework :: Django',
-        'Framework :: Django :: 1.11',
-        'Framework :: Django :: 2.0',
-        'Framework :: Django :: 2.1',
         'Framework :: Django :: 2.2',
         'Framework :: Django :: 3.0',
+        'Framework :: Django :: 3.1',
+        'Framework :: Django :: 3.2',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: BSD License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: Implementation :: PyPy',
         'Topic :: Utilities',
     ],

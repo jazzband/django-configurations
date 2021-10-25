@@ -5,7 +5,6 @@ class Base(Configuration):
     # Django settings for test_project project.
 
     DEBUG = values.BooleanValue(True, environ=True)
-    TEMPLATE_DEBUG = DEBUG
 
     ADMINS = (
         # ('Your Name', 'your_email@example.com'),
@@ -95,7 +94,7 @@ class Base(Configuration):
         'django.template.loaders.app_directories.Loader',
     )
 
-    MIDDLEWARE_CLASSES = (
+    MIDDLEWARE = (
         'django.middleware.common.CommonMiddleware',
         'django.contrib.sessions.middleware.SessionMiddleware',
         'django.middleware.csrf.CsrfViewMiddleware',

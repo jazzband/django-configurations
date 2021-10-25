@@ -51,7 +51,7 @@ def install(check_options=False):
         installed = True
 
 
-class ConfigurationImporter(object):
+class ConfigurationImporter:
     modvar = SETTINGS_ENVIRONMENT_VARIABLE
     namevar = CONFIGURATION_ENVIRONMENT_VARIABLE
     error_msg = ("Configuration cannot be imported, "
@@ -82,16 +82,10 @@ class ConfigurationImporter(object):
         return os.environ.get(self.namevar)
 
     def check_options(self):
-        try:
-            parser = base.CommandParser(
-                usage="%(prog)s subcommand [options] [args]",
-                add_help=False)
-        except TypeError:
-            # Django before 2.1 used a `cmd` argument.
-            parser = base.CommandParser(
-                None,
-                usage="%(prog)s subcommand [options] [args]",
-                add_help=False)
+        parser = base.CommandParser(
+            usage="%(prog)s subcommand [options] [args]",
+            add_help=False,
+        )
         parser.add_argument('--settings')
         parser.add_argument('--pythonpath')
         parser.add_argument(CONFIGURATION_ARGUMENT,
@@ -140,7 +134,7 @@ class ConfigurationImporter(object):
         return None
 
 
-class ConfigurationLoader(object):
+class ConfigurationLoader:
 
     def __init__(self, name, location):
         self.name = name

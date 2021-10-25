@@ -2,13 +2,13 @@ import ast
 import copy
 import decimal
 import os
-import six
 import sys
 
 from django.core import validators
 from django.core.exceptions import ValidationError, ImproperlyConfigured
+from django.utils.module_loading import import_string
 
-from .utils import import_by_path, getargspec
+from .utils import getargspec
 
 
 def setup_value(target, name, value):
@@ -20,7 +20,7 @@ def setup_value(target, name, value):
             setattr(target, multiple_name, multiple_value)
 
 
-class Value(object):
+class Value:
     """
     A single settings value that is able to interpret env variables
     and implements a simple validation scheme.
@@ -117,7 +117,7 @@ class Value(object):
         return value
 
 
-class MultipleMixin(object):
+class MultipleMixin:
     multiple = True
 
 
@@ -126,7 +126,7 @@ class BooleanValue(Value):
     false_values = ('no', 'n', 'false', '0', '')
 
     def __init__(self, *args, **kwargs):
-        super(BooleanValue, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         if self.default not in (True, False):
             raise ValueError('Default value {0!r} is not a '
                              'boolean value'.format(self.default))
@@ -142,14 +142,18 @@ class BooleanValue(Value):
                              'boolean value {0!r}'.format(value))
 
 
-class CastingMixin(object):
+class CastingMixin:
     exception = (TypeError, ValueError)
     message = 'Cannot interpret value {0!r}'
 
     def __init__(self, *args, **kwargs):
-        super(CastingMixin, self).__init__(*args, **kwargs)
-        if isinstance(self.caster, six.string_types):
-            self._caster = import_by_path(self.caster)
+        super().__init__(*args, **kwargs)
+        if isinstance(self.caster, str):
+            try:
+                self._caster = import_string(self.caster)
+            except ImportError as err:
+                msg = "Could not import {!r}".format(self.caster)
+                raise ImproperlyConfigured(msg) from err
         elif callable(self.caster):
             self._caster = self.caster
         else:
@@ -158,9 +162,7 @@ class CastingMixin(object):
             raise ValueError(error)
         try:
             arg_names = getargspec(self._caster)[0]
-            self._params = dict((name, kwargs[name])
-                                for name in arg_names
-                                if name in kwargs)
+            self._params = {name: kwargs[name] for name in arg_names if name in kwargs}
         except TypeError:
             self._params = {}
 
@@ -181,7 +183,7 @@ class IntegerValue(CastingMixin, Value):
 class PositiveIntegerValue(IntegerValue):
 
     def to_python(self, value):
-        int_value = super(PositiveIntegerValue, self).to_python(value)
+        int_value = super().to_python(value)
         if int_value < 0:
             raise ValueError(self.message.format(value))
         return int_value
@@ -213,7 +215,7 @@ class SequenceValue(Value):
         converter = kwargs.pop('converter', None)
         if converter is not None:
             self.converter = converter
-        super(SequenceValue, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         # make sure the default is the correct sequence type
         if self.default is None:
             self.default = self.sequence_type()
@@ -257,7 +259,7 @@ class SingleNestedSequenceValue(SequenceValue):
 
     def __init__(self, *args, **kwargs):
         self.seq_separator = kwargs.pop('seq_separator', ';')
-        super(SingleNestedSequenceValue, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def _convert(self, items):
         # This could receive either a bare or nested sequence
@@ -266,8 +268,7 @@ class SingleNestedSequenceValue(SequenceValue):
                 super(SingleNestedSequenceValue, self)._convert(i) for i in items
             ]
             return self.sequence_type(converted_sequences)
-        return self.sequence_type(
-            super(SingleNestedSequenceValue, self)._convert(items))
+        return self.sequence_type(super()._convert(items))
 
     def to_python(self, value):
         split_value = [
@@ -293,9 +294,9 @@ class BackendsValue(ListValue):
 
     def converter(self, value):
         try:
-            import_by_path(value)
-        except ImproperlyConfigured as err:
-            six.reraise(ValueError, ValueError(err), sys.exc_info()[2])
+            import_string(value)
+        except ImportError as err:
+            raise ValueError(err).with_traceback(sys.exc_info()[2])
         return value
 
 
@@ -303,28 +304,28 @@ class SetValue(ListValue):
     message = 'Cannot interpret set item {0!r} in set {1!r}'
 
     def __init__(self, *args, **kwargs):
-        super(SetValue, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         if self.default is None:
             self.default = set()
         else:
             self.default = set(self.default)
 
     def to_python(self, value):
-        return set(super(SetValue, self).to_python(value))
+        return set(super().to_python(value))
 
 
 class DictValue(Value):
     message = 'Cannot interpret dict value {0!r}'
 
     def __init__(self, *args, **kwargs):
-        super(DictValue, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         if self.default is None:
             self.default = {}
         else:
             self.default = dict(self.default)
 
     def to_python(self, value):
-        value = super(DictValue, self).to_python(value)
+        value = super().to_python(value)
         if not value:
             return {}
         try:
@@ -336,12 +337,16 @@ class DictValue(Value):
         return evaled_value
 
 
-class ValidationMixin(object):
+class ValidationMixin:
 
     def __init__(self, *args, **kwargs):
-        super(ValidationMixin, self).__init__(*args, **kwargs)
-        if isinstance(self.validator, six.string_types):
-            self._validator = import_by_path(self.validator)
+        super().__init__(*args, **kwargs)
+        if isinstance(self.validator, str):
+            try:
+                self._validator = import_string(self.validator)
+            except ImportError as err:
+                msg = "Could not import {!r}".format(self.validator)
+                raise ImproperlyConfigured(msg) from err
         elif callable(self.validator):
             self._validator = self.validator
         else:
@@ -380,19 +385,19 @@ class RegexValue(ValidationMixin, Value):
     def __init__(self, *args, **kwargs):
         regex = kwargs.pop('regex', None)
         self.validator = validators.RegexValidator(regex=regex)
-        super(RegexValue, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
 
 class PathValue(Value):
     def __init__(self, *args, **kwargs):
         self.check_exists = kwargs.pop('check_exists', True)
-        super(PathValue, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def setup(self, name):
-        value = super(PathValue, self).setup(name)
+        value = super().setup(name)
         value = os.path.expanduser(value)
         if self.check_exists and not os.path.exists(value):
-            raise ValueError('Path {0!r} does  not exist.'.format(value))
+            raise ValueError('Path {0!r} does not exist.'.format(value))
         return os.path.abspath(value)
 
 
@@ -401,13 +406,13 @@ class SecretValue(Value):
     def __init__(self, *args, **kwargs):
         kwargs['environ'] = True
         kwargs['environ_required'] = True
-        super(SecretValue, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         if self.default is not None:
             raise ValueError('Secret values are only allowed to '
                              'be set as environment variables')
 
     def setup(self, name):
-        value = super(SecretValue, self).setup(name)
+        value = super().setup(name)
         if not value:
             raise ValueError('Secret value {0!r} is not set'.format(name))
         return value
@@ -422,7 +427,7 @@ class EmailURLValue(CastingMixin, MultipleMixin, Value):
         kwargs.setdefault('environ', True)
         kwargs.setdefault('environ_prefix', None)
         kwargs.setdefault('environ_name', 'EMAIL_URL')
-        super(EmailURLValue, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         if self.default is None:
             self.default = {}
         else:
@@ -437,14 +442,14 @@ class DictBackendMixin(Value):
         kwargs.setdefault('environ', True)
         kwargs.setdefault('environ_prefix', None)
         kwargs.setdefault('environ_name', self.environ_name)
-        super(DictBackendMixin, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         if self.default is None:
             self.default = {}
         else:
             self.default = self.to_python(self.default)
 
     def to_python(self, value):
-        value = super(DictBackendMixin, self).to_python(value)
+        value = super().to_python(value)
         return {self.alias: value}
 
 

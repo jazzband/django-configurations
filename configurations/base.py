@@ -1,6 +1,5 @@
 import os
 import re
-import six
 
 from django.conf import global_settings
 from django.core.exceptions import ImproperlyConfigured
@@ -33,18 +32,39 @@ class ConfigurationBase(type):
             for base in bases[::-1]:
                 settings_vars.update(uppercase_attributes(base))
         attrs = dict(settings_vars, **attrs)
-        # Fix ImproperlyConfigured issue introduced in Django
+
+        deprecated_settings = {
+            # DEFAULT_HASHING_ALGORITHM is always deprecated, as it's a
+            # transitional setting
+            # https://docs.djangoproject.com/en/3.1/releases/3.1/#default-hashing-algorithm-settings
+            "DEFAULT_HASHING_ALGORITHM",
+            # DEFAULT_CONTENT_TYPE and FILE_CHARSET are deprecated in
+            # Django 2.2 and are removed in Django 3.0
+            "DEFAULT_CONTENT_TYPE",
+            "FILE_CHARSET",
+            # When DEFAULT_AUTO_FIELD is not explicitly set, Django's emits a
+            # system check warning models.W042. This warning should not be
+            # suppressed, as downstream users are expected to make a decision.
+            # https://docs.djangoproject.com/en/3.2/releases/3.2/#customizing-type-of-auto-created-primary-keys
+            "DEFAULT_AUTO_FIELD",
+        }
+        # PASSWORD_RESET_TIMEOUT_DAYS is deprecated in favor of
+        # PASSWORD_RESET_TIMEOUT in Django 3.1
         # https://github.com/django/django/commit/226ebb17290b604ef29e82fb5c1fbac3594ac163#diff-ec2bed07bb264cb95a80f08d71a47c06R163-R170
-        if "PASSWORD_RESET_TIMEOUT_DAYS" in attrs and "PASSWORD_RESET_TIMEOUT" in attrs:
-            attrs.pop("PASSWORD_RESET_TIMEOUT_DAYS")
-        return super(ConfigurationBase, cls).__new__(cls, name, bases, attrs)
+        if "PASSWORD_RESET_TIMEOUT" in attrs:
+            deprecated_settings.add("PASSWORD_RESET_TIMEOUT_DAYS")
+        for deprecated_setting in deprecated_settings:
+            if deprecated_setting in attrs:
+                del attrs[deprecated_setting]
+
+        return super().__new__(cls, name, bases, attrs)
 
     def __repr__(self):
         return "<Configuration '{0}.{1}'>".format(self.__module__,
                                                   self.__name__)
 
 
-class Configuration(six.with_metaclass(ConfigurationBase)):
+class Configuration(metaclass=ConfigurationBase):
     """
     The base configuration class to inherit from.
 
@@ -91,10 +111,10 @@ class Configuration(six.with_metaclass(ConfigurationBase)):
         try:
             with open(dotenv, 'r') as f:
                 content = f.read()
-        except IOError as e:
+        except OSError as e:
             raise ImproperlyConfigured("Couldn't read .env file "
                                        "with the path {}. Error: "
-                                       "{}".format(dotenv, e))
+                                       "{}".format(dotenv, e)) from e
         else:
             for line in content.splitlines():
                 m1 = re.match(r'\A([A-Za-z_0-9]+)=(.*)\Z', line)
