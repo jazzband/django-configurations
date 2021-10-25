@@ -400,7 +400,8 @@ class PathValue(Value):
         value = Path(value).expanduser()
         if self.check_exists and not value.exists():
             raise ValueError('Path {0!r} does  not exist.'.format(value))
-        return value.absolute() if self.use_pathlib else str(value)
+        value = value.absolute()
+        return value if self.use_pathlib else str(value)
 
 
 class SecretValue(Value):
