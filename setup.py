@@ -28,7 +28,6 @@ setup(
     },
     install_requires=[
         'django>=2.2',
-        'setuptools',
     ],
     extras_require={
         'cache': ['django-cache-url'],
