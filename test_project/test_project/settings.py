@@ -5,7 +5,6 @@ class Base(Configuration):
     # Django settings for test_project project.
 
     DEBUG = values.BooleanValue(True, environ=True)
-    TEMPLATE_DEBUG = DEBUG
 
     ADMINS = (
         # ('Your Name', 'your_email@example.com'),
