@@ -36,7 +36,6 @@ setup(
         'email': ['dj-email-url'],
         'search': ['dj-search-url'],
         'testing': [
-            'django-discover-runner',
             'mock',
             'django-cache-url>=1.0.0',
             'dj-database-url',
