@@ -28,6 +28,7 @@ setup(
     },
     install_requires=[
         'django>=2.2',
+        'importlib-metadata;python_version<"3.8"',
     ],
     extras_require={
         'cache': ['django-cache-url'],
