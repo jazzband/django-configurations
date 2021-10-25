@@ -1,7 +1,10 @@
-from pkg_resources import get_distribution, DistributionNotFound
+try:
+    from importlib.metadata import PackageNotFoundError, version
+except ImportError:
+    from importlib_metadata import PackageNotFoundError, version
 
 try:
-    __version__ = get_distribution("django-configurations").version
-except DistributionNotFound:
+    __version__ = version("django-configurations")
+except PackageNotFoundError:
     # package is not installed
     __version__ = None
