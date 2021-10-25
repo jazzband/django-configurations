@@ -21,7 +21,6 @@ file:
 
     class Dev(Base):
         DEBUG = True
-        TEMPLATE_DEBUG = DEBUG
 
     class Prod(Base):
         TIME_ZONE = 'America/New_York'

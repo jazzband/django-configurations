@@ -400,7 +400,7 @@ class PathValue(Value):
         value = super().setup(name)
         value = Path(value).expanduser()
         if self.check_exists and not value.exists():
-            raise ValueError('Path {0!r} does  not exist.'.format(value))
+            raise ValueError('Path {0!r} does not exist.'.format(value))
         value = value.absolute()
         return value if self.use_pathlib else str(value)
 
