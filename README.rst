@@ -81,7 +81,7 @@ command line option, e.g.
     python manage.py runserver --settings=mysite.settings --configuration=Dev
 
 To enable Django to use your configuration you now have to modify your
-**manage.py** or **wsgi.py** script to use django-configurations's versions
+**manage.py**, **wsgi.py** or **asgi.py** script to use django-configurations's versions
 of the appropriate starter functions, e.g. a typical **manage.py** using
 django-configurations would look like this:
 
@@ -120,5 +120,18 @@ The same applies to your **wsgi.py** file, e.g.:
 Here we don't use the default ``django.core.wsgi.get_wsgi_application``
 function but instead ``configurations.wsgi.get_wsgi_application``.
 
+Or if you are not serving your app via WSGI but ASGI instead, you need to modify your **asgi.py** file too.:
+
+.. code-block:: python
+
+    import os
+
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mysite.settings')
+    os.environ.setdefault('DJANGO_CONFIGURATION', 'DEV')
+
+    from configurations.asgi import get_asgi_application
+
+    application = get_asgi_application()
+
 That's it! You can now use your project with ``manage.py`` and your favorite
-WSGI enabled server.
+WSGI/ASGI enabled server.

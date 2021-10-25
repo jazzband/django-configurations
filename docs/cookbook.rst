@@ -182,7 +182,7 @@ probably just add the following to the **beginning** of your settings module:
     import configurations
     configurations.setup()
 
-That has the same effect as using the ``manage.py`` or ``wsgi.py`` utilities.
+That has the same effect as using the ``manage.py``, ``wsgi.py`` or ``asgi.py`` utilities.
 This will also call ``django.setup()``.
 
 >= 3.1
