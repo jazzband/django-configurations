@@ -38,6 +38,11 @@ class ConfigurationBase(type):
             # transitional setting
             # https://docs.djangoproject.com/en/3.1/releases/3.1/#default-hashing-algorithm-settings
             "DEFAULT_HASHING_ALGORITHM",
+            # When DEFAULT_AUTO_FIELD is not explicitly set, Django's emits a
+            # system check warning models.W042. This warning should not be
+            # suppressed, as downstream users are expected to make a decision.
+            # https://docs.djangoproject.com/en/3.2/releases/3.2/#customizing-type-of-auto-created-primary-keys
+            "DEFAULT_AUTO_FIELD",
         }
         # PASSWORD_RESET_TIMEOUT_DAYS is deprecated in favor of
         # PASSWORD_RESET_TIMEOUT in Django 3.1
