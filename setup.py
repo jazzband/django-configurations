@@ -26,7 +26,10 @@ setup(
             'django-cadmin = configurations.management:execute_from_command_line',
         ],
     },
-    install_requires=["setuptools"],
+    install_requires=[
+        'django>=2.2',
+        'setuptools',
+    ],
     extras_require={
         'cache': ['django-cache-url'],
         'database': ['dj-database-url'],
