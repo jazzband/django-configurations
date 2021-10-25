@@ -7,3 +7,4 @@ recursive-include docs *
 recursive-include test_project *
 include LICENSE
 include .pre-commit-config.yaml
+include CODE_OF_CONDUCT.md
