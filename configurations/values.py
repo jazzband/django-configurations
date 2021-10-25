@@ -397,7 +397,7 @@ class PathValue(Value):
         value = super().setup(name)
         value = os.path.expanduser(value)
         if self.check_exists and not os.path.exists(value):
-            raise ValueError('Path {0!r} does  not exist.'.format(value))
+            raise ValueError('Path {0!r} does not exist.'.format(value))
         return os.path.abspath(value)
 
 
