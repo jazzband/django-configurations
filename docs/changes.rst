@@ -6,13 +6,16 @@ Changelog
 unreleased
 ^^^^^^^^^^
 
+v2.3 (2021-10-27)
+^^^^^^^^^^^^^^^^^
+
 - **BACKWARD INCOMPATIBLE** Drop support for Python 2.7 and 3.5.
 
 - **BACKWARD INCOMPATIBLE** Drop support for Django < 2.2.
 
 - Add support for Django 3.1 and 3.2.
 
-- Add suppport for Python 3.9.
+- Add suppport for Python 3.9 and 3.10.
 
 - Deprecate ``utils.import_by_path`` in favor of
   ``django.utils.module_loading.import_string``.
