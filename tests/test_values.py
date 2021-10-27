@@ -354,7 +354,7 @@ class ValueTests(TestCase):
         with env(DJANGO_TEST='/does/not/exist'):
             self.assertEqual(value.setup('TEST'), '/does/not/exist')
 
-    def test_path_values_with_pathlib(self):
+    def test_path_values_use_pathlib(self):
         value = PathValue(use_pathlib=True)
         with env(DJANGO_TEST='/'):
             self.assertEqual(value.setup('TEST'), Path('/'))
@@ -362,6 +362,17 @@ class ValueTests(TestCase):
             self.assertEqual(value.setup('TEST'), Path.home())
         with env(DJANGO_TEST='/does/not/exist'):
             self.assertRaises(ValueError, value.setup, 'TEST')
+
+    def test_path_values_use_pathlib_global(self):
+        PathValue.use_pathlib = True
+        try:
+            value = PathValue()
+            self.assertTrue(value.use_pathlib)
+            with env(DJANGO_TEST='/'):
+                self.assertEqual(value.setup('TEST'), Path('/'))
+        finally:
+            # Reset global state
+            PathValue.use_pathlib = False
 
     def test_secret_value(self):
         # no default allowed, only environment values are

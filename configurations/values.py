@@ -29,7 +29,6 @@ class Value:
     multiple = False
     late_binding = False
     environ_required = False
-    use_pathlib = False
 
     @property
     def value(self):
@@ -391,9 +390,11 @@ class RegexValue(ValidationMixin, Value):
 
 
 class PathValue(Value):
+    use_pathlib = False
+
     def __init__(self, *args, **kwargs):
         self.check_exists = kwargs.pop('check_exists', True)
-        self.use_pathlib = kwargs.pop('use_pathlib', self.use_pathlib)
+        self.use_pathlib = kwargs.pop('use_pathlib', PathValue.use_pathlib)
         super().__init__(*args, **kwargs)
 
     def setup(self, name):
