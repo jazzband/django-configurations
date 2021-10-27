@@ -159,12 +159,12 @@ the prefix.
 
    :param default: the default value of the setting
    :param environ: toggle for environment use
-   :param environ_name: name of environment variable to look for
-   :param environ_prefix: prefix to use when looking for environment variable
+   :param environ_name: capitalized name of environment variable to look for
+   :param environ_prefix: capitalized prefix to use when looking for environment variable
    :param environ_required: whether or not the value is required to be set as an environment variable
    :type environ: bool
-   :type environ_name: capitalized string or None
-   :type environ_prefix: capitalized string
+   :type environ_name: str or None
+   :type environ_prefix: str
    :type environ_required: bool
 
    The ``default`` parameter is effectively the value the setting has
@@ -255,6 +255,10 @@ Type values
 
         MYSITE_CONVERSION_RATE = values.DecimalValue(decimal.Decimal('4.56214'))
 
+.. class:: SequenceValue
+
+   Common base class for sequence values.
+
 .. class:: ListValue(default, [separator=',', converter=None])
 
     A :class:`~SequenceValue` subclass that handles list values.
@@ -299,6 +303,10 @@ Type values
                       item
 
     See the :class:`~ListValue` examples above.
+
+.. class:: SingleNestedSequenceValue
+
+   Common base class for nested sequence values.
 
 .. class:: SingleNestedTupleValue(default, [seq_separator=';', separator=',', converter=None])
 
@@ -352,9 +360,9 @@ Type values
         DEPARTMENTS = values.DictValue({
             'it': ['Mike', 'Joe'],
         })
-        
+
     Override using environment variables like this::
-    
+
         DJANGO_DEPARTMENTS={'it':['Mike','Joe'],'hr':['Emma','Olivia']}
 
 Validator values
@@ -587,7 +595,7 @@ Value mixins
     requires a ``caster`` class attribute of one of the following types:
 
     - dotted import path, e.g. ``'mysite.utils.custom_caster'``
-    - a callable, e.g. :func:`int`
+    - a callable, e.g. :class:`int`
 
     Example::
 
@@ -608,7 +616,7 @@ Value mixins
     validation attempt.
 
     - dotted import path, e.g. ``'mysite.validators.custom_validator'``
-    - a callable, e.g. :func:`bool`
+    - a callable, e.g. :class:`bool`
 
     Example::
 
