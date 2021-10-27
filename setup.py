@@ -34,7 +34,6 @@ setup(
     extras_require={
         'testing': [
             'django-discover-runner',
-            'mock',
             'django-cache-url>=1.0.0',
             'dj-database-url',
             'dj-email-url',
