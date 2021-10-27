@@ -1,4 +1,4 @@
-import imp
+import importlib.util
 import logging
 import os
 import sys
@@ -130,21 +130,23 @@ class ConfigurationImporter:
         if fullname is not None and fullname == self.module:
             module = fullname.rsplit('.', 1)[-1]
             return ConfigurationLoader(self.name,
-                                       imp.find_module(module, path))
+                importlib.util.spec_from_file_location(module, path))
         return None
 
 
 class ConfigurationLoader:
 
-    def __init__(self, name, location):
+    def __init__(self, name, spec):
         self.name = name
-        self.location = location
+        self.spec = spec
 
     def load_module(self, fullname):
         if fullname in sys.modules:
             mod = sys.modules[fullname]  # pragma: no cover
         else:
-            mod = imp.load_module(fullname, *self.location)
+            mod = importlib.util.module_from_spec(self.spec)
+            sys.modules[fullname] = mod
+            self.spec.loader.exec_module(mod)
         cls_path = '{0}.{1}'.format(mod.__name__, self.name)
 
         try:
