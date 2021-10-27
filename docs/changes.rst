@@ -17,6 +17,23 @@ unreleased
 - Deprecate ``utils.import_by_path`` in favor of
   ``django.utils.module_loading.import_string``.
 
+- Add ASGI support.
+
+- Added "python -m configurations" entry point.
+
+- Make package ``install_requires`` include ``django>=2.2``.
+
+- Prevent an ImproperlyConfigured warning from ``DEFAULT_HASHING_ALGORITHM``.
+
+- Prevent warnings for settings deprecated in Django 2.2
+  (``DEFAULT_CONTENT_TYPE`` and ``FILE_CHARSET``).
+
+- Preserve Django warnings when ``DEFAULT_AUTO_FIELD`` is not set.
+
+- Miscellaneous documentation fixes.
+
+- Miscellaneous internal improvements.
+
 v2.2 (2019-12-03)
 ^^^^^^^^^^^^^^^^^
 
