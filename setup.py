@@ -41,7 +41,6 @@ setup(
             'dj-database-url',
             'dj-email-url',
             'dj-search-url',
-            'Sphinx>=1.4',
         ],
     },
     classifiers=[
