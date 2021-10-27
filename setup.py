@@ -1,17 +1,6 @@
-from __future__ import print_function
-import ast
 import os
 import codecs
 from setuptools import setup
-
-
-class VersionFinder(ast.NodeVisitor):
-    def __init__(self):
-        self.version = None
-
-    def visit_Assign(self, node):
-        if node.targets[0].id == '__version__':
-            self.version = node.value.s
 
 
 def read(*parts):
@@ -20,19 +9,15 @@ def read(*parts):
         return fp.read()
 
 
-def find_version(*parts):
-    finder = VersionFinder()
-    finder.visit(ast.parse(read(*parts)))
-    return finder.version
-
-
 setup(
     name="django-configurations",
-    version=find_version("configurations", "__init__.py"),
+    use_scm_version={"version_scheme": "post-release", "local_scheme": "dirty-tag"},
+    setup_requires=["setuptools_scm"],
     url='https://django-configurations.readthedocs.io/',
     license='BSD',
     description="A helper for organizing Django settings.",
     long_description=read('README.rst'),
+    long_description_content_type='text/x-rst',
     author='Jannis Leidel',
     author_email='jannis@leidel.info',
     packages=['configurations'],
@@ -41,26 +26,38 @@ setup(
             'django-cadmin = configurations.management:execute_from_command_line',
         ],
     },
-    install_requires=['django-environ'],
+
+    install_requires=['django-environ',
+                      'django>=2.2',
+                     'importlib-metadata;python_version<"3.8"',
+    ],
     extras_require={
         'testing': [
             'django-discover-runner',
             'mock',
-            'six',
+            'django-cache-url>=1.0.0',
+            'dj-database-url',
+            'dj-email-url',
+            'dj-search-url',
             'Sphinx>=1.4',
         ],
     },
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Framework :: Django',
+        'Framework :: Django :: 2.2',
+        'Framework :: Django :: 3.0',
+        'Framework :: Django :: 3.1',
+        'Framework :: Django :: 3.2',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: BSD License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: Implementation :: PyPy',
         'Topic :: Utilities',
     ],
     zip_safe=False,

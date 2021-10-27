@@ -1,8 +1,8 @@
-# flake8: noqa
-from .base import Configuration
-from .decorators import pristinemethod
+from .base import Configuration  # noqa
+from .decorators import pristinemethod  # noqa
+from .version import __version__  # noqa
 
-__version__ = '2.1'
+
 __all__ = ['Configuration', 'pristinemethod']
 
 

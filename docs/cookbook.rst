@@ -182,7 +182,7 @@ probably just add the following to the **beginning** of your settings module:
     import configurations
     configurations.setup()
 
-That has the same effect as using the ``manage.py`` or ``wsgi.py`` utilities.
+That has the same effect as using the ``manage.py``, ``wsgi.py`` or ``asgi.py`` utilities.
 This will also call ``django.setup()``.
 
 >= 3.1
@@ -332,8 +332,8 @@ Channels
 --------
 
 If you want to deploy a project that uses the Django channels with
-`Daphne <http://github.com/django/daphne/>` as the
-`interface server <http://channels.readthedocs.io/en/latest/deploying.html#run-interface-servers>`
+`Daphne <http://github.com/django/daphne/>`_ as the
+`interface server <http://channels.readthedocs.io/en/latest/deploying.html#run-interface-servers>`_
 you have to use a asgi.py script similar to the following:
 
 .. code-block:: python

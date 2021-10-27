@@ -1,7 +1,10 @@
-include README.rst
+include .pre-commit-config.yaml
 include AUTHORS
-include .travis.yml
-include tasks.py
-recursive-include tests *
-recursive-include docs *
+include CODE_OF_CONDUCT.md
+include CONTRIBUTING.md
 include LICENSE
+include README.rst
+include tox.ini
+recursive-include docs *
+recursive-include test_project *
+recursive-include tests *

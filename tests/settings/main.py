@@ -31,7 +31,6 @@ class Test(Configuration):
         'django.contrib.contenttypes',
         'django.contrib.sites',
         'django.contrib.auth',
-        'django.contrib.admin',
         'tests',
     ]
 
@@ -42,7 +41,7 @@ class Test(Configuration):
 
     @property
     def ALLOWED_HOSTS(self):
-        allowed_hosts = super(Test, self).ALLOWED_HOSTS[:]
+        allowed_hosts = super().ALLOWED_HOSTS[:]
         allowed_hosts.append('base')
         return allowed_hosts
 
