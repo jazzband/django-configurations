@@ -46,6 +46,7 @@ value:
 
     class Dev(Configuration):
         DEBUG = values.BooleanValue(True)
+        DEBUG_PROPAGATE_EXCEPTIONS = values.BooleanValue(DEBUG)
 
 See the list of :ref:`built-in value classes<built-ins>` for more information.
 
