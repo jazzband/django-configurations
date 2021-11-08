@@ -6,6 +6,17 @@ Changelog
 unreleased
 ^^^^^^^^^^
 
+v2.3.1 (2021-11-08)
+^^^^^^^^^^^^^^^^^^^
+
+- Test Django 3.2 on Python 3.10 as well.
+
+- Test on PyPy 3.6, 3.7 and 3.8.
+
+- Enforce Python version requirement during installation (>=3.6).
+
+- Fix and refactor the documentation build process.
+
 v2.3 (2021-10-27)
 ^^^^^^^^^^^^^^^^^
 
