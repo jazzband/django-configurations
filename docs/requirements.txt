@@ -1,0 +1,3 @@
+Sphinx>4
+sphinx-rtd-theme
+docutils<0.18  # https://github.com/readthedocs/readthedocs.org/issues/8616
