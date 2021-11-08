@@ -12,7 +12,11 @@
 import sys
 import os
 
-from pkg_resources import get_distribution
+try:
+    from importlib.metadata import PackageNotFoundError, version
+except ImportError:
+    from importlib_metadata import PackageNotFoundError, version
+
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -49,7 +53,7 @@ copyright = '2012-2021, Jannis Leidel and other contributors'
 # built documents.
 #
 # The full version, including alpha/beta/rc tags.
-release = get_distribution("django-configurations").version
+release = version("django-configurations")
 # The short X.Y version.
 version = ".".join(release.split(".")[:2])
 
@@ -288,10 +292,10 @@ epub_copyright = '2012, Jannis Leidel'
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {
-    'python': ('http://docs.python.org/3', None),
-    'sphinx': ('http://sphinx.pocoo.org/', None),
-    'django': ('http://docs.djangoproject.com/en/dev/',
-               'http://docs.djangoproject.com/en/dev/_objects/'),
+    'python': ('https://docs.python.org/3', None),
+    'sphinx': ('https://www.sphinx-doc.org/en/master/', None),
+    'django': ('https://docs.djangoproject.com/en/dev/',
+               'https://docs.djangoproject.com/en/dev/_objects/'),
 }
 
 add_function_parentheses = add_module_names = False
