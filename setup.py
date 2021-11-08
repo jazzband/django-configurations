@@ -30,6 +30,7 @@ setup(
         'django>=2.2',
         'importlib-metadata;python_version<"3.8"',
     ],
+    python_requires='>=3.6, <4.0',
     extras_require={
         'cache': ['django-cache-url'],
         'database': ['dj-database-url'],
