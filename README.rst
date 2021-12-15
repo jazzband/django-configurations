@@ -1,7 +1,7 @@
 django-configurations |latest-version|
 ======================================
 
-|build-status| |codecov| |docs| |python-support| |jazzband|
+|jazzband| |build-status| |codecov| |docs| |python-support| |django-support|
 
 django-configurations eases Django project configuration by relying
 on the composability of Python classes. It extends the notion of
@@ -10,24 +10,34 @@ object oriented programming patterns.
 
 Check out the `documentation`_ for more complete examples.
 
-.. |latest-version| image:: https://img.shields.io/pypi/v/django-configurations.svg
-   :alt: Latest version on PyPI
+.. |latest-version| image:: https://img.shields.io/pypi/v/django-configurations.serving
    :target: https://pypi.python.org/pypi/django-configurations
+   :alt: Latest version on PyPI
+
+.. |jazzband| image:: https://jazzband.co/static/img/badge.svg
+   :target: https://jazzband.co/
+   :alt: Jazzband
+
 .. |build-status| image:: https://github.com/jazzband/django-configurations/workflows/Test/badge.svg
    :target: https://github.com/jazzband/django-configurations/actions
-   :alt: GitHub Actions
+   :alt: Build Status
+
 .. |codecov| image:: https://codecov.io/github/jazzband/django-configurations/coverage.svg?branch=master
-   :alt: Codecov
    :target: https://codecov.io/github/jazzband/django-configurations?branch=master
+   :alt: Test coverage status
+
 .. |docs| image:: https://img.shields.io/readthedocs/django-configurations/latest.svg
-   :alt: Documentation status
    :target: https://readthedocs.org/projects/django-configurations/
+   :alt: Documentation status
+
 .. |python-support| image:: https://img.shields.io/pypi/pyversions/django-configurations.svg
    :target: https://pypi.python.org/pypi/django-configurations
-   :alt: Python versions
-.. |jazzband| image:: https://jazzband.co/static/img/badge.svg
-   :alt: Jazzband
-   :target: https://jazzband.co/
+   :alt: Supported Python versions
+
+.. |django-support| image:: https://img.shields.io/pypi/djversions/django-configurations
+   :target: https://pypi.org/project/django-configurations
+   :alt: Supported Django versions
+
 .. _documentation: https://django-configurations.readthedocs.io/en/latest/
 
 Quickstart
