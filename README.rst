@@ -10,7 +10,7 @@ object oriented programming patterns.
 
 Check out the `documentation`_ for more complete examples.
 
-.. |latest-version| image:: https://img.shields.io/pypi/v/django-configurations.serving
+.. |latest-version| image:: https://img.shields.io/pypi/v/django-configurations.svg
    :target: https://pypi.python.org/pypi/django-configurations
    :alt: Latest version on PyPI
 
