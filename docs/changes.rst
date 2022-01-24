@@ -6,6 +6,8 @@ Changelog
 unreleased
 ^^^^^^^^^^
 
+- Fix regression where settings receiving a default were ignored. #323 #327
+
 v2.3.1 (2021-11-08)
 ^^^^^^^^^^^^^^^^^^^
 
