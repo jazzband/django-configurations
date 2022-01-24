@@ -55,6 +55,12 @@ class MainTests(TestCase):
         self.assertEqual(repr(Configuration),
                          "<Configuration 'configurations.base.Configuration'>")
 
+    def test_deprecated_settings_but_set_by_user(self):
+        from tests.settings.main import TestWithDefaultSetExplicitely
+        TestWithDefaultSetExplicitely.setup()
+        self.assertEqual(TestWithDefaultSetExplicitely.DEFAULT_AUTO_FIELD,
+                         "django.db.models.BigAutoField")
+
     def test_repr(self):
         from tests.settings.main import Test
         self.assertEqual(repr(Test),
