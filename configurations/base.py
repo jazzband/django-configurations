@@ -31,7 +31,6 @@ class ConfigurationBase(type):
         if parents:
             for base in bases[::-1]:
                 settings_vars.update(uppercase_attributes(base))
-        attrs = dict(settings_vars, **attrs)
 
         deprecated_settings = {
             # DEFAULT_HASHING_ALGORITHM is always deprecated, as it's a
@@ -51,11 +50,12 @@ class ConfigurationBase(type):
         # PASSWORD_RESET_TIMEOUT_DAYS is deprecated in favor of
         # PASSWORD_RESET_TIMEOUT in Django 3.1
         # https://github.com/django/django/commit/226ebb17290b604ef29e82fb5c1fbac3594ac163#diff-ec2bed07bb264cb95a80f08d71a47c06R163-R170
-        if "PASSWORD_RESET_TIMEOUT" in attrs:
+        if "PASSWORD_RESET_TIMEOUT" in settings_vars:
             deprecated_settings.add("PASSWORD_RESET_TIMEOUT_DAYS")
         for deprecated_setting in deprecated_settings:
-            if deprecated_setting in attrs:
-                del attrs[deprecated_setting]
+            if deprecated_setting in settings_vars:
+                del settings_vars[deprecated_setting]
+        attrs = {**settings_vars, **attrs}
 
         return super().__new__(cls, name, bases, attrs)
 
