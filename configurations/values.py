@@ -3,9 +3,11 @@ import copy
 import decimal
 import os
 import sys
+import warnings
 
 from django.core import validators
 from django.core.exceptions import ValidationError, ImproperlyConfigured
+from environ import Env
 from django.utils.module_loading import import_string
 
 from .utils import getargspec
@@ -418,8 +420,24 @@ class SecretValue(Value):
         return value
 
 
+def env_email_url_config(cls, url, backend=None):
+    """
+    Convert schema to consolemail in order to be compatible with old
+    console:// schema.
+
+    This could be removed and set EmailURLValue.caster to Env.email_url_config
+    directly after the deprecation is removed.
+    """
+    if url.startswith('console://'):
+        warnings.warn('Email schema console:// is deprecated. Please use '
+                      'consolemail:// in new code.',
+                      DeprecationWarning)
+        url = url.replace('console://', 'consolemail://')
+    return Env.email_url_config(url, backend=backend)
+
+
 class EmailURLValue(CastingMixin, MultipleMixin, Value):
-    caster = 'dj_email_url.parse'
+    caster = env_email_url_config
     message = 'Cannot interpret email URL value {0!r}'
     late_binding = True
 
@@ -454,21 +472,21 @@ class DictBackendMixin(Value):
 
 
 class DatabaseURLValue(DictBackendMixin, CastingMixin, Value):
-    caster = 'dj_database_url.parse'
+    caster = Env.db_url_config
     message = 'Cannot interpret database URL value {0!r}'
     environ_name = 'DATABASE_URL'
     late_binding = True
 
 
 class CacheURLValue(DictBackendMixin, CastingMixin, Value):
-    caster = 'django_cache_url.parse'
+    caster = Env.cache_url_config
     message = 'Cannot interpret cache URL value {0!r}'
     environ_name = 'CACHE_URL'
     late_binding = True
 
 
 class SearchURLValue(DictBackendMixin, CastingMixin, Value):
-    caster = 'dj_search_url.parse'
+    caster = Env.search_url_config
     message = 'Cannot interpret Search URL value {0!r}'
     environ_name = 'SEARCH_URL'
     late_binding = True

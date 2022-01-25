@@ -26,16 +26,14 @@ setup(
             'django-cadmin = configurations.management:execute_from_command_line',
         ],
     },
+
     install_requires=[
         'django>=2.2',
+        'django-environ',
         'importlib-metadata;python_version<"3.8"',
     ],
     python_requires='>=3.6, <4.0',
     extras_require={
-        'cache': ['django-cache-url'],
-        'database': ['dj-database-url'],
-        'email': ['dj-email-url'],
-        'search': ['dj-search-url'],
         'testing': [
             'django-cache-url>=1.0.0',
             'dj-database-url',
