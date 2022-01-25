@@ -6,6 +6,10 @@ Changelog
 unreleased
 ^^^^^^^^^^
 
+v2.3.2 (2022-01-25)
+^^^^^^^^^^^^^^^^^^^
+
+- Add compatibility with Django 4.0
 - Fix regression where settings receiving a default were ignored. #323 #327
 
 v2.3.1 (2021-11-08)
