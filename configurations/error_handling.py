@@ -1,8 +1,15 @@
 from typing import *
 from functools import wraps
 import sys
+import os
 
 from .values import ValueRetrievalError, ValueProcessingError
+
+
+class TermStyles:
+    BOLD = "\033[1m"
+    RED = "\033[91m"
+    END = "\033[0m"
 
 
 def with_error_handler(callee: Callable) -> Callable:
@@ -15,6 +22,9 @@ def with_error_handler(callee: Callable) -> Callable:
         try:
             return callee(*args, **kwargs)
         except (ValueRetrievalError, ValueProcessingError) as e:
-            print(e, file=sys.stderr)
+            msg = "{}{}{}".format(TermStyles.RED + TermStyles.BOLD, e, TermStyles.END) \
+                if os.isatty(sys.stderr.fileno()) \
+                else str(e)
+            print(msg, file=sys.stderr)
 
     return wrapper
