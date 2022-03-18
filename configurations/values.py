@@ -11,6 +11,31 @@ from django.utils.module_loading import import_string
 from .utils import getargspec
 
 
+class ValueRetrievalError(ValueError):
+    """
+    Exception is raised when errors occur during the retrieval of a dynamic Value.
+    This can happen when the environment variable corresponding to the value is not defined.
+    """
+
+    def __init__(self, value_instance: 'Value', error_msg: str) -> None:
+        super().__init__(error_msg)
+        self.value_instance = value_instance
+        self.error_msg = error_msg
+
+
+class ValueProcessingError(ValueError):
+    """
+    Exception that is raised when a dynamic Value failed to be processed after retrieval.
+    Processing could be i.e. converting from string to a native datatype but also validation.
+    """
+
+    def __init__(self, value_instance: 'Value', str_value: str, error_msg: str) -> None:
+        super().__init__(error_msg)
+        self.value_instance = value_instance
+        self.str_value = str_value
+        self.error_msg = error_msg
+
+
 def setup_value(target, name, value):
     actual_value = value.setup(name)
     # overwriting the original Value class with the result
@@ -102,9 +127,9 @@ class Value:
             if full_environ_name in os.environ:
                 value = self.to_python(os.environ[full_environ_name])
             elif self.environ_required:
-                raise ValueError('Value {0!r} is required to be set as the '
-                                 'environment variable {1!r}'
-                                 .format(name, full_environ_name))
+                raise ValueRetrievalError(self, 'Value {0!r} is required to be set as the '
+                                            'environment variable {1!r}'
+                                          .format(name, full_environ_name))
         self.value = value
         return value
 
@@ -128,8 +153,8 @@ class BooleanValue(Value):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if self.default not in (True, False):
-            raise ValueError('Default value {0!r} is not a '
-                             'boolean value'.format(self.default))
+            raise ImproperlyConfigured('Default value {0!r} is not a '
+                                       'boolean value'.format(self.default))
 
     def to_python(self, value):
         normalized_value = value.strip().lower()
@@ -138,8 +163,8 @@ class BooleanValue(Value):
         elif normalized_value in self.false_values:
             return False
         else:
-            raise ValueError('Cannot interpret '
-                             'boolean value {0!r}'.format(value))
+            raise ValueProcessingError(self, value, 'Cannot interpret '
+                                                    'boolean value {0!r}'.format(value))
 
 
 class CastingMixin:
@@ -159,7 +184,7 @@ class CastingMixin:
         else:
             error = 'Cannot use caster of {0} ({1!r})'.format(self,
                                                               self.caster)
-            raise ValueError(error)
+            raise ImproperlyConfigured(error)
         try:
             arg_names = getargspec(self._caster)[0]
             self._params = {name: kwargs[name] for name in arg_names if name in kwargs}
@@ -173,7 +198,7 @@ class CastingMixin:
             else:
                 return self._caster(value)
         except self.exception:
-            raise ValueError(self.message.format(value))
+            raise ValueProcessingError(self, value, self.message.format(value))
 
 
 class IntegerValue(CastingMixin, Value):
@@ -185,7 +210,7 @@ class PositiveIntegerValue(IntegerValue):
     def to_python(self, value):
         int_value = super().to_python(value)
         if int_value < 0:
-            raise ValueError(self.message.format(value))
+            raise ValueProcessingError(self, value, self.message.format(value))
         return int_value
 
 
@@ -231,7 +256,7 @@ class SequenceValue(Value):
             try:
                 converted_values.append(self.converter(value))
             except (TypeError, ValueError):
-                raise ValueError(self.message.format(value, value))
+                raise ValueProcessingError(self, self.separator.join(sequence), self.message.format(value, value))
         return self.sequence_type(converted_values)
 
     def to_python(self, value):
@@ -296,7 +321,7 @@ class BackendsValue(ListValue):
         try:
             import_string(value)
         except ImportError as err:
-            raise ValueError(err).with_traceback(sys.exc_info()[2])
+            raise ValueProcessingError(self, value, str(err)).with_traceback(sys.exc_info()[2])
         return value
 
 
@@ -331,9 +356,9 @@ class DictValue(Value):
         try:
             evaled_value = ast.literal_eval(value)
         except ValueError:
-            raise ValueError(self.message.format(value))
+            raise ValueProcessingError(self, value, self.message.format(value))
         if not isinstance(evaled_value, dict):
-            raise ValueError(self.message.format(value))
+            raise ValueProcessingError(self, value, self.message.format(value))
         return evaled_value
 
 
@@ -350,16 +375,19 @@ class ValidationMixin:
         elif callable(self.validator):
             self._validator = self.validator
         else:
-            raise ValueError('Cannot use validator of '
-                             '{0} ({1!r})'.format(self, self.validator))
+            raise ImproperlyConfigured('Cannot use validator of '
+                                       '{0} ({1!r})'.format(self, self.validator))
         if self.default:
-            self.to_python(self.default)
+            try:
+                self.to_python(self.default)
+            except ValueProcessingError as e:
+                raise ImproperlyConfigured(e.error_msg)
 
     def to_python(self, value):
         try:
             self._validator(value)
         except ValidationError:
-            raise ValueError(self.message.format(value))
+            raise ValueProcessingError(self, value, self.message.format(value))
         else:
             return value
 
@@ -397,7 +425,7 @@ class PathValue(Value):
         value = super().setup(name)
         value = os.path.expanduser(value)
         if self.check_exists and not os.path.exists(value):
-            raise ValueError('Path {0!r} does not exist.'.format(value))
+            raise ValueProcessingError(self, value, 'Path {0!r} does not exist.'.format(value))
         return os.path.abspath(value)
 
 
@@ -408,13 +436,13 @@ class SecretValue(Value):
         kwargs['environ_required'] = True
         super().__init__(*args, **kwargs)
         if self.default is not None:
-            raise ValueError('Secret values are only allowed to '
-                             'be set as environment variables')
+            raise ImproperlyConfigured('Secret values are only allowed to '
+                                       'be set as environment variables')
 
     def setup(self, name):
         value = super().setup(name)
         if not value:
-            raise ValueError('Secret value {0!r} is not set'.format(name))
+            raise ValueRetrievalError(self, 'Secret value {0!r} is not set'.format(name))
         return value
 
 

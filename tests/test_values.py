@@ -15,8 +15,8 @@ from configurations.values import (Value, BooleanValue, IntegerValue,
                                    RegexValue, PathValue, SecretValue,
                                    DatabaseURLValue, EmailURLValue,
                                    CacheURLValue, BackendsValue,
-                                   CastingMixin, SearchURLValue,
-                                   setup_value, PositiveIntegerValue)
+                                   SearchURLValue, PositiveIntegerValue, CastingMixin,
+                                   setup_value, ValueRetrievalError, ValueProcessingError)
 
 
 @contextmanager
@@ -57,6 +57,19 @@ class ValueTests(TestCase):
             self.assertEqual('%s' % value, 'override')
 
             self.assertEqual(repr(value), repr('override'))
+
+    def test_environ_required(self):
+        for ValueClass in (Value, BooleanValue, IntegerValue,
+                          FloatValue, DecimalValue, ListValue,
+                          TupleValue, SingleNestedTupleValue,
+                          SingleNestedListValue, SetValue,
+                          DictValue, URLValue, EmailValue, IPValue,
+                          RegexValue, PathValue, SecretValue,
+                          DatabaseURLValue, EmailURLValue,
+                          CacheURLValue, BackendsValue,
+                          SearchURLValue, PositiveIntegerValue):
+            value = ValueClass(environ_required=True)
+            self.assertRaises(ValueRetrievalError, value.setup, "TEST")
 
     def test_value_truthy(self):
         value = Value('default')
@@ -110,7 +123,7 @@ class ValueTests(TestCase):
                 self.assertTrue(bool(value.setup('TEST')))
 
     def test_boolean_values_faulty(self):
-        self.assertRaises(ValueError, BooleanValue, 'false')
+        self.assertRaises(ImproperlyConfigured, BooleanValue, 'false')
 
     def test_boolean_values_false(self):
         value = BooleanValue(True)
@@ -121,7 +134,7 @@ class ValueTests(TestCase):
     def test_boolean_values_nonboolean(self):
         value = BooleanValue(True)
         with env(DJANGO_TEST='nonboolean'):
-            self.assertRaises(ValueError, value.setup, 'TEST')
+            self.assertRaises(ValueProcessingError, value.setup, 'TEST')
 
     def test_boolean_values_assign_false_to_another_booleanvalue(self):
         value1 = BooleanValue(False)
@@ -134,30 +147,30 @@ class ValueTests(TestCase):
         with env(DJANGO_TEST='2'):
             self.assertEqual(value.setup('TEST'), 2)
         with env(DJANGO_TEST='noninteger'):
-            self.assertRaises(ValueError, value.setup, 'TEST')
+            self.assertRaises(ValueProcessingError, value.setup, 'TEST')
 
     def test_positive_integer_values(self):
         value = PositiveIntegerValue(1)
         with env(DJANGO_TEST='2'):
             self.assertEqual(value.setup('TEST'), 2)
         with env(DJANGO_TEST='noninteger'):
-            self.assertRaises(ValueError, value.setup, 'TEST')
+            self.assertRaises(ValueProcessingError, value.setup, 'TEST')
         with env(DJANGO_TEST='-1'):
-            self.assertRaises(ValueError, value.setup, 'TEST')
+            self.assertRaises(ValueProcessingError, value.setup, 'TEST')
 
     def test_float_values(self):
         value = FloatValue(1.0)
         with env(DJANGO_TEST='2.0'):
             self.assertEqual(value.setup('TEST'), 2.0)
         with env(DJANGO_TEST='noninteger'):
-            self.assertRaises(ValueError, value.setup, 'TEST')
+            self.assertRaises(ValueProcessingError, value.setup, 'TEST')
 
     def test_decimal_values(self):
         value = DecimalValue(decimal.Decimal(1))
         with env(DJANGO_TEST='2'):
             self.assertEqual(value.setup('TEST'), decimal.Decimal(2))
         with env(DJANGO_TEST='nondecimal'):
-            self.assertRaises(ValueError, value.setup, 'TEST')
+            self.assertRaises(ValueProcessingError, value.setup, 'TEST')
 
     def test_failing_caster(self):
         self.assertRaises(ImproperlyConfigured, FailingCasterValue)
@@ -194,7 +207,7 @@ class ValueTests(TestCase):
     def test_list_values_converter_exception(self):
         value = ListValue(converter=int)
         with env(DJANGO_TEST='2,b'):
-            self.assertRaises(ValueError, value.setup, 'TEST')
+            self.assertRaises(ValueProcessingError, value.setup, 'TEST')
 
     def test_tuple_values_default(self):
         value = TupleValue()
@@ -292,21 +305,21 @@ class ValueTests(TestCase):
         with env(DJANGO_TEST=''):
             self.assertEqual(value.setup('TEST'), {})
         with env(DJANGO_TEST='spam'):
-            self.assertRaises(ValueError, value.setup, 'TEST')
+            self.assertRaises(ValueProcessingError, value.setup, 'TEST')
 
     def test_email_values(self):
         value = EmailValue('spam@eg.gs')
         with env(DJANGO_TEST='spam@sp.am'):
             self.assertEqual(value.setup('TEST'), 'spam@sp.am')
         with env(DJANGO_TEST='spam'):
-            self.assertRaises(ValueError, value.setup, 'TEST')
+            self.assertRaises(ValueProcessingError, value.setup, 'TEST')
 
     def test_url_values(self):
         value = URLValue('http://eggs.spam')
         with env(DJANGO_TEST='http://spam.eggs'):
             self.assertEqual(value.setup('TEST'), 'http://spam.eggs')
         with env(DJANGO_TEST='httb://spam.eggs'):
-            self.assertRaises(ValueError, value.setup, 'TEST')
+            self.assertRaises(ValueProcessingError, value.setup, 'TEST')
 
     def test_url_values_with_no_default(self):
         value = URLValue()  # no default
@@ -314,7 +327,7 @@ class ValueTests(TestCase):
             self.assertEqual(value.setup('TEST'), 'http://spam.eggs')
 
     def test_url_values_with_wrong_default(self):
-        self.assertRaises(ValueError, URLValue, 'httb://spam.eggs')
+        self.assertRaises(ImproperlyConfigured, URLValue, 'httb://spam.eggs')
 
     def test_ip_values(self):
         value = IPValue('0.0.0.0')
@@ -323,14 +336,14 @@ class ValueTests(TestCase):
         with env(DJANGO_TEST='::1'):
             self.assertEqual(value.setup('TEST'), '::1')
         with env(DJANGO_TEST='spam.eggs'):
-            self.assertRaises(ValueError, value.setup, 'TEST')
+            self.assertRaises(ValueProcessingError, value.setup, 'TEST')
 
     def test_regex_values(self):
         value = RegexValue('000--000', regex=r'\d+--\d+')
         with env(DJANGO_TEST='123--456'):
             self.assertEqual(value.setup('TEST'), '123--456')
         with env(DJANGO_TEST='123456'):
-            self.assertRaises(ValueError, value.setup, 'TEST')
+            self.assertRaises(ValueProcessingError, value.setup, 'TEST')
 
     def test_path_values_with_check(self):
         value = PathValue()
@@ -339,7 +352,7 @@ class ValueTests(TestCase):
         with env(DJANGO_TEST='~/'):
             self.assertEqual(value.setup('TEST'), os.path.expanduser('~'))
         with env(DJANGO_TEST='/does/not/exist'):
-            self.assertRaises(ValueError, value.setup, 'TEST')
+            self.assertRaises(ValueProcessingError, value.setup, 'TEST')
 
     def test_path_values_no_check(self):
         value = PathValue(check_exists=False)
@@ -354,17 +367,17 @@ class ValueTests(TestCase):
 
     def test_secret_value(self):
         # no default allowed, only environment values are
-        self.assertRaises(ValueError, SecretValue, 'default')
+        self.assertRaises(ImproperlyConfigured, SecretValue, 'default')
 
         value = SecretValue()
-        self.assertRaises(ValueError, value.setup, 'TEST')
+        self.assertRaises(ValueRetrievalError, value.setup, 'TEST')
         with env(DJANGO_SECRET_KEY='123'):
             self.assertEqual(value.setup('SECRET_KEY'), '123')
 
         value = SecretValue(environ_name='FACEBOOK_API_SECRET',
                             environ_prefix=None,
                             late_binding=True)
-        self.assertRaises(ValueError, value.setup, 'TEST')
+        self.assertRaises(ValueRetrievalError, value.setup, 'TEST')
         with env(FACEBOOK_API_SECRET='123'):
             self.assertEqual(value.setup('TEST'), '123')
 
@@ -424,7 +437,7 @@ class ValueTests(TestCase):
                 'EMAIL_USE_SSL': False,
                 'EMAIL_USE_TLS': False})
         with env(EMAIL_URL='smtps://user@domain.com:password@smtp.example.com:wrong'):  # noqa: E501
-            self.assertRaises(ValueError, value.setup, 'TEST')
+            self.assertRaises(ValueProcessingError, value.setup, 'TEST')
 
     def test_cache_url_value(self):
         cache_setting = {
@@ -445,7 +458,7 @@ class ValueTests(TestCase):
                 value.setup('TEST')
             self.assertEqual(cm.exception.args[0], 'Unknown backend: "wrong"')
         with env(CACHE_URL='redis://user@host:port/1'):
-            with self.assertRaises(ValueError) as cm:
+            with self.assertRaises(ValueProcessingError) as cm:
                 value.setup('TEST')
             self.assertEqual(
                 cm.exception.args[0],
@@ -468,7 +481,7 @@ class ValueTests(TestCase):
         self.assertEqual(value.setup('TEST'), backends)
 
         backends = ['non.existing.Backend']
-        self.assertRaises(ValueError, BackendsValue, backends)
+        self.assertRaises(ValueProcessingError, BackendsValue, backends)
 
     def test_tuple_value(self):
         value = TupleValue(None)
@@ -503,6 +516,7 @@ class ValueTests(TestCase):
                 'EMAIL_HOST_PASSWORD': 'password',
                 'EMAIL_HOST_USER': 'user@domain.com',
                 'EMAIL_PORT': 587,
+                'EMAIL_TIMEOUT': None,
                 'EMAIL_USE_SSL': False,
                 'EMAIL_USE_TLS': True
             })
