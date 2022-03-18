@@ -152,7 +152,7 @@ class BooleanValue(Value):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if self.default not in (True, False):
+        if not self.environ_required and self.default not in (True, False):
             raise ImproperlyConfigured('Default value {0!r} is not a '
                                        'boolean value'.format(self.default))
 
