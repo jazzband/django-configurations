@@ -1,5 +1,5 @@
 from . import importer
-from .error_handling import with_error_handler
+from .errors import with_error_handler
 
 importer.install()
 

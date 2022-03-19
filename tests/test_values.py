@@ -16,7 +16,8 @@ from configurations.values import (Value, BooleanValue, IntegerValue,
                                    DatabaseURLValue, EmailURLValue,
                                    CacheURLValue, BackendsValue,
                                    SearchURLValue, PositiveIntegerValue, CastingMixin,
-                                   setup_value, ValueRetrievalError, ValueProcessingError)
+                                   setup_value)
+from configurations.errors import ValueRetrievalError, ValueProcessingError
 
 
 @contextmanager

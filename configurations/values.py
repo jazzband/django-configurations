@@ -8,32 +8,8 @@ from django.core import validators
 from django.core.exceptions import ValidationError, ImproperlyConfigured
 from django.utils.module_loading import import_string
 
+from .errors import ValueRetrievalError, ValueProcessingError
 from .utils import getargspec
-
-
-class ValueRetrievalError(ValueError):
-    """
-    Exception is raised when errors occur during the retrieval of a dynamic Value.
-    This can happen when the environment variable corresponding to the value is not defined.
-    """
-
-    def __init__(self, value_instance: 'Value', error_msg: str) -> None:
-        super().__init__(error_msg)
-        self.value_instance = value_instance
-        self.error_msg = error_msg
-
-
-class ValueProcessingError(ValueError):
-    """
-    Exception that is raised when a dynamic Value failed to be processed after retrieval.
-    Processing could be i.e. converting from string to a native datatype but also validation.
-    """
-
-    def __init__(self, value_instance: 'Value', str_value: str, error_msg: str) -> None:
-        super().__init__(error_msg)
-        self.value_instance = value_instance
-        self.str_value = str_value
-        self.error_msg = error_msg
 
 
 def setup_value(target, name, value):
