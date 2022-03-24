@@ -19,6 +19,9 @@ def extract_explanation_lines_from_value(value_instance: 'Value') -> List[str]:
     if value_instance.help_text is not None:
         result.append(f"Help: {value_instance.help_text}")
 
+    if value_instance.help_reference is not None:
+        result.append(f"Reference: {value_instance.help_reference}")
+
     if value_instance.destination_name is not None:
         result.append(f"{value_instance.destination_name} is taken from the environment variable "
                       f"{value_instance.full_environ_name} as a {type(value_instance).__name__}")
