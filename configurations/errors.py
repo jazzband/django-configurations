@@ -4,7 +4,7 @@ import sys
 import os
 
 if TYPE_CHECKING:
-    from .values import Value
+    from .values import Value   # pragma: no cover
 
 
 class TermStyles:
