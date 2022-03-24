@@ -2,6 +2,7 @@ import decimal
 import os
 from contextlib import contextmanager
 
+from django import VERSION as DJANGO_VERSION
 from django.test import TestCase
 from django.core.exceptions import ImproperlyConfigured
 
@@ -61,14 +62,14 @@ class ValueTests(TestCase):
 
     def test_environ_required(self):
         for ValueClass in (Value, BooleanValue, IntegerValue,
-                          FloatValue, DecimalValue, ListValue,
-                          TupleValue, SingleNestedTupleValue,
-                          SingleNestedListValue, SetValue,
-                          DictValue, URLValue, EmailValue, IPValue,
-                          RegexValue, PathValue, SecretValue,
-                          DatabaseURLValue, EmailURLValue,
-                          CacheURLValue, BackendsValue,
-                          SearchURLValue, PositiveIntegerValue):
+                           FloatValue, DecimalValue, ListValue,
+                           TupleValue, SingleNestedTupleValue,
+                           SingleNestedListValue, SetValue,
+                           DictValue, URLValue, EmailValue, IPValue,
+                           RegexValue, PathValue, SecretValue,
+                           DatabaseURLValue, EmailURLValue,
+                           CacheURLValue, BackendsValue,
+                           SearchURLValue, PositiveIntegerValue):
             value = ValueClass(environ_required=True)
             self.assertRaises(ValueRetrievalError, value.setup, "TEST")
 
@@ -445,7 +446,7 @@ class ValueTests(TestCase):
     def test_cache_url_value(self):
         cache_setting = {
             'default': {
-                'BACKEND': 'django_redis.cache.RedisCache',
+                'BACKEND': 'django_redis.cache.RedisCache' if DJANGO_VERSION[0] < 4 else 'django.core.cache.backends.redis.RedisCache',
                 'LOCATION': 'redis://host:6379/1',
             }
         }
@@ -465,7 +466,7 @@ class ValueTests(TestCase):
                 value.setup('TEST')
             self.assertEqual(
                 cm.exception.args[0],
-                "Cannot interpret cache URL value 'redis://user@host:port/1'")
+                "TEST was given an invalid value: Cannot interpret cache URL value 'redis://user@host:port/1'")
 
     def test_search_url_value(self):
         value = SearchURLValue()
