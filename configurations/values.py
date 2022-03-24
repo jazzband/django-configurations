@@ -2,12 +2,12 @@ import ast
 import copy
 import decimal
 import os
-import sys
 
 from django.core import validators
 from django.core.exceptions import ValidationError, ImproperlyConfigured
 from django.utils.module_loading import import_string
 
+from .errors import ValueRetrievalError, ValueProcessingError
 from .utils import getargspec
 
 
@@ -58,8 +58,8 @@ class Value:
         return instance
 
     def __init__(self, default=None, environ=True, environ_name=None,
-                 environ_prefix='DJANGO', environ_required=False,
-                 *args, **kwargs):
+                 environ_prefix='DJANGO', environ_required=False, example_generator=None,
+                 help_text=None, help_reference=None, *args, **kwargs):
         if isinstance(default, Value) and default.default is not None:
             self.default = copy.copy(default.default)
         else:
@@ -70,6 +70,10 @@ class Value:
         self.environ_prefix = environ_prefix
         self.environ_name = environ_name
         self.environ_required = environ_required
+        self.destination_name = None
+        self.help_text = help_text
+        self.help_reference = help_reference
+        self.example_generator = example_generator
 
     def __str__(self):
         return str(self.value)
@@ -86,33 +90,46 @@ class Value:
     # Compatibility with python 2
     __nonzero__ = __bool__
 
-    def full_environ_name(self, name):
+    @property
+    def full_environ_name(self):
+        """
+        The full name of the environment variable (including prefix and capitalization) from which this value should be
+        retrieved
+        """
         if self.environ_name:
             environ_name = self.environ_name
         else:
-            environ_name = name.upper()
+            environ_name = self.destination_name.upper()
         if self.environ_prefix:
             environ_name = '{0}_{1}'.format(self.environ_prefix, environ_name)
         return environ_name
 
     def setup(self, name):
+        """
+        Set up this value instance by retrieving the configured value from the environment and converting it to a native
+        python data type
+
+        :param name: Destination name for which this value is used.
+            For example in the scenario of `DEBUG = Value()` in a `Configuration` subclass, this would be `DEBUG`.
+        """
+        self.destination_name = name
         value = self.default
         if self.environ:
-            full_environ_name = self.full_environ_name(name)
+            full_environ_name = self.full_environ_name
             if full_environ_name in os.environ:
                 value = self.to_python(os.environ[full_environ_name])
             elif self.environ_required:
-                raise ValueError('Value {0!r} is required to be set as the '
-                                 'environment variable {1!r}'
-                                 .format(name, full_environ_name))
+                raise ValueRetrievalError(self)
         self.value = value
         return value
 
-    def to_python(self, value):
+    def to_python(self, value: str):
         """
-        Convert the given value of a environment variable into an
+        Convert the given value of an environment variable into an
         appropriate Python representation of the value.
-        This should be overriden when subclassing.
+        This should be overridden when subclassing.
+
+        :param value: The value that should be converted to a python representation
         """
         return value
 
@@ -127,19 +144,18 @@ class BooleanValue(Value):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if self.default not in (True, False):
-            raise ValueError('Default value {0!r} is not a '
-                             'boolean value'.format(self.default))
+        if not self.environ_required and self.default not in (True, False):
+            raise ImproperlyConfigured('Default value {0!r} is not a '
+                                       'boolean value'.format(self.default))
 
-    def to_python(self, value):
+    def to_python(self, value: str):
         normalized_value = value.strip().lower()
         if normalized_value in self.true_values:
             return True
         elif normalized_value in self.false_values:
             return False
         else:
-            raise ValueError('Cannot interpret '
-                             'boolean value {0!r}'.format(value))
+            raise ValueProcessingError(self, value)
 
 
 class CastingMixin:
@@ -159,21 +175,21 @@ class CastingMixin:
         else:
             error = 'Cannot use caster of {0} ({1!r})'.format(self,
                                                               self.caster)
-            raise ValueError(error)
+            raise ImproperlyConfigured(error)
         try:
             arg_names = getargspec(self._caster)[0]
             self._params = {name: kwargs[name] for name in arg_names if name in kwargs}
         except TypeError:
             self._params = {}
 
-    def to_python(self, value):
+    def to_python(self, value: str):
         try:
             if self._params:
                 return self._caster(value, **self._params)
             else:
                 return self._caster(value)
         except self.exception:
-            raise ValueError(self.message.format(value))
+            raise ValueProcessingError(self, value)
 
 
 class IntegerValue(CastingMixin, Value):
@@ -182,10 +198,10 @@ class IntegerValue(CastingMixin, Value):
 
 class PositiveIntegerValue(IntegerValue):
 
-    def to_python(self, value):
+    def to_python(self, value: str):
         int_value = super().to_python(value)
         if int_value < 0:
-            raise ValueError(self.message.format(value))
+            raise ValueProcessingError(self, value, f"Value needs to be positive or zero but {int_value} isn't")
         return int_value
 
 
@@ -209,7 +225,7 @@ class SequenceValue(Value):
     converter = None
 
     def __init__(self, *args, **kwargs):
-        msg = 'Cannot interpret {0} item {{0!r}} in {0} {{1!r}}'
+        msg = 'Cannot interpret {0} item in {0} {{0!r}}'
         self.message = msg.format(self.sequence_type.__name__)
         self.separator = kwargs.pop('separator', ',')
         converter = kwargs.pop('converter', None)
@@ -231,10 +247,10 @@ class SequenceValue(Value):
             try:
                 converted_values.append(self.converter(value))
             except (TypeError, ValueError):
-                raise ValueError(self.message.format(value, value))
+                raise ValueProcessingError(self, self.separator.join(sequence))
         return self.sequence_type(converted_values)
 
-    def to_python(self, value):
+    def to_python(self, value: str):
         split_value = [v.strip() for v in value.strip().split(self.separator)]
         # removing empty items
         value_list = self.sequence_type(filter(None, split_value))
@@ -270,7 +286,7 @@ class SingleNestedSequenceValue(SequenceValue):
             return self.sequence_type(converted_sequences)
         return self.sequence_type(super()._convert(items))
 
-    def to_python(self, value):
+    def to_python(self, value: str):
         split_value = [
             v.strip() for v in value.strip().split(self.seq_separator)
         ]
@@ -296,13 +312,11 @@ class BackendsValue(ListValue):
         try:
             import_string(value)
         except ImportError as err:
-            raise ValueError(err).with_traceback(sys.exc_info()[2])
+            raise ValueProcessingError(self, value) from err
         return value
 
 
 class SetValue(ListValue):
-    message = 'Cannot interpret set item {0!r} in set {1!r}'
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if self.default is None:
@@ -310,7 +324,7 @@ class SetValue(ListValue):
         else:
             self.default = set(self.default)
 
-    def to_python(self, value):
+    def to_python(self, value: str):
         return set(super().to_python(value))
 
 
@@ -324,16 +338,16 @@ class DictValue(Value):
         else:
             self.default = dict(self.default)
 
-    def to_python(self, value):
+    def to_python(self, value: str):
         value = super().to_python(value)
         if not value:
             return {}
         try:
             evaled_value = ast.literal_eval(value)
         except ValueError:
-            raise ValueError(self.message.format(value))
+            raise ValueProcessingError(self, value)
         if not isinstance(evaled_value, dict):
-            raise ValueError(self.message.format(value))
+            raise ValueProcessingError(self, value)
         return evaled_value
 
 
@@ -350,16 +364,19 @@ class ValidationMixin:
         elif callable(self.validator):
             self._validator = self.validator
         else:
-            raise ValueError('Cannot use validator of '
-                             '{0} ({1!r})'.format(self, self.validator))
+            raise ImproperlyConfigured('Cannot use validator of '
+                                       '{0} ({1!r})'.format(self, self.validator))
         if self.default:
-            self.to_python(self.default)
+            try:
+                self.to_python(self.default)
+            except ValueProcessingError as e:
+                raise ImproperlyConfigured(e.main_error_msg) from e
 
-    def to_python(self, value):
+    def to_python(self, value: str):
         try:
             self._validator(value)
-        except ValidationError:
-            raise ValueError(self.message.format(value))
+        except ValidationError as e:
+            raise ValueProcessingError(self, value, f"Validation failed: {e.message}")
         else:
             return value
 
@@ -397,7 +414,7 @@ class PathValue(Value):
         value = super().setup(name)
         value = os.path.expanduser(value)
         if self.check_exists and not os.path.exists(value):
-            raise ValueError('Path {0!r} does not exist.'.format(value))
+            raise ValueProcessingError(self, value, f"Path {value} does not exist")
         return os.path.abspath(value)
 
 
@@ -408,13 +425,13 @@ class SecretValue(Value):
         kwargs['environ_required'] = True
         super().__init__(*args, **kwargs)
         if self.default is not None:
-            raise ValueError('Secret values are only allowed to '
-                             'be set as environment variables')
+            raise ImproperlyConfigured('Secret values are only allowed to '
+                                       'be set as environment variables')
 
     def setup(self, name):
         value = super().setup(name)
         if not value:
-            raise ValueError('Secret value {0!r} is not set'.format(name))
+            raise ValueRetrievalError(self)
         return value
 
 
@@ -448,7 +465,7 @@ class DictBackendMixin(Value):
         else:
             self.default = self.to_python(self.default)
 
-    def to_python(self, value):
+    def to_python(self, value: str):
         value = super().to_python(value)
         return {self.alias: value}
 

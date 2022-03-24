@@ -4,7 +4,8 @@ from configurations import Configuration, values
 class Base(Configuration):
     # Django settings for test_project project.
 
-    DEBUG = values.BooleanValue(True, environ=True)
+    DEBUG = values.BooleanValue(True, environ=True, help_text="Enables or disables django debug mode",
+                                help_reference="https://docs.djangoproject.com/en/dev/ref/settings/#debug")
 
     ADMINS = (
         # ('Your Name', 'your_email@example.com'),

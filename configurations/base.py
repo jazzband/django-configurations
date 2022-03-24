@@ -4,6 +4,7 @@ import re
 from django.conf import global_settings
 from django.core.exceptions import ImproperlyConfigured
 
+from .errors import ConfigurationError, SetupError
 from .utils import uppercase_attributes
 from .values import Value, setup_value
 
@@ -142,6 +143,13 @@ class Configuration(metaclass=ConfigurationBase):
 
     @classmethod
     def setup(cls):
+        exceptions = []
         for name, value in uppercase_attributes(cls).items():
             if isinstance(value, Value):
-                setup_value(cls, name, value)
+                try:
+                    setup_value(cls, name, value)
+                except ConfigurationError as err:
+                    exceptions.append(err)
+
+        if len(exceptions) > 0:
+            raise SetupError(f"Couldn't setup values of configuration {cls.__name__}", exceptions)
