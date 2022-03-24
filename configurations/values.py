@@ -58,8 +58,8 @@ class Value:
         return instance
 
     def __init__(self, default=None, environ=True, environ_name=None,
-                 environ_prefix='DJANGO', environ_required=False, help_text=None,
-                 help_reference=None, *args, **kwargs):
+                 environ_prefix='DJANGO', environ_required=False, example_generator=None,
+                 help_text=None, help_reference=None, *args, **kwargs):
         if isinstance(default, Value) and default.default is not None:
             self.default = copy.copy(default.default)
         else:
@@ -73,6 +73,7 @@ class Value:
         self.destination_name = None
         self.help_text = help_text
         self.help_reference = help_reference
+        self.example_generator = example_generator
 
     def __str__(self):
         return str(self.value)

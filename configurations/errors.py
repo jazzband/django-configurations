@@ -26,6 +26,9 @@ def extract_explanation_lines_from_value(value_instance: 'Value') -> List[str]:
         result.append(f"{value_instance.destination_name} is taken from the environment variable "
                       f"{value_instance.full_environ_name} as a {type(value_instance).__name__}")
 
+    if value_instance.example_generator is not None:
+        result.append(f"Example value: '{value_instance.example_generator()}'")
+
     return result
 
 
