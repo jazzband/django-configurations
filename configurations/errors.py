@@ -13,10 +13,24 @@ class TermStyles:
     END = "\033[0m" if os.isatty(sys.stderr.fileno()) else ""
 
 
+def extract_explanation_lines_from_value(value_instance: 'Value') -> List[str]:
+    result = []
+
+    if value_instance.help_text is not None:
+        result.append(f"Help: {value_instance.help_text}")
+
+    if value_instance.destination_name is not None:
+        result.append(f"{value_instance.destination_name} is taken from the environment variable "
+                      f"{value_instance.full_environ_name} as a {type(value_instance).__name__}")
+
+    return result
+
+
 class SetupError(Exception):
     """
     Exception that gets raised when a configuration class cannot be set up by the importer
     """
+
     def __init__(self, msg: str, child_errors: List['ConfigurationError'] = None) -> None:
         """
         :param step_verb: Which step the importer tried to perform (e.g. import, setup)
@@ -60,14 +74,9 @@ class ValueRetrievalError(ConfigurationError):
         :param extra_explanation_lines: Extra lines that will be appended to `ConfigurationError.explanation_lines`
             in addition the ones automatically generated from the provided *value_instance*.
         """
-        explanation_lines = list(extra_explanation_lines)
-        if value_instance.destination_name is not None:
-            explanation_lines.append(f"{value_instance.destination_name} is taken from the environment variable "
-                                     f"{value_instance.full_environ_name} as a {type(value_instance).__name__}")
-
         super().__init__(
             f"Value of {value_instance.destination_name} could not be retrieved from environment",
-            explanation_lines
+            list(extra_explanation_lines) + extract_explanation_lines_from_value(value_instance)
         )
 
 
@@ -89,11 +98,7 @@ class ValueProcessingError(ConfigurationError):
         if hasattr(value_instance, "message"):
             error += ": " + value_instance.message.format(raw_value)
 
-        explanation_lines = list(extra_explanation_lines)
-        if value_instance.destination_name is not None:
-            explanation_lines.append(f"{value_instance.destination_name} is taken from the environment variable "
-                                     f"{value_instance.full_environ_name} as a {type(value_instance).__name__}")
-
+        explanation_lines = list(extra_explanation_lines) + extract_explanation_lines_from_value(value_instance)
         explanation_lines.append(f"'{raw_value}' was received but that is invalid")
 
         super().__init__(error, explanation_lines)
