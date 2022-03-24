@@ -13,6 +13,20 @@ class TermStyles:
     END = "\033[0m" if os.isatty(sys.stderr.fileno()) else ""
 
 
+class SetupError(Exception):
+    """
+    Exception that gets raised when a configuration class cannot be set up by the importer
+    """
+    def __init__(self, msg: str, child_errors: List['ConfigurationError'] = None) -> None:
+        """
+        :param step_verb: Which step the importer tried to perform (e.g. import, setup)
+        :param configuration_path: The full module path of the configuration that was supposed to be set up
+        :param child_errors: Optional child configuration errors that caused this error
+        """
+        super().__init__(msg)
+        self.child_errors = child_errors or []
+
+
 class ConfigurationError(ValueError):
     """
     Base error class that is used to indicate that something went wrong during configuration.
@@ -95,10 +109,13 @@ def with_error_handler(callee: Callable) -> Callable:
     def wrapper(*args, **kwargs):
         try:
             return callee(*args, **kwargs)
-        except ConfigurationError as e:
-            msg = "{}{}{}".format(TermStyles.RED + TermStyles.BOLD, e, TermStyles.END)
-            for line in e.explanation_lines:
-                msg += f"\n    {line}"
+        except SetupError as e:
+            msg = f"{str(e)}"
+            for child_error in e.child_errors:
+                msg += f"\n    * {child_error.main_error_msg}"
+                for explanation_line in child_error.explanation_lines:
+                    msg += f"\n        - {explanation_line}"
+
             print(msg, file=sys.stderr)
 
     return wrapper

@@ -8,6 +8,7 @@ from django.conf import ENVIRONMENT_VARIABLE as SETTINGS_ENVIRONMENT_VARIABLE
 from django.core.exceptions import ImproperlyConfigured
 from django.core.management import base
 
+from .errors import SetupError, ConfigurationError
 from .utils import uppercase_attributes, reraise
 from .values import Value, setup_value
 
@@ -149,10 +150,10 @@ class ConfigurationLoader:
 
         try:
             cls = getattr(mod, self.name)
-        except AttributeError as err:  # pragma: no cover
-            reraise(err, "Couldn't find configuration '{0}' "
-                         "in module '{1}'".format(self.name,
-                                                  mod.__package__))
+        except AttributeError:  # pragma: no cover
+            raise SetupError(f"Couldn't find configuration '{self.name}' in module {mod.__package__}.\n"
+                             f"Hint: '{self.name}' is taken from the environment variable '{CONFIGURATION_ENVIRONMENT_VARIABLE}'"
+                             f"and '{mod.__package__}' from the environment variable '{SETTINGS_ENVIRONMENT_VARIABLE}'.")
         try:
             cls.pre_setup()
             cls.setup()
@@ -172,6 +173,10 @@ class ConfigurationLoader:
                                                            self.name))
             cls.post_setup()
 
+        except SetupError:
+            raise
+        except ConfigurationError as err:
+            raise SetupError(f"Couldn't setup configuration '{cls_path}'", [err])
         except Exception as err:
             reraise(err, "Couldn't setup configuration '{0}'".format(cls_path))
 
