@@ -7,7 +7,7 @@ from django.core import validators
 from django.core.exceptions import ValidationError, ImproperlyConfigured
 from django.utils.module_loading import import_string
 
-from .errors import ValueRetrievalError, ValueProcessingError, ConfigurationError
+from .errors import ValueRetrievalError, ValueProcessingError
 from .utils import getargspec
 
 
@@ -311,7 +311,7 @@ class BackendsValue(ListValue):
         try:
             import_string(value)
         except ImportError as err:
-            raise ValueProcessingError(self, value)
+            raise ValueProcessingError(self, value) from err
         return value
 
 
