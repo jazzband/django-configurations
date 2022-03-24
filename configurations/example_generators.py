@@ -1,8 +1,17 @@
 from typing import Callable
 import secrets
 import base64
+
+import django
 from django.core.management.utils import get_random_secret_key
-from django.utils.crypto import get_random_string, RANDOM_STRING_CHARS
+from django.utils.crypto import get_random_string
+
+if django.VERSION[0] > 3 or \
+        (django.VERSION[0] == 3 and django.VERSION[1] >= 2):
+    # RANDOM_STRING_CHARS was only introduced in django 3.2
+    from django.utils.crypto import RANDOM_STRING_CHARS
+else:
+    RANDOM_STRING_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"  # pragma: no cover
 
 
 def gen_django_secret_key() -> str:
@@ -17,9 +26,11 @@ def gen_random_string(length: int, allowed_chars: str = RANDOM_STRING_CHARS) -> 
     Create a parameterized generator which generates a cryptographically secure random string of the given length
     containing the given characters.
     """
-    def generate() -> str:
+
+    def _gen_random_string() -> str:
         return get_random_string(length, allowed_chars)
-    return generate
+
+    return _gen_random_string
 
 
 def gen_bytes(length: int, encoding: str) -> Callable[[], str]:
@@ -36,7 +47,7 @@ def gen_bytes(length: int, encoding: str) -> Callable[[], str]:
         raise ValueError(f"Cannot gen_bytes with encoding '{encoding}'. Valid encodings are 'base64', 'base64_urlsafe'"
                          f" and 'hex'")
 
-    def generate() -> str:
+    def _gen_bytes() -> str:
         b = secrets.token_bytes(length)
         if encoding == "base64":
             return base64.standard_b64encode(b).decode("ASCII")
@@ -44,4 +55,5 @@ def gen_bytes(length: int, encoding: str) -> Callable[[], str]:
             return base64.urlsafe_b64encode(b).decode("ASCII")
         elif encoding == "hex":
             return b.hex().upper()
-    return generate
+
+    return _gen_bytes
