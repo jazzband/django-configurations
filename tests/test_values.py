@@ -425,6 +425,7 @@ class ValueTests(TestCase):
                 'EMAIL_HOST_PASSWORD': 'password',
                 'EMAIL_HOST_USER': 'user@domain.com',
                 'EMAIL_PORT': 587,
+                'EMAIL_TIMEOUT': None,
                 'EMAIL_USE_SSL': False,
                 'EMAIL_USE_TLS': True})
         with env(EMAIL_URL='console://'):
@@ -435,6 +436,7 @@ class ValueTests(TestCase):
                 'EMAIL_HOST_PASSWORD': None,
                 'EMAIL_HOST_USER': None,
                 'EMAIL_PORT': None,
+                'EMAIL_TIMEOUT': None,
                 'EMAIL_USE_SSL': False,
                 'EMAIL_USE_TLS': False})
         with env(EMAIL_URL='smtps://user@domain.com:password@smtp.example.com:wrong'):  # noqa: E501
