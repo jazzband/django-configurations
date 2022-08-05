@@ -6,6 +6,10 @@ Changelog
 unreleased
 ^^^^^^^^^^
 
+- Add compatibility with Django 4.1
+- Drop compatibility for Django 2.2, 3.1
+- Drop compatibility for Python 3.6
+
 v2.3.2 (2022-01-25)
 ^^^^^^^^^^^^^^^^^^^
 
