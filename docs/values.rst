@@ -407,20 +407,25 @@ Validator values
 
         DEFAULT_SKU = values.RegexValue('000-000-00', regex=r'\d{3}-\d{3}-\d{2}')
 
-.. class:: PathValue(default, [check_exists=True, environ=True, environ_name=None, environ_prefix='DJANGO'])
+.. class:: PathValue(default, [check_exists=True, use_pathlib=False, environ=True, environ_name=None, environ_prefix='DJANGO'])
 
     A :class:`~Value` subclass that normalizes the given path using
-    :func:`os.path.expanduser` and checks if it exists on the file system.
+    :func:`pathlib.Path.expanduser` and checks if it exists on the file system.
 
     Takes an optional ``check_exists`` parameter to disable the check with
-    :func:`os.path.exists`.
+    :func:`pathlib.Path.exists`, and an optional ``use_pathlib`` to return the
+    path as a :class:`pathlib.Path` instance. The default return value is a
+    :func:`str`.
 
     :param check_exists: toggle the file system check
+    :param use_pathlib: return the path as a :class:`pathlib.Path` instance
 
     ::
 
         BASE_DIR = values.PathValue('/opt/mysite/')
         STATIC_ROOT = values.PathValue('/var/www/static', checks_exists=False)
+        STATICFILES_DIRS = values.PathValue('assets/', use_pathlib=True)
+
 
 URL-based values
 ^^^^^^^^^^^^^^^^
