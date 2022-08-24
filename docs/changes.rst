@@ -10,7 +10,7 @@ v2.4 (2022-08-24)
 ^^^^^^^^^^^^^^^^^
 
 - Add compatibility with Django 4.1
-- **BACKWARD INCOMPATIBLE** Drop compatibility for Django 2.2, 3.1
+- **BACKWARD INCOMPATIBLE** Drop compatibility for Django < 3.2
 - **BACKWARD INCOMPATIBLE** Drop compatibility for Python 3.6
 
 v2.3.2 (2022-01-25)
