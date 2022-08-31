@@ -69,6 +69,7 @@ Further documentation
    patterns
    values
    cookbook
+   mypy
    changes
 
 Alternatives
