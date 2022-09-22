@@ -3,7 +3,7 @@ Usage patterns
 
 There are various configuration patterns that can be implemented with
 django-configurations. The most common pattern is to have a base class
-and various subclasses based on the enviroment they are supposed to be
+and various subclasses based on the environment they are supposed to be
 used in, e.g. in production, staging and development.
 
 Server specific settings

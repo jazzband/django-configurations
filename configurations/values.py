@@ -112,7 +112,7 @@ class Value:
         """
         Convert the given value of a environment variable into an
         appropriate Python representation of the value.
-        This should be overriden when subclassing.
+        This should be overridden when subclassing.
         """
         return value
 

@@ -100,7 +100,7 @@ class Configuration(metaclass=ConfigurationBase):
         http://www.wellfireinteractive.com/blog/easier-12-factor-django/
         https://gist.github.com/bennylope/2999704
         """
-        # check if the class has DOTENV set wether with a path or None
+        # check if the class has DOTENV set whether with a path or None
         dotenv = getattr(cls, 'DOTENV', None)
 
         # if DOTENV is falsy we want to disable it
