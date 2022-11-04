@@ -6,6 +6,8 @@ Changelog
 unreleased
 ^^^^^^^^^^
 
+- Test Django 4.1.3+ on Python 3.11
+
 v2.4 (2022-08-24)
 ^^^^^^^^^^^^^^^^^
 
