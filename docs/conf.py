@@ -2,7 +2,7 @@ import configurations
 
 # -- Project information -----------------------------------------------------
 project = 'django-configurations'
-copyright = '2012-2022, Jannis Leidel and other contributors'
+copyright = '2012-2023, Jannis Leidel and other contributors'
 author = 'Jannis Leidel and other contributors'
 
 release = configurations.__version__
