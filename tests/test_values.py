@@ -375,6 +375,7 @@ class ValueTests(TestCase):
         with env(DATABASE_URL='sqlite://'):
             self.assertEqual(value.setup('DATABASE_URL'), {
                 'default': {
+                    'CONN_HEALTH_CHECKS': False,
                     'CONN_MAX_AGE': 0,
                     'ENGINE': 'django.db.backends.sqlite3',
                     'HOST': '',
