@@ -6,6 +6,7 @@ Changelog
 unreleased
 ^^^^^^^^^^
 
+- Add compatibility with Django 4.2 - fix "STATICFILES_STORAGE/STORAGES are mutually exclusive" error.
 - Test Django 4.1.3+ on Python 3.11
 
 v2.4 (2022-08-24)
