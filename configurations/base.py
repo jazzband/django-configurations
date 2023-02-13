@@ -52,6 +52,12 @@ class ConfigurationBase(type):
         # https://github.com/django/django/commit/226ebb17290b604ef29e82fb5c1fbac3594ac163#diff-ec2bed07bb264cb95a80f08d71a47c06R163-R170
         if "PASSWORD_RESET_TIMEOUT" in settings_vars:
             deprecated_settings.add("PASSWORD_RESET_TIMEOUT_DAYS")
+        # DEFAULT_FILE_STORAGE and STATICFILES_STORAGE are deprecated
+        # in favor of STORAGES.
+        # https://docs.djangoproject.com/en/dev/releases/4.2/#custom-file-storages
+        if "STORAGES" in settings_vars:
+            deprecated_settings.add("DEFAULT_FILE_STORAGE")
+            deprecated_settings.add("STATICFILES_STORAGE")
         for deprecated_setting in deprecated_settings:
             if deprecated_setting in settings_vars:
                 del settings_vars[deprecated_setting]
