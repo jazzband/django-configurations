@@ -47,13 +47,13 @@ Install django-configurations:
 
 .. code-block:: console
 
-    pip install django-configurations
+    $ python -m pip install django-configurations
 
 or, alternatively, if you want to use URL-based values:
 
 .. code-block:: console
 
-    pip install django-configurations[cache,database,email,search]
+    $ python -m pip install django-configurations[cache,database,email,search]
 
 Then subclass the included ``configurations.Configuration`` class in your
 project's **settings.py** or any other module you're using to store the
@@ -73,14 +73,14 @@ you just created, e.g. in bash:
 
 .. code-block:: console
 
-    export DJANGO_CONFIGURATION=Dev
+    $ export DJANGO_CONFIGURATION=Dev
 
 and the ``DJANGO_SETTINGS_MODULE`` environment variable to the module
 import path as usual, e.g. in bash:
 
 .. code-block:: console
 
-    export DJANGO_SETTINGS_MODULE=mysite.settings
+    $ export DJANGO_SETTINGS_MODULE=mysite.settings
 
 *Alternatively* supply the ``--configuration`` option when using Django
 management commands along the lines of Django's default ``--settings``
@@ -88,7 +88,7 @@ command line option, e.g.
 
 .. code-block:: console
 
-    python manage.py runserver --settings=mysite.settings --configuration=Dev
+    $ python -m manage runserver --settings=mysite.settings --configuration=Dev
 
 To enable Django to use your configuration you now have to modify your
 **manage.py**, **wsgi.py** or **asgi.py** script to use django-configurations's versions

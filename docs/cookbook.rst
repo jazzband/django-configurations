@@ -74,7 +74,7 @@ Example:
 
 .. code-block:: console
 
-    $ tree mysite_env/
+    $ tree --noreport mysite_env/
     mysite_env/
     ├── DJANGO_SETTINGS_MODULE
     ├── DJANGO_DEBUG
@@ -82,10 +82,8 @@ Example:
     ├── DJANGO_CACHE_URL
     └── PYTHONSTARTUP
 
-    0 directories, 3 files
     $ cat mysite_env/DJANGO_CACHE_URL
     redis://user@host:port/1
-    $
 
 Then, to enable the ``mysite_env`` environment variables, simply use the
 ``envdir`` command line tool as a prefix for your program, e.g.:
@@ -151,13 +149,13 @@ First install Django 1.8.x and django-configurations:
 
 .. code-block:: console
 
-    $ pip install -r https://raw.github.com/jazzband/django-configurations/templates/1.8.x/requirements.txt
+    $ python -m pip install -r https://raw.github.com/jazzband/django-configurations/templates/1.8.x/requirements.txt
 
 Or Django 1.8:
 
 .. code-block:: console
 
-    $ django-admin.py startproject mysite -v2 --template https://github.com/jazzband/django-configurations/archive/templates/1.8.x.zip
+    $ python -m django startproject mysite -v2 --template https://github.com/jazzband/django-configurations/archive/templates/1.8.x.zip
 
 Now you have a default Django 1.8.x project in the ``mysite``
 directory that uses django-configurations.
