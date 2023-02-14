@@ -86,9 +86,11 @@ prefixed with ``DJANGO_``. E.g.:
 django-configurations will try to read the ``DJANGO_ROOT_URLCONF`` environment
 variable when deciding which value the ``ROOT_URLCONF`` setting should have.
 When you run the web server simply specify that environment variable
-(e.g. in your init script)::
+(e.g. in your init script):
 
-    DJANGO_ROOT_URLCONF=mysite.debugging_urls gunicorn mysite.wsgi:application
+.. code-block:: console
+
+    $ DJANGO_ROOT_URLCONF=mysite.debugging_urls gunicorn mysite.wsgi:application
 
 If the environment variable can't be found it'll use the default
 ``'mysite.urls'``.
@@ -125,7 +127,9 @@ Allow final value to be used outside the configuration context
 
 You may use the ``environ_name`` parameter to allow a :class:`~Value` to be
 directly converted to its final value for use outside of the configuration
-context::
+context:
+
+.. code-block:: pycon
 
     >>> type(values.Value([]))
     <class 'configurations.values.Value'>
@@ -283,17 +287,21 @@ Type values
         MONTY_PYTHONS = ListValue(['John Cleese', 'Eric Idle'],
                                   converter=check_monty_python)
 
-    You can override this list with an environment variable like this::
+    You can override this list with an environment variable like this:
 
-        DJANGO_MONTY_PYTHONS="Terry Jones,Graham Chapman" gunicorn mysite.wsgi:application
+.. code-block:: console
+
+        $ DJANGO_MONTY_PYTHONS="Terry Jones,Graham Chapman" gunicorn mysite.wsgi:application
 
     Use a custom separator::
 
         EMERGENCY_EMAILS = ListValue(['admin@mysite.net'], separator=';')
 
-    And override it::
+    And override it:
 
-        DJANGO_EMERGENCY_EMAILS="admin@mysite.net;manager@mysite.org;support@mysite.com" gunicorn mysite.wsgi:application
+.. code-block:: console
+
+        $ DJANGO_EMERGENCY_EMAILS="admin@mysite.net;manager@mysite.org;support@mysite.com" gunicorn mysite.wsgi:application
 
 .. class:: TupleValue
 

@@ -31,9 +31,9 @@ it should be ``Prod``. In Bash that would be:
 
 .. code-block:: console
 
-    export DJANGO_SETTINGS_MODULE=mysite.settings
-    export DJANGO_CONFIGURATION=Prod
-    python manage.py runserver
+    $ export DJANGO_SETTINGS_MODULE=mysite.settings
+    $ export DJANGO_CONFIGURATION=Prod
+    $ python -m manage runserver
 
 Alternatively you can use the ``--configuration`` option when using Django
 management commands along the lines of Django's default ``--settings``
@@ -41,7 +41,7 @@ command line option, e.g.
 
 .. code-block:: console
 
-    python manage.py runserver --settings=mysite.settings --configuration=Prod
+    $ python -m manage runserver --settings=mysite.settings --configuration=Prod
 
 Property settings
 -----------------

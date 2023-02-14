@@ -93,6 +93,6 @@ Bugs and feature requests
 As always your mileage may vary, so please don't hesitate to send feature
 requests and bug reports:
 
-    https://github.com/jazzband/django-configurations/issues
+- https://github.com/jazzband/django-configurations/issues
 
 Thanks!
