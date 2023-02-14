@@ -3,9 +3,10 @@
 Changelog
 ---------
 
-unreleased
-^^^^^^^^^^
+v2.4.1 (unreleased)
+^^^^^^^^^^^^^^^^^^^
 
+- Use furo as documentation theme 
 - Add compatibility with Django 4.2 - fix "STATICFILES_STORAGE/STORAGES are mutually exclusive" error.
 - Test Django 4.1.3+ on Python 3.11
 
