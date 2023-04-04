@@ -3,7 +3,7 @@
 Changelog
 ---------
 
-v2.4.1 (unreleased)
+v2.4.1 (2023-04-04)
 ^^^^^^^^^^^^^^^^^^^
 
 - Use furo as documentation theme 
