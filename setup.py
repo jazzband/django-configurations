@@ -31,9 +31,8 @@ setup(
     },
     install_requires=[
         'django>=3.2',
-        'importlib-metadata;python_version<"3.8"',
     ],
-    python_requires='>=3.7, <4.0',
+    python_requires='>=3.8, <4.0',
     extras_require={
         'cache': ['django-cache-url'],
         'database': ['dj-database-url'],
@@ -50,7 +49,6 @@ setup(
         'Development Status :: 5 - Production/Stable',
         'Framework :: Django',
         'Framework :: Django :: 3.2',
-        'Framework :: Django :: 4.0',
         'Framework :: Django :: 4.1',
         'Framework :: Django :: 4.2',
         'Intended Audience :: Developers',
@@ -59,7 +57,6 @@ setup(
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3 :: Only',
-        'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
