@@ -3,6 +3,20 @@
 Changelog
 ---------
 
+v2.5 (unreleased)
+^^^^^^^^^^^^^^^^^
+
+- Update Github actions and fix pipeline warnings
+- Add compatibility with Django 5.0
+- **BACKWARD INCOMPATIBLE** Drop compatibility for Django 4.0
+- **BACKWARD INCOMPATIBLE** Drop compatibility for Python 3.7 and PyPy < 3.10
+
+v2.4.2 (2023-09-27)
+^^^^^^^^^^^^^^^^^^^
+
+- Replace imp (due for removal in Python 3.12) with importlib
+- Test on PyPy 3.10.
+
 v2.4.1 (2023-04-04)
 ^^^^^^^^^^^^^^^^^^^
 

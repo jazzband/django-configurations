@@ -1,6 +1,5 @@
 import os
 import uuid
-import django
 
 from configurations import Configuration, pristinemethod
 from configurations.values import BooleanValue
@@ -35,9 +34,6 @@ class Test(Configuration):
     ]
 
     ROOT_URLCONF = 'tests.urls'
-
-    if django.VERSION[:2] < (1, 6):
-        TEST_RUNNER = 'discover_runner.DiscoverRunner'
 
     @property
     def ALLOWED_HOSTS(self):
