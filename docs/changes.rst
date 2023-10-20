@@ -3,7 +3,7 @@
 Changelog
 ---------
 
-v2.5 (unreleased)
+v2.5 (2023-10-20)
 ^^^^^^^^^^^^^^^^^
 
 - Update Github actions and fix pipeline warnings
