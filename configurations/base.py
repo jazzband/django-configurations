@@ -103,7 +103,7 @@ class Configuration(metaclass=ConfigurationBase):
         environment variables from a .env file located in the project root
         or provided directory.
 
-        http://www.wellfireinteractive.com/blog/easier-12-factor-django/
+        https://wellfire.co/learn/easier-12-factor-django/
         https://gist.github.com/bennylope/2999704
         """
         # check if the class has DOTENV set whether with a path or None
