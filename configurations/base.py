@@ -66,7 +66,7 @@ class ConfigurationBase(type):
         return super().__new__(cls, name, bases, attrs)
 
     def __repr__(self):
-        return "<Configuration '{0}.{1}'>".format(self.__module__,
+        return "<Configuration '{}.{}'>".format(self.__module__,
                                                   self.__name__)
 
 
@@ -115,7 +115,7 @@ class Configuration(metaclass=ConfigurationBase):
 
         # now check if we can access the file since we know we really want to
         try:
-            with open(dotenv, 'r') as f:
+            with open(dotenv) as f:
                 content = f.read()
         except OSError as e:
             raise ImproperlyConfigured("Couldn't read .env file "
