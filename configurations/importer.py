@@ -71,7 +71,7 @@ class ConfigurationImporter:
             self.announce()
 
     def __repr__(self):
-        return "<ConfigurationImporter for '{0}.{1}'>".format(self.module,
+        return "<ConfigurationImporter for '{}.{}'>".format(self.module,
                                                               self.name)
 
     @property
@@ -122,8 +122,8 @@ class ConfigurationImporter:
             if (self.argv[1] == 'runserver'
                     and os.environ.get('RUN_MAIN') == 'true'):
 
-                message = ("django-configurations version {0}, using "
-                           "configuration {1}".format(__version__ or "",
+                message = ("django-configurations version {}, using "
+                           "configuration {}".format(__version__ or "",
                                                       self.name))
                 self.logger.debug(stylize(message))
 
@@ -151,13 +151,13 @@ class ConfigurationLoader:
             sys.modules[fullname] = mod
             self.spec.loader.exec_module(mod)
 
-        cls_path = '{0}.{1}'.format(mod.__name__, self.name)
+        cls_path = f'{mod.__name__}.{self.name}'
 
         try:
             cls = getattr(mod, self.name)
         except AttributeError as err:  # pragma: no cover
-            reraise(err, "Couldn't find configuration '{0}' "
-                         "in module '{1}'".format(self.name,
+            reraise(err, "Couldn't find configuration '{}' "
+                         "in module '{}'".format(self.name,
                                                   mod.__package__))
         try:
             cls.pre_setup()
@@ -174,11 +174,11 @@ class ConfigurationLoader:
                         continue
                 setattr(mod, name, value)
 
-            setattr(mod, 'CONFIGURATION', '{0}.{1}'.format(fullname,
+            setattr(mod, 'CONFIGURATION', '{}.{}'.format(fullname,
                                                            self.name))
             cls.post_setup()
 
         except Exception as err:
-            reraise(err, "Couldn't setup configuration '{0}'".format(cls_path))
+            reraise(err, f"Couldn't setup configuration '{cls_path}'")
 
         return mod
