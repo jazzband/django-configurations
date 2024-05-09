@@ -46,6 +46,10 @@ class ConfigurationBase(type):
             # suppressed, as downstream users are expected to make a decision.
             # https://docs.djangoproject.com/en/3.2/releases/3.2/#customizing-type-of-auto-created-primary-keys
             "DEFAULT_AUTO_FIELD",
+            # FORMS_URLFIELD_ASSUME_HTTPS is a transitional setting introduced
+            # in Django 5.0.
+            # https://docs.djangoproject.com/en/5.0/releases/5.0/#id2
+            "FORMS_URLFIELD_ASSUME_HTTPS"
         }
         # PASSWORD_RESET_TIMEOUT_DAYS is deprecated in favor of
         # PASSWORD_RESET_TIMEOUT in Django 3.1
