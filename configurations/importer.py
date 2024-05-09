@@ -173,6 +173,4 @@ def wrap_loader(loader, class_name):
             except Exception as err:
                 reraise(err, "Couldn't setup configuration '{0}'".format(cls_path))
 
-            return mod
-
     loader.__class__ = ConfigurationLoader
