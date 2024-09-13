@@ -1,4 +1,3 @@
-import importlib.util
 from importlib.machinery import PathFinder
 import logging
 import os
@@ -47,12 +46,12 @@ def install(check_options=False):
             return parser
 
         base.BaseCommand.create_parser = create_parser
-        importer = ConfigurationImporter(check_options=check_options)
+        importer = ConfigurationFinder(check_options=check_options)
         sys.meta_path.insert(0, importer)
         installed = True
 
 
-class ConfigurationImporter:
+class ConfigurationFinder(PathFinder):
     modvar = SETTINGS_ENVIRONMENT_VARIABLE
     namevar = CONFIGURATION_ENVIRONMENT_VARIABLE
     error_msg = ("Configuration cannot be imported, "
@@ -71,7 +70,7 @@ class ConfigurationImporter:
             self.announce()
 
     def __repr__(self):
-        return "<ConfigurationImporter for '{0}.{1}'>".format(self.module,
+        return "<ConfigurationFinder for '{0}.{1}'>".format(self.module,
                                                               self.name)
 
     @property
@@ -129,56 +128,49 @@ class ConfigurationImporter:
 
     def find_spec(self, fullname, path=None, target=None):
         if fullname is not None and fullname == self.module:
-            spec = PathFinder.find_spec(fullname, path)
+            spec = super().find_spec(fullname, path, target)
             if spec is not None:
-                return importlib.machinery.ModuleSpec(spec.name,
-                    ConfigurationLoader(self.name, spec),
-                    origin=spec.origin)
-        return None
-
-
-class ConfigurationLoader:
-
-    def __init__(self, name, spec):
-        self.name = name
-        self.spec = spec
-
-    def load_module(self, fullname):
-        if fullname in sys.modules:
-            mod = sys.modules[fullname]  # pragma: no cover
+                wrap_loader(spec.loader, self.name)
+                return spec
         else:
-            mod = importlib.util.module_from_spec(self.spec)
-            sys.modules[fullname] = mod
-            self.spec.loader.exec_module(mod)
+            return None
 
-        cls_path = '{0}.{1}'.format(mod.__name__, self.name)
 
-        try:
-            cls = getattr(mod, self.name)
-        except AttributeError as err:  # pragma: no cover
-            reraise(err, "Couldn't find configuration '{0}' "
-                         "in module '{1}'".format(self.name,
-                                                  mod.__package__))
-        try:
-            cls.pre_setup()
-            cls.setup()
-            obj = cls()
-            attributes = uppercase_attributes(obj).items()
-            for name, value in attributes:
-                if callable(value) and not getattr(value, 'pristine', False):
-                    value = value()
-                    # in case a method returns a Value instance we have
-                    # to do the same as the Configuration.setup method
-                    if isinstance(value, Value):
-                        setup_value(mod, name, value)
-                        continue
-                setattr(mod, name, value)
+def wrap_loader(loader, class_name):
+    class ConfigurationLoader(loader.__class__):
+        def exec_module(self, module):
+            super().exec_module(module)
 
-            setattr(mod, 'CONFIGURATION', '{0}.{1}'.format(fullname,
-                                                           self.name))
-            cls.post_setup()
+            mod = module
 
-        except Exception as err:
-            reraise(err, "Couldn't setup configuration '{0}'".format(cls_path))
+            cls_path = '{0}.{1}'.format(mod.__name__, class_name)
 
-        return mod
+            try:
+                cls = getattr(mod, class_name)
+            except AttributeError as err:  # pragma: no cover
+                reraise(err, "Couldn't find configuration '{0}' "
+                             "in module '{1}'".format(class_name,
+                                                      mod.__package__))
+            try:
+                cls.pre_setup()
+                cls.setup()
+                obj = cls()
+                attributes = uppercase_attributes(obj).items()
+                for name, value in attributes:
+                    if callable(value) and not getattr(value, 'pristine', False):
+                        value = value()
+                        # in case a method returns a Value instance we have
+                        # to do the same as the Configuration.setup method
+                        if isinstance(value, Value):
+                            setup_value(mod, name, value)
+                            continue
+                    setattr(mod, name, value)
+
+                setattr(mod, 'CONFIGURATION', '{0}.{1}'.format(module.__name__,
+                                                               class_name))
+                cls.post_setup()
+
+            except Exception as err:
+                reraise(err, "Couldn't setup configuration '{0}'".format(cls_path))
+
+    loader.__class__ = ConfigurationLoader
