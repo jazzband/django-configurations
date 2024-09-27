@@ -34,7 +34,7 @@ class ValueTests(TestCase):
 
     def test_value_with_default(self):
         value = Value('default', environ=False)
-        self.assertEqual(type(value), type('default'))
+        self.assertEqual(type(value), str)
         self.assertEqual(value, 'default')
         self.assertEqual(str(value), 'default')
 
@@ -44,17 +44,17 @@ class ValueTests(TestCase):
         with env(DJANGO_TEST='override'):
             self.assertEqual(value.setup('TEST'), 'default')
             value = Value(environ_name='TEST')
-            self.assertEqual(type(value), type('override'))
+            self.assertEqual(type(value), str)
             self.assertEqual(value, 'override')
             self.assertEqual(str(value), 'override')
-            self.assertEqual('{0}'.format(value), 'override')
+            self.assertEqual(f'{value}', 'override')
             self.assertEqual('%s' % value, 'override')
 
             value = Value(environ_name='TEST', late_binding=True)
             self.assertEqual(type(value), Value)
             self.assertEqual(value.value, 'override')
             self.assertEqual(str(value), 'override')
-            self.assertEqual('{0}'.format(value), 'override')
+            self.assertEqual(f'{value}', 'override')
             self.assertEqual('%s' % value, 'override')
 
             self.assertEqual(repr(value), repr('override'))
