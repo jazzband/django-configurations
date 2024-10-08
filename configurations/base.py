@@ -26,12 +26,6 @@ class ConfigurationBase(type):
             if not importer.installed:
                 raise ImproperlyConfigured(install_failure)
         settings_vars = uppercase_attributes(global_settings)
-        parents = [base for base in bases if isinstance(base,
-                                                        ConfigurationBase)]
-        if parents:
-            for base in bases[::-1]:
-                settings_vars.update(uppercase_attributes(base))
-
         deprecated_settings = {
             # DEFAULT_HASHING_ALGORITHM is always deprecated, as it's a
             # transitional setting
