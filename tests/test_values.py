@@ -373,7 +373,7 @@ class ValueTests(TestCase):
         value = DatabaseURLValue()
         self.assertEqual(value.default, {})
         with env(DATABASE_URL='sqlite://'):
-            self.assertDictEqual(value.setup('DATABASE_URL'), {
+            self.assertDictEqual({
                 'default': {
                     'CONN_HEALTH_CHECKS': False,
                     'CONN_MAX_AGE': 0,
@@ -383,24 +383,24 @@ class ValueTests(TestCase):
                     'PASSWORD': '',
                     'PORT': '',
                     'USER': '',
-                }})
+                }}, value.setup('DATABASE_URL'))
 
-    # def test_database_url_additional_args(self):
-    #
-    #     def mock_database_url_caster(self, url, engine=None):
-    #         return {'URL': url, 'ENGINE': engine}
-    #
-    #     with patch('configurations.values.DatabaseURLValue.caster',
-    #                mock_database_url_caster):
-    #         value = DatabaseURLValue(
-    #             engine='django_mysqlpool.backends.mysqlpool')
-    #         with env(DATABASE_URL='sqlite://'):
-    #             self.assertDictEqual(value.setup('DATABASE_URL'), {
-    #                 'default': {
-    #                     'URL': 'sqlite://',
-    #                     'ENGINE': 'django_mysqlpool.backends.mysqlpool'
-    #                 }
-    #             })
+    def test_database_url_additional_args(self):
+
+        def mock_database_url_caster(self, url, engine=None):
+            return {'URL': url, 'ENGINE': engine}
+
+        with patch('configurations.values.DatabaseURLValue.caster',
+                   mock_database_url_caster):
+            value = DatabaseURLValue(
+                engine='django_mysqlpool.backends.mysqlpool')
+            with env(DATABASE_URL='sqlite://'):
+                self.assertDictEqual(value.setup('DATABASE_URL'), {
+                    'default': {
+                        'URL': 'sqlite://',
+                        'ENGINE': 'django_mysqlpool.backends.mysqlpool'
+                    }
+                })
 
     def test_email_url_value(self):
         value = EmailURLValue()
