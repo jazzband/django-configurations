@@ -373,8 +373,8 @@ class ValueTests(TestCase):
         value = DatabaseURLValue()
         self.assertEqual(value.default, {})
         with env(DATABASE_URL='sqlite://'):
+            settings_value = value.setup('DATABASE_URL')
             self.assertDictEqual({
-                'default': {
                     'CONN_HEALTH_CHECKS': False,
                     'CONN_MAX_AGE': 0,
                     'ENGINE': 'django.db.backends.sqlite3',
@@ -383,7 +383,7 @@ class ValueTests(TestCase):
                     'PASSWORD': '',
                     'PORT': '',
                     'USER': '',
-                }}, value.setup('DATABASE_URL'))
+                }, settings_value['default'])
 
     def test_database_url_additional_args(self):
 
