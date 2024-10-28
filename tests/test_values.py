@@ -373,7 +373,7 @@ class ValueTests(TestCase):
         value = DatabaseURLValue()
         self.assertEqual(value.default, {})
         with env(DATABASE_URL='sqlite://'):
-            self.assertEqual(value.setup('DATABASE_URL'), {
+            self.assertDictEqual(value.setup('DATABASE_URL'), {
                 'default': {
                     'CONN_HEALTH_CHECKS': False,
                     'CONN_MAX_AGE': 0,
@@ -395,7 +395,7 @@ class ValueTests(TestCase):
             value = DatabaseURLValue(
                 engine='django_mysqlpool.backends.mysqlpool')
             with env(DATABASE_URL='sqlite://'):
-                self.assertEqual(value.setup('DATABASE_URL'), {
+                self.assertDictEqual(value.setup('DATABASE_URL'), {
                     'default': {
                         'URL': 'sqlite://',
                         'ENGINE': 'django_mysqlpool.backends.mysqlpool'
