@@ -374,9 +374,10 @@ class ValueTests(TestCase):
         self.assertEqual(value.default, {})
         with env(DATABASE_URL='sqlite://'):
             settings_value = value.setup('DATABASE_URL')
-            # Compare the embedded dicts in the "default" entry so that the difference can be seen if 
+            # Compare the embedded dicts in the "default" entry so that the difference can be seen if
             # it fails ... DatabaseURLValue(|) uses an external app that can add additional entries
-            self.assertDictEqual({
+            self.assertDictEqual(
+                {
                     'CONN_HEALTH_CHECKS': False,
                     'CONN_MAX_AGE': 0,
                     'DISABLE_SERVER_SIDE_CURSORS': False,
@@ -386,7 +387,9 @@ class ValueTests(TestCase):
                     'PASSWORD': '',
                     'PORT': '',
                     'USER': '',
-                }, settings_value['default'])
+                },
+                settings_value['default']
+            )
 
     def test_database_url_additional_args(self):
 
