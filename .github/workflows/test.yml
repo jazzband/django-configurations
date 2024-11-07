@@ -54,3 +54,4 @@ jobs:
         include-hidden-files: true
         merge-multiple: true
         fail_ci_if_error: true
+        token: ${{ secrets.CODECOV_TOKEN }}
