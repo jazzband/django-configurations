@@ -29,21 +29,21 @@ def import_by_path(dotted_path, error_prefix=''):
     try:
         module_path, class_name = dotted_path.rsplit('.', 1)
     except ValueError:
-        raise ImproperlyConfigured("{0}{1} doesn't look like "
+        raise ImproperlyConfigured("{}{} doesn't look like "
                                    "a module path".format(error_prefix,
                                                           dotted_path))
     try:
         module = import_module(module_path)
     except ImportError as err:
-        msg = '{0}Error importing module {1}: "{2}"'.format(error_prefix,
+        msg = '{}Error importing module {}: "{}"'.format(error_prefix,
                                                             module_path,
                                                             err)
         raise ImproperlyConfigured(msg).with_traceback(sys.exc_info()[2])
     try:
         attr = getattr(module, class_name)
     except AttributeError:
-        raise ImproperlyConfigured('{0}Module "{1}" does not define a '
-                                   '"{2}" attribute/class'.format(error_prefix,
+        raise ImproperlyConfigured('{}Module "{}" does not define a '
+                                   '"{}" attribute/class'.format(error_prefix,
                                                                   module_path,
                                                                   class_name))
     return attr
@@ -61,7 +61,7 @@ def reraise(exc, prefix=None, suffix=None):
         suffix = ''
     elif not (suffix.startswith('(') and suffix.endswith(')')):
         suffix = '(' + suffix + ')'
-    exc.args = ('{0} {1} {2}'.format(prefix, args[0], suffix),) + args[1:]
+    exc.args = (f'{prefix} {args[0]} {suffix}',) + args[1:]
     raise exc
 
 

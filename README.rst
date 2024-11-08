@@ -137,7 +137,7 @@ Or if you are not serving your app via WSGI but ASGI instead, you need to modify
     import os
 
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mysite.settings')
-    os.environ.setdefault('DJANGO_CONFIGURATION', 'DEV')
+    os.environ.setdefault('DJANGO_CONFIGURATION', 'Dev')
 
     from configurations.asgi import get_asgi_application
 

@@ -70,7 +70,7 @@ class ConfigurationFinder(PathFinder):
             self.announce()
 
     def __repr__(self):
-        return "<ConfigurationFinder for '{0}.{1}'>".format(self.module,
+        return "<ConfigurationFinder for '{}.{}'>".format(self.module,
                                                               self.name)
 
     @property
@@ -121,8 +121,8 @@ class ConfigurationFinder(PathFinder):
             if (self.argv[1] == 'runserver'
                     and os.environ.get('RUN_MAIN') == 'true'):
 
-                message = ("django-configurations version {0}, using "
-                           "configuration {1}".format(__version__ or "",
+                message = ("django-configurations version {}, using "
+                           "configuration {}".format(__version__ or "",
                                                       self.name))
                 self.logger.debug(stylize(message))
 
@@ -143,13 +143,14 @@ def wrap_loader(loader, class_name):
 
             mod = module
 
-            cls_path = '{0}.{1}'.format(mod.__name__, class_name)
+            cls_path = f'{mod.__name__}.{class_name}'
+            
 
             try:
                 cls = getattr(mod, class_name)
             except AttributeError as err:  # pragma: no cover
-                reraise(err, "Couldn't find configuration '{0}' "
-                             "in module '{1}'".format(class_name,
+                reraise(err, "Couldn't find configuration '{}' "
+                             "in module '{}'".format(class_name,
                                                       mod.__package__))
             try:
                 cls.pre_setup()
@@ -166,11 +167,11 @@ def wrap_loader(loader, class_name):
                             continue
                     setattr(mod, name, value)
 
-                setattr(mod, 'CONFIGURATION', '{0}.{1}'.format(module.__name__,
+                setattr(mod, 'CONFIGURATION', '{}.{}'.format(module.__name__,
                                                                class_name))
                 cls.post_setup()
 
             except Exception as err:
-                reraise(err, "Couldn't setup configuration '{0}'".format(cls_path))
+                reraise(err, f"Couldn't setup configuration '{cls_path}'")
 
     loader.__class__ = ConfigurationLoader
