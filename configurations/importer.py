@@ -144,8 +144,6 @@ def wrap_loader(loader, class_name):
             mod = module
 
             cls_path = f'{mod.__name__}.{class_name}'
-            
-
             try:
                 cls = getattr(mod, class_name)
             except AttributeError as err:  # pragma: no cover
