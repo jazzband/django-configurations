@@ -1,0 +1,58 @@
+[build-system]
+build-backend = "setuptools.build_meta"
+
+requires = [
+  "setuptools>=61.2",
+  "setuptools-scm",
+]
+
+[project]
+name = "django-configurations"
+description = "A helper for organizing Django settings."
+readme.content-type = "text/x-rst"
+readme.file = "README.rst"
+license = { text = "BSD" }
+authors = [ { name = "Jannis Leidel", email = "jannis@leidel.info" } ]
+requires-python = ">=3.9,<4.0"
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Framework :: Django",
+  "Framework :: Django :: 3.2",
+  "Framework :: Django :: 4.1",
+  "Framework :: Django :: 4.2",
+  "Framework :: Django :: 5.0",
+  "Framework :: Django :: 5.1",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: BSD License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: Implementation :: PyPy",
+  "Topic :: Utilities",
+]
+dynamic = [ "version" ]
+
+dependencies = [ "django>=3.2" ]
+optional-dependencies.cache = [ "django-cache-url" ]
+optional-dependencies.database = [ "dj-database-url" ]
+optional-dependencies.email = [ "dj-email-url" ]
+optional-dependencies.search = [ "dj-search-url" ]
+optional-dependencies.testing = [
+  "dj-database-url",
+  "dj-email-url",
+  "dj-search-url",
+  "django-cache-url>=1",
+]
+urls.Homepage = "https://django-configurations.readthedocs.io/"
+urls.Source = "https://github.com/jazzband/django-configurations"
+scripts.django-cadmin = "configurations.management:execute_from_command_line"
+
+[tool.setuptools]
+packages = [ "configurations" ]
+zip-safe = false
+include-package-data = false
