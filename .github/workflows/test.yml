@@ -45,8 +45,8 @@ jobs:
 
     - name: Tox tests
       env:
-        DJANGO_CONFIGURATION: Dev
-        DJANGO_SETTINGS_MODULE: mysite.settings
+        DJANGO_CONFIGURATION: Test
+        DJANGO_SETTINGS_MODULE: tests.settings.main
       run: |
         tox --verbose
 
