@@ -44,6 +44,9 @@ jobs:
         python -m pip install --editable ".[testing]"
 
     - name: Tox tests
+      env:
+        DJANGO_CONFIGURATION: Dev
+        DJANGO_SETTINGS_MODULE: mysite.settings
       run: |
         tox --verbose
 
