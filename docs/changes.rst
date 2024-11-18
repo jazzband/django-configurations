@@ -3,6 +3,11 @@
 Changelog
 ---------
 
+Unreleased
+^^^^^^^^^^
+
+- Prevent warning about ``FORMS_URLFIELD_ASSUME_HTTPS`` on Django 5.0.
+
 v2.5.1 (2023-11-30)
 ^^^^^^^^^^^^^^^^^^^
 
