@@ -29,7 +29,7 @@ jobs:
         echo "dir=$(pip cache dir)" >> $GITHUB_OUTPUT
 
     - name: Cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ${{ steps.pip-cache.outputs.dir }}
         key:
@@ -47,7 +47,7 @@ jobs:
         tox --verbose
 
     - name: Upload coverage
-      uses: codecov/codecov-action@v4
+      uses: codecov/codecov-action@v5
       with:
         name: coverage-data-${{ matrix.python-version }}
         path: ".coverage.*"
