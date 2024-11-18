@@ -2,15 +2,12 @@ import os
 import uuid
 
 from configurations import Configuration, pristinemethod
-from configurations.values import BooleanValue
 
 
 class Test(Configuration):
     BASE_DIR = os.path.abspath(
         os.path.join(os.path.dirname(
             os.path.abspath(__file__)), os.pardir))
-
-    ENV_LOADED = BooleanValue(False)
 
     DEBUG = True
 
