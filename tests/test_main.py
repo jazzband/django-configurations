@@ -7,7 +7,7 @@ from django.core.exceptions import ImproperlyConfigured
 
 from unittest.mock import patch
 
-from configurations.importer import ConfigurationImporter
+from configurations.importer import ConfigurationFinder
 
 ROOT_DIR = os.path.dirname(os.path.dirname(__file__))
 TEST_PROJECT_DIR = os.path.join(ROOT_DIR, 'test_project')
@@ -42,12 +42,14 @@ class MainTests(TestCase):
 
     @patch.dict(os.environ, clear=True, DJANGO_CONFIGURATION='Test')
     def test_empty_module_var(self):
-        self.assertRaises(ImproperlyConfigured, ConfigurationImporter)
+        with self.assertRaises(ImproperlyConfigured):
+            ConfigurationFinder()
 
     @patch.dict(os.environ, clear=True,
                 DJANGO_SETTINGS_MODULE='tests.settings.main')
     def test_empty_class_var(self):
-        self.assertRaises(ImproperlyConfigured, ConfigurationImporter)
+        with self.assertRaises(ImproperlyConfigured):
+            ConfigurationFinder()
 
     def test_global_settings(self):
         from configurations.base import Configuration
@@ -70,21 +72,21 @@ class MainTests(TestCase):
                 DJANGO_SETTINGS_MODULE='tests.settings.main',
                 DJANGO_CONFIGURATION='Test')
     def test_initialization(self):
-        importer = ConfigurationImporter()
-        self.assertEqual(importer.module, 'tests.settings.main')
-        self.assertEqual(importer.name, 'Test')
+        finder = ConfigurationFinder()
+        self.assertEqual(finder.module, 'tests.settings.main')
+        self.assertEqual(finder.name, 'Test')
         self.assertEqual(
-            repr(importer),
-            "<ConfigurationImporter for 'tests.settings.main.Test'>")
+            repr(finder),
+            "<ConfigurationFinder for 'tests.settings.main.Test'>")
 
     @patch.dict(os.environ, clear=True,
                 DJANGO_SETTINGS_MODULE='tests.settings.inheritance',
                 DJANGO_CONFIGURATION='Inheritance')
     def test_initialization_inheritance(self):
-        importer = ConfigurationImporter()
-        self.assertEqual(importer.module,
+        finder = ConfigurationFinder()
+        self.assertEqual(finder.module,
                          'tests.settings.inheritance')
-        self.assertEqual(importer.name, 'Inheritance')
+        self.assertEqual(finder.name, 'Inheritance')
 
     @patch.dict(os.environ, clear=True,
                 DJANGO_SETTINGS_MODULE='tests.settings.main',
@@ -93,12 +95,12 @@ class MainTests(TestCase):
                                 '--settings=tests.settings.main',
                                 '--configuration=Test'])
     def test_configuration_option(self):
-        importer = ConfigurationImporter(check_options=False)
-        self.assertEqual(importer.module, 'tests.settings.main')
-        self.assertEqual(importer.name, 'NonExisting')
-        importer = ConfigurationImporter(check_options=True)
-        self.assertEqual(importer.module, 'tests.settings.main')
-        self.assertEqual(importer.name, 'Test')
+        finder = ConfigurationFinder(check_options=False)
+        self.assertEqual(finder.module, 'tests.settings.main')
+        self.assertEqual(finder.name, 'NonExisting')
+        finder = ConfigurationFinder(check_options=True)
+        self.assertEqual(finder.module, 'tests.settings.main')
+        self.assertEqual(finder.name, 'Test')
 
     def test_configuration_argument_in_cli(self):
         """

@@ -11,4 +11,5 @@ class DotEnvLoadingTests(TestCase):
     def test_env_loaded(self):
         from tests.settings import dot_env
         self.assertEqual(dot_env.DOTENV_VALUE, 'is set')
+        self.assertEqual(dot_env.DOTENV_VALUE_METHOD, 'is set')
         self.assertEqual(dot_env.DOTENV_LOADED, dot_env.DOTENV)
