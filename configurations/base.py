@@ -99,6 +99,7 @@ class Configuration(metaclass=ConfigurationBase):
 
     """
     DOTENV_LOADED = None
+    DOTENV_RELOAD = False
 
     @classmethod
     def load_dotenv(cls):
@@ -113,6 +114,18 @@ class Configuration(metaclass=ConfigurationBase):
         # check if the class has DOTENV set whether with a path or None
         dotenv = getattr(cls, 'DOTENV', None)
 
+        required = True
+        override_env = False
+        # check if the DOTENV is dict, and check all options of it
+        if isinstance(dotenv, dict):
+            # whether we want to override previously set envs
+            override_env = dotenv.get("override", False)
+            # whether we want to error if the file is not found
+            required = dotenv.get("required", True)
+            # whether we want to reload on dotenv, useful if we want to frequently change it
+            cls.DOTENV_RELOAD = dotenv.get("reload", False)
+            dotenv = dotenv.get("path", None)
+
         # if DOTENV is falsy we want to disable it
         if not dotenv:
             return
@@ -122,6 +135,8 @@ class Configuration(metaclass=ConfigurationBase):
             with open(dotenv) as f:
                 content = f.read()
         except OSError as e:
+            if not required:
+                return
             raise ImproperlyConfigured("Couldn't read .env file "
                                        "with the path {}. Error: "
                                        "{}".format(dotenv, e)) from e
@@ -137,13 +152,16 @@ class Configuration(metaclass=ConfigurationBase):
                 m3 = re.match(r'\A"(.*)"\Z', val)
                 if m3:
                     val = re.sub(r'\\(.)', r'\1', m3.group(1))
-                os.environ.setdefault(key, val)
+                if override_env:
+                    os.environ[key] = val
+                else:
+                    os.environ.setdefault(key, val)
 
             cls.DOTENV_LOADED = dotenv
 
     @classmethod
     def pre_setup(cls):
-        if cls.DOTENV_LOADED is None:
+        if cls.DOTENV_LOADED is None or cls.DOTENV_RELOAD:
             cls.load_dotenv()
 
     @classmethod
