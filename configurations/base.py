@@ -4,7 +4,7 @@ import re
 from django.conf import global_settings
 from django.core.exceptions import ImproperlyConfigured
 
-from .utils import uppercase_attributes
+from .utils import uppercase_attributes, UNSET
 from .values import Value, setup_value
 
 __all__ = ['Configuration']
@@ -99,6 +99,7 @@ class Configuration(metaclass=ConfigurationBase):
 
     """
     DOTENV_LOADED = None
+    _environ_prefix = UNSET
 
     @classmethod
     def load_dotenv(cls):
@@ -154,4 +155,5 @@ class Configuration(metaclass=ConfigurationBase):
     def setup(cls):
         for name, value in uppercase_attributes(cls).items():
             if isinstance(value, Value):
+                value._class_environ_prefix = cls._environ_prefix
                 setup_value(cls, name, value)
