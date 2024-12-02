@@ -99,3 +99,11 @@ def getargspec(func):
     if not inspect.isfunction(func):
         raise TypeError('%r is not a Python function' % func)
     return inspect.getfullargspec(func)
+
+
+class Unset:
+    def __repr__(self):  # pragma: no cover
+        return "UNSET"
+
+
+UNSET = Unset()

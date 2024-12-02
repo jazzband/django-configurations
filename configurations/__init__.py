@@ -1,9 +1,9 @@
 from .base import Configuration  # noqa
-from .decorators import pristinemethod  # noqa
+from .decorators import environ_prefix, pristinemethod  # noqa
 from .version import __version__  # noqa
 
 
-__all__ = ['Configuration', 'pristinemethod']
+__all__ = ['Configuration', 'environ_prefix', 'pristinemethod']
 
 
 def _setup():

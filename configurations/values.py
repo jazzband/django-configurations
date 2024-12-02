@@ -6,9 +6,10 @@ import sys
 
 from django.core import validators
 from django.core.exceptions import ValidationError, ImproperlyConfigured
+from django.utils.functional import cached_property
 from django.utils.module_loading import import_string
 
-from .utils import getargspec
+from .utils import getargspec, UNSET
 
 
 def setup_value(target, name, value):
@@ -58,16 +59,14 @@ class Value:
         return instance
 
     def __init__(self, default=None, environ=True, environ_name=None,
-                 environ_prefix='DJANGO', environ_required=False,
+                 environ_prefix=UNSET, environ_required=False,
                  *args, **kwargs):
         if isinstance(default, Value) and default.default is not None:
             self.default = copy.copy(default.default)
         else:
             self.default = default
         self.environ = environ
-        if environ_prefix and environ_prefix.endswith('_'):
-            environ_prefix = environ_prefix[:-1]
-        self.environ_prefix = environ_prefix
+        self._environ_prefix = environ_prefix
         self.environ_name = environ_name
         self.environ_required = environ_required
 
@@ -115,6 +114,19 @@ class Value:
         This should be overridden when subclassing.
         """
         return value
+
+    @cached_property
+    def environ_prefix(self):
+        prefix = UNSET
+        if self._environ_prefix is not UNSET:
+            prefix = self._environ_prefix
+        elif (class_prefix := getattr(self, "_class_environ_prefix", UNSET)) is not UNSET:
+            prefix = class_prefix
+        if prefix is not UNSET:
+            if isinstance(prefix, str) and prefix.endswith("_"):
+                return prefix[:-1]
+            return prefix
+        return "DJANGO"
 
 
 class MultipleMixin:
