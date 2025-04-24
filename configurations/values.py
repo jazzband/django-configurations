@@ -59,7 +59,7 @@ class Value:
 
     def __init__(self, default=None, environ=True, environ_name=None,
                  environ_prefix='DJANGO', environ_required=False,
-                 *args, **kwargs):
+                 loadcredential=True, *args, **kwargs):
         if isinstance(default, Value) and default.default is not None:
             self.default = copy.copy(default.default)
         else:
@@ -70,6 +70,7 @@ class Value:
         self.environ_prefix = environ_prefix
         self.environ_name = environ_name
         self.environ_required = environ_required
+        self.loadcredential = loadcredential
 
     def __str__(self):
         return str(self.value)
@@ -97,7 +98,19 @@ class Value:
 
     def setup(self, name):
         value = self.default
-        if self.environ:
+        _found = False
+
+        if self.loadcredential:
+            directory = os.environ.get("CREDENTIALS_DIRECTORY")
+            if directory is not None:
+                try:
+                    with open(os.path.join(directory, name)) as fp:
+                        value = self.to_python(fp.read().removesuffix("\n"))
+                        _found = True
+                except FileNotFoundError:
+                    pass
+
+        if not _found and self.environ:
             full_environ_name = self.full_environ_name(name)
             if full_environ_name in os.environ:
                 value = self.to_python(os.environ[full_environ_name])
