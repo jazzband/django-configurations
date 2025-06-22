@@ -439,7 +439,7 @@ class ValueTests(TestCase):
     def test_cache_url_value(self):
         cache_setting = {
             'default': {
-                'BACKEND': 'django_redis.cache.RedisCache' if DJANGO_VERSION < (4,) else 'django.core.cache.backends.redis.RedisCache',  # noqa: E501
+                'BACKEND': 'django_redis.cache.RedisCache' if DJANGO_VERSION < (4,) or DJANGO_VERSION > (5,) else 'django.core.cache.backends.redis.RedisCache',  # noqa: E501
                 'LOCATION': 'redis://host:6379/1',
             }
         }

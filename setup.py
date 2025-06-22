@@ -40,6 +40,7 @@ setup(
         'search': ['dj-search-url'],
         'testing': [
             'django-cache-url>=1.0.0',
+            'django-redis',
             'dj-database-url',
             'dj-email-url',
             'dj-search-url',
