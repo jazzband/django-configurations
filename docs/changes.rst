@@ -6,6 +6,14 @@ Changelog
 Unreleased
 ^^^^^^^^^^
 
+- **BACKWARD INCOMPATIBLE** Settings inheritance now relies on Python's
+  standard MRO rather than explicit attribute copying into the child class
+  dict.  Diamond-inheritance hierarchies will now resolve settings in the
+  correct MRO order; previously, a grandparent value baked into an
+  intermediate class could silently shadow a sibling class's more-derived
+  override.  Users who relied on the old dict-merge behaviour may see
+  different setting values after upgrading.
+
 - Prevent warning about ``FORMS_URLFIELD_ASSUME_HTTPS`` on Django 5.0.
 
 v2.5.1 (2023-11-30)

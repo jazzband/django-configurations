@@ -1,5 +1,4 @@
 import os
-import unittest
 
 from django.test import TestCase
 
@@ -38,7 +37,6 @@ class InheritanceTests(TestCase):
             ['test1', 'test2', 'test3']
         )
 
-    @unittest.expectedFailure
     def test_mro_resolution(self):
         """
         A setting defined in Parent2 but not in Parent1 should be visible on
@@ -48,3 +46,15 @@ class InheritanceTests(TestCase):
         """
         from tests.settings.mro_inheritance import Child
         self.assertEqual(Child.MY_SETTING, 'parent2')
+
+    def test_mro_grandparent_setting_accessible(self):
+        """A setting defined only on GrandParent is accessible on descendants that don't override it."""
+        from tests.settings.mro_inheritance import GrandParent, Parent1
+        self.assertEqual(GrandParent.MY_SETTING, 'grandparent')
+        self.assertEqual(Parent1.MY_SETTING, 'grandparent')
+
+    def test_mro_direct_override_wins(self):
+        """A setting set directly on a class overrides any ancestor's value."""
+        from tests.settings.mro_inheritance import GrandParent, Parent2
+        self.assertEqual(GrandParent.MY_SETTING, 'grandparent')
+        self.assertEqual(Parent2.MY_SETTING, 'parent2')
