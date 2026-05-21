@@ -1,4 +1,5 @@
 import os
+import unittest
 
 from django.test import TestCase
 
@@ -36,3 +37,14 @@ class InheritanceTests(TestCase):
             mixin_inheritance.ALLOWED_HOSTS,
             ['test1', 'test2', 'test3']
         )
+
+    @unittest.expectedFailure
+    def test_mro_resolution(self):
+        """
+        A setting defined in Parent2 but not in Parent1 should be visible on
+        Child(Parent1, Parent2) via standard MRO rather than being shadowed by
+        the GrandParent value that the old attribute-copying code bakes into
+        Parent1's class dict.
+        """
+        from tests.settings.mro_inheritance import Child
+        self.assertEqual(Child.MY_SETTING, 'parent2')
