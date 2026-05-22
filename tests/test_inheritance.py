@@ -36,3 +36,25 @@ class InheritanceTests(TestCase):
             mixin_inheritance.ALLOWED_HOSTS,
             ['test1', 'test2', 'test3']
         )
+
+    def test_mro_resolution(self):
+        """
+        A setting defined in Parent2 but not in Parent1 should be visible on
+        Child(Parent1, Parent2) via standard MRO rather than being shadowed by
+        the GrandParent value that the old attribute-copying code bakes into
+        Parent1's class dict.
+        """
+        from tests.settings.mro_inheritance import Child
+        self.assertEqual(Child.MY_SETTING, 'parent2')
+
+    def test_mro_grandparent_setting_accessible(self):
+        """A setting defined only on GrandParent is accessible on descendants that don't override it."""
+        from tests.settings.mro_inheritance import GrandParent, Parent1
+        self.assertEqual(GrandParent.MY_SETTING, 'grandparent')
+        self.assertEqual(Parent1.MY_SETTING, 'grandparent')
+
+    def test_mro_direct_override_wins(self):
+        """A setting set directly on a class overrides any ancestor's value."""
+        from tests.settings.mro_inheritance import GrandParent, Parent2
+        self.assertEqual(GrandParent.MY_SETTING, 'grandparent')
+        self.assertEqual(Parent2.MY_SETTING, 'parent2')
