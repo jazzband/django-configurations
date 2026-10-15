@@ -6,7 +6,9 @@ Changelog
 Unreleased
 ^^^^^^^^^^
 
+- Add compatibility with Django 5.1, 5.2, 6.0 and 6.1
 - Prevent warning about ``FORMS_URLFIELD_ASSUME_HTTPS`` on Django 5.0.
+- Support ``MAILERS`` on Django 6.1, drop deprecated ``EMAIL_*`` defaults if both set.
 
 v2.5.1 (2023-11-30)
 ^^^^^^^^^^^^^^^^^^^
@@ -30,7 +32,7 @@ v2.4.2 (2023-09-27)
 v2.4.1 (2023-04-04)
 ^^^^^^^^^^^^^^^^^^^
 
-- Use furo as documentation theme 
+- Use furo as documentation theme
 - Add compatibility with Django 4.2 - fix "STATICFILES_STORAGE/STORAGES are mutually exclusive" error.
 - Test Django 4.1.3+ on Python 3.11
 
