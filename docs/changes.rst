@@ -7,6 +7,7 @@ Unreleased
 ^^^^^^^^^^
 
 - Prevent warning about ``FORMS_URLFIELD_ASSUME_HTTPS`` on Django 5.0.
+- Support ``MAILERS`` on Django 6.1, drop deprecated ``EMAIL_*`` defaults if both set.
 
 v2.5.1 (2023-11-30)
 ^^^^^^^^^^^^^^^^^^^
