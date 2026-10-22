@@ -1,5 +1,7 @@
+import copy
 import decimal
 import os
+import pickle
 from contextlib import contextmanager
 
 from django import VERSION as DJANGO_VERSION
@@ -112,6 +114,7 @@ class ValueTests(TestCase):
 
     def test_boolean_values_faulty(self):
         self.assertRaises(ValueError, BooleanValue, 'false')
+        self.assertRaises(ValueError, BooleanValue)
 
     def test_boolean_values_false(self):
         value = BooleanValue(True)
@@ -526,3 +529,22 @@ class ValueTests(TestCase):
             self.assertEqual(Target.EMAIL_HOST_USER, 'user@domain.com')
             self.assertEqual(Target.EMAIL_PORT, 587)
             self.assertEqual(Target.EMAIL_USE_TLS, True)
+
+    def test_pickle_values(self):
+        for val in [BooleanValue(True), BooleanValue(False), Value('foo'), IntegerValue(42)]:
+            for proto in range(pickle.HIGHEST_PROTOCOL + 1):
+                pickled = pickle.dumps(val, protocol=proto)
+                unpickled = pickle.loads(pickled)
+                self.assertEqual(type(unpickled), type(val))
+                self.assertEqual(unpickled.value, val.value)
+                self.assertEqual(unpickled.default, val.default)
+
+    def test_copy_values(self):
+        for val in [BooleanValue(True), Value('bar'), IntegerValue(10)]:
+            copied = copy.copy(val)
+            self.assertEqual(type(copied), type(val))
+            self.assertEqual(copied.value, val.value)
+
+            deepcopied = copy.deepcopy(val)
+            self.assertEqual(type(deepcopied), type(val))
+            self.assertEqual(deepcopied.value, val.value)
