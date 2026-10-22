@@ -48,6 +48,8 @@ class Value:
         That is the case whenever environ = False or environ_name is given.
         """
         instance = object.__new__(cls)
+        if not args and not kwargs:
+            return instance
         if 'late_binding' in kwargs:
             instance.late_binding = kwargs.get('late_binding')
         if not instance.late_binding:
@@ -85,6 +87,9 @@ class Value:
 
     # Compatibility with python 2
     __nonzero__ = __bool__
+
+    def __reduce__(self):
+        return (object.__new__, (self.__class__,), self.__dict__)
 
     def full_environ_name(self, name):
         if self.environ_name:
