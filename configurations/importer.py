@@ -5,6 +5,7 @@ import sys
 from optparse import OptionParser, make_option
 
 from django.conf import ENVIRONMENT_VARIABLE as SETTINGS_ENVIRONMENT_VARIABLE
+from django.conf import global_settings
 from django.core.exceptions import ImproperlyConfigured
 from django.core.management import base
 
@@ -12,6 +13,21 @@ from .utils import uppercase_attributes, reraise
 from .values import Value, setup_value
 
 installed = False
+
+# Django 6.1 deprecates EMAIL_* for MAILERS
+DEPRECATED_EMAIL_SETTINGS = {
+    "EMAIL_BACKEND",
+    "EMAIL_FILE_PATH",
+    "EMAIL_HOST",
+    "EMAIL_HOST_PASSWORD",
+    "EMAIL_HOST_USER",
+    "EMAIL_PORT",
+    "EMAIL_SSL_CERTFILE",
+    "EMAIL_SSL_KEYFILE",
+    "EMAIL_TIMEOUT",
+    "EMAIL_USE_SSL",
+    "EMAIL_USE_TLS",
+}
 
 CONFIGURATION_ENVIRONMENT_VARIABLE = 'DJANGO_CONFIGURATION'
 CONFIGURATION_ARGUMENT = '--configuration'
@@ -159,8 +175,23 @@ def wrap_loader(loader, class_name):
                 cls.pre_setup()
                 cls.setup()
                 obj = cls()
-                attributes = uppercase_attributes(obj).items()
-                for name, value in attributes:
+                attributes = uppercase_attributes(obj)
+
+                # Clean deprecated settings after building the class
+                #
+                # Don't use Django's default deprecated EMAIL_* if MAILERS is set - 
+                # Django raises ImproperlyConfigured if both set
+                if "MAILERS" in attributes:
+                    attributes = {
+                        name: value
+                        for name, value in attributes.items()
+                        if not (
+                            name in DEPRECATED_EMAIL_SETTINGS
+                            and getattr(global_settings, name, None) == value
+                        )
+                    }
+
+                for name, value in attributes.items():
                     if callable(value) and not getattr(value, 'pristine', False):
                         value = value()
                         # in case a method returns a Value instance we have

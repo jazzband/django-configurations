@@ -32,6 +32,7 @@ class ConfigurationBase(type):
             for base in bases[::-1]:
                 settings_vars.update(uppercase_attributes(base))
 
+        # Clean deprecated settings while building the class
         deprecated_settings = {
             # DEFAULT_HASHING_ALGORITHM is always deprecated, as it's a
             # transitional setting
